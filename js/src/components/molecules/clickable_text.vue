@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { TEXT_COLOR } from '@/const'
+import { BLACK } from '@/const'
 import PlainText from '@/components/atoms/plain_text'
 
 export default {
@@ -25,7 +25,7 @@ export default {
     },
     textcolor: {
       type: String,
-      default: TEXT_COLOR
+      default: BLACK
     }
   },
   methods: {
@@ -37,4 +37,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.clickable_text {
+  @include prefix("display", "flex");
+}
 </style>

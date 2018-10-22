@@ -10,19 +10,27 @@
         :text="'Training'"
         :textcolor="white"
         @click="goTraining()">
-        <FaIcon slot="icon" :cls="'fa fa-home'"></FaIcon>
+        <FaIcon slot="icon"
+          :textcolor="white"
+          :cls="'fa fa-home'"></FaIcon>
       </ClickableText>
+
       <ClickableText
         :text="'Dataset'"
         :textcolor="white"
         @click="goDataset()">
-        <FaIcon slot="icon" :cls="'fa fa-home'"></FaIcon>
+        <FaIcon slot="icon"
+          :textcolor="white"
+          :cls="'fa fa-home'"></FaIcon>
       </ClickableText>
+
       <ClickableText
         :text="'Prediction'"
         :textcolor="white"
         @click="goPrediction()">
-        <FaIcon slot="icon" :cls="'fa fa-home'"></FaIcon>
+        <FaIcon slot="icon"
+          :textcolor="white"
+          :cls="'fa fa-home'"></FaIcon>
       </ClickableText>
     </div>
   </transition>
@@ -80,8 +88,8 @@ export default {
     position: fixed;
     top: $header-height;
     left: 0;
-    width: $full-width;
-    height: $full-height;
+    width: $full-screen-width;
+    height: $full-screen-height;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.4);
   }
@@ -89,7 +97,7 @@ export default {
   #navigation-bar {
     position: fixed;
     top: $header-height;
-    height: $full-height;
+    height: $full-screen-height;
 
     background-color: #262a4e;
     z-index: 2;

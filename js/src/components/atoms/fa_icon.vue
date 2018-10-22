@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { TEXT_COLOR } from '@/const'
+import { BLACK } from '@/const'
 
 export default {
   name: 'FaIcon',
@@ -15,7 +15,7 @@ export default {
     },
     textcolor: {
       type: String,
-      default: TEXT_COLOR
+      default: BLACK
     }
   }
 }

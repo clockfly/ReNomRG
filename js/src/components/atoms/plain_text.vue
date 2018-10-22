@@ -6,17 +6,16 @@
 </template>
 
 <script>
-import { TEXT_COLOR } from '@/const'
+import { BLACK } from '@/const'
 
 export default {
   name: 'PlainText',
   props: {
     text: {
-      type: String
     },
     textcolor: {
       type: String,
-      default: TEXT_COLOR
+      default: BLACK
     }
   }
 }

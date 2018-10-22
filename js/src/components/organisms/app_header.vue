@@ -49,11 +49,11 @@ header {
   position: fixed;
   top: 0px;
   left: 0px;
-  width: $full-width;
+  width: $full-screen-width;
   height: $header-height;
   margin: 0;
   padding: 0;
-  background-color: $header-color;
+  background-color: $dark-blue;
   z-index: 999;
 
 }

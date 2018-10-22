@@ -34,9 +34,8 @@ export default {
 <style lang="scss" scoped>
 footer {
   display: block;
-  width: $full-width;
-  background: $footer-color;
-  margin-top: $component-margin-top;
+  width: $full-screen-width;
+  background: $dark-blue;
   z-index: 99999;
 }
 </style>

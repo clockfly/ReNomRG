@@ -43,12 +43,13 @@ export default {
 <style lang="scss" scoped>
 #app {
   position: relative;
-  width: $full-width;
+  width: $full-screen-width;
   padding-top: $header-height;
+  background-color: $background-gray;
 
   .container {
     @include horizon-center();
-    width: $full-width;
+    width: $full-screen-width;
     max-width: $max-width;
   }
 }
