@@ -36,6 +36,8 @@ export default {
   */
   // set  mode llist
   setModelList (state, payload) {
+    state.model_list = []
+    state.model_counts_per_algorith = { 'C-GCNN': 0, 'Kernel-GCNN': 0, 'DBSCAN-GCNN': 0, 'Running': 0, 'Reserved': 0 }
     for (let m of payload.model_list) {
       state.model_list.push(m)
       if (m['state'] === 0) {
@@ -124,6 +126,10 @@ export default {
   },
 
   setDatasetList (state, payload) {
+    state.dataset_name_list = []
+    for (let d of payload.datasets) {
+      state.dataset_name_list.push(d['name'])
+    }
     state.dataset_list = payload.datasets
   }
 }

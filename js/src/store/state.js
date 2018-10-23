@@ -56,6 +56,7 @@ export default {
   /**
   * modal params setting
   */
+  dataset_name_list: [],
   dataset_list: [],
 
   /**

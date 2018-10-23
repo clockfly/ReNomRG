@@ -272,7 +272,7 @@ class Storage:
                     "dataset_id": data[0],
                     "name": data[1],
                     "train_ratio": data[2],
-                    "created": data[3]
+                    "created": data[3].strftime('%Y/%m/%d')
                 })
             return ret
 
@@ -297,7 +297,7 @@ class Storage:
                     "train_ratio": data[5],
                     "train_index": pickle_load(data[6]),
                     "valid_index": pickle_load(data[7]),
-                    "created": data[8]
+                    "created": data[8].strftime('%Y/%m/%d')
                 }
                 return ret
 

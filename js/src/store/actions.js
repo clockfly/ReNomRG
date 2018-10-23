@@ -126,8 +126,7 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-
-        context.commit('setDatasets', {
+        context.commit('setDatasetList', {
           'datasets': response.data.datasets
         })
       })

@@ -2,8 +2,25 @@
   <div class="modal-params-setting">
     <SelectBoxWithLabel
       :labeltext="'target column id:'"
-      :options="$store.state.dataset_list"
+      :options="$store.state.dataset_name_list"
       @change="dataset_id = $event"></SelectBoxWithLabel>
+
+    <SelectBoxWithLabel
+      :labeltext="'algorithm:'"
+      :options="['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN']"
+      @change="algorithm = $event"></SelectBoxWithLabel>
+
+    <InputTextWithLabel
+      :labeltext="'batch size:'"
+      @change="batch_size = parseInt($event)"></InputTextWithLabel>
+
+    <InputTextWithLabel
+      :labeltext="'epoch:'"
+      @change="epoch = parseInt($event)"></InputTextWithLabel>
+
+    <InputTextWithLabel
+      :labeltext="'neighbors:'"
+      @change="algorithm_params['num_neighbors'] = parseInt($event)"></InputTextWithLabel>
 
     <Button :text="'Run'" @click="$emit('run', params())"></Button>
     <Button :text="'Cancel'" @click="$emit('cancel')"></Button>
@@ -38,9 +55,7 @@ export default {
       return {
         'dataset_id': this.dataset_id,
         'algorithm': this.algorithm,
-        'algorithm_params': {
-          'num_neighbors': 5
-        },
+        'algorithm_params': this.algorithm_params,
         'batch_size': this.batch_size,
         'epoch': this.epoch
       }

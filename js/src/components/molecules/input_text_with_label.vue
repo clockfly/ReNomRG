@@ -4,7 +4,7 @@
       :text="labeltext"
       :textcolor="labelcolor"></PlainText>
     <InputText :placeholder="placeholder"
-      @change="this.$emit('change', $event)"></InputText>
+      @change="$emit('change', $event)"></InputText>
   </div>
 </template>
 
