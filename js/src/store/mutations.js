@@ -121,5 +121,9 @@ export default {
   },
   setValidIndex (state, payload) {
     state.valid_index = payload.valid_index
+  },
+
+  setDatasetList (state, payload) {
+    state.dataset_list = payload.datasets
   }
 }

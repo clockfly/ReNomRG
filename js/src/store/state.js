@@ -54,7 +54,12 @@ export default {
   labels: [],
 
   /**
-  * modal
+  * modal params setting
+  */
+  dataset_list: [],
+
+  /**
+  * modal dataaset setting
   */
   train_count: 0,
   valid_count: 0,

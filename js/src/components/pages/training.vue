@@ -57,6 +57,7 @@ export default {
     PredictionResult
   },
   created: function () {
+    this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadLabels')
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="clickable_text"
     v-bind:style="{ 'color': textcolor }"
-    @click="click">
+    @click="$emit('click')">
     <slot name="icon"></slot>
     <PlainText
       :text="text"
@@ -26,11 +26,6 @@ export default {
     textcolor: {
       type: String,
       default: BLACK
-    }
-  },
-  methods: {
-    click: function () {
-      this.$emit('click')
     }
   }
 }

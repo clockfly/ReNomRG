@@ -118,6 +118,21 @@ export default {
     await context.dispatch('selectModel', payload)
   },
 
+  loadDatasets (context, payload) {
+    const url = '/api/renom_rg/datasets'
+    axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          return
+        }
+
+        context.commit('setDatasets', {
+          'datasets': response.data.datasets
+        })
+      })
+  },
+
   confirmDataset (context, payload) {
     let fd = new FormData()
     fd.append('name', payload.name)

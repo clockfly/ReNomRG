@@ -11,3 +11,15 @@ export const BAR_COLORS = {
   'Running': '#0099ce',
   'Reserved': '#cccccc'
 }
+
+export const TEXT_WIDTH = '80px'
+export const TEXT_HEIGHT = '40px'
+
+export const INPUT_WIDTH = '80px'
+export const INPUT_HEIGHT = '40px'
+
+export const LABEL_WIDTH = '80px'
+export const LABEL_HEIGHT = '40px'
+
+export const BUTTON_WIDTH = '80px'
+export const BUTTON_HEIGHT = '40px'

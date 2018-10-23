@@ -5,14 +5,14 @@
       height: h,
       background: backgroundcolor,
       color: textcolor }"
-    @click="click">
+    @click="$emit('click')">
     <slot name="icon"></slot>
     {{text}}
   </button>
 </template>
 
 <script>
-import { BLUE, WHITE } from '@/const'
+import { BLUE, WHITE, BUTTON_WIDTH, BUTTON_HEIGHT } from '@/const'
 
 export default {
   name: 'Button',
@@ -23,11 +23,11 @@ export default {
     },
     w: {
       type: String,
-      default: '88px'
+      default: BUTTON_WIDTH
     },
     h: {
       type: String,
-      default: '44px'
+      default: BUTTON_HEIGHT
     },
     backgroundcolor: {
       type: String,
@@ -36,11 +36,6 @@ export default {
     textcolor: {
       type: String,
       default: WHITE
-    }
-  },
-  methods: {
-    click: function () {
-      this.$emit('click')
     }
   }
 }
