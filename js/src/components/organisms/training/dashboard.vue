@@ -3,8 +3,8 @@
     <Panel
       :banner_text="'Dashboard'">
       <div slot="pannel_content">
-        <ModelRatioBar></ModelRatioBar>
-        <RunningModels></RunningModels>
+        <DashboardRatioBar></DashboardRatioBar>
+        <DashboardRunning></DashboardRunning>
       </div>
     </Panel>
   </div>
@@ -12,15 +12,15 @@
 
 <script>
 import Panel from '@/components/organisms/panel'
-import ModelRatioBar from '@/components/organisms/training/model_ratio_bar'
-import RunningModels from '@/components/organisms/training/running_models'
+import DashboardRatioBar from '@/components/organisms/training/dashboard_ratio_bar'
+import DashboardRunning from '@/components/organisms/training/dashboard_running'
 
 export default {
   name: 'Dashboard',
   components: {
     Panel,
-    ModelRatioBar,
-    RunningModels
+    DashboardRatioBar,
+    DashboardRunning
   }
 }
 </script>

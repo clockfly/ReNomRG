@@ -1,1 +1,0 @@
-recursive-include renom_rg = *.py *.css *.eot *.html *.js *.svg *.ttf *.woff *.woff2

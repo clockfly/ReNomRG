@@ -14,6 +14,11 @@ $gray: #999999;
 $black: #666666;
 $dark-blue: #063662;
 
+// modal
+$modal-opacity: 0.5;
+$modal-content-width: 70%;
+$modal-content-height: 70%;
+
 /**
 * header
 */
@@ -192,4 +197,11 @@ $content-right-width: 40%;
 
 @mixin horizon-center() {
   margin: 0 auto;
+}
+
+@mixin transform-center() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  @include prefix("transform", "translateY(-50%) translateX(-50%)");
 }

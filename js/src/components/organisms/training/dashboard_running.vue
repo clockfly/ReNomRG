@@ -1,5 +1,5 @@
 <template>
-  <div id="running-models">
+  <div id="dashboard-running">
     <PlainText
       :text="'Running Models'"></PlainText>
 
@@ -13,7 +13,7 @@
 import PlainText from '@/components/atoms/plain_text'
 
 export default {
-  name: 'RunningModels',
+  name: 'DashboardRunning',
   components: {
     PlainText
   }
@@ -21,6 +21,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#running-models {
+#dashboard-running {
 }
 </style>

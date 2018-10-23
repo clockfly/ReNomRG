@@ -36,7 +36,24 @@ export default {
   */
   // set  mode llist
   setModelList (state, payload) {
-    state.model_list = payload.model_list
+    for (let m of payload.model_list) {
+      state.model_list.push(m)
+      if (m['state'] === 0) {
+        state.model_counts_per_algorith['Reserved'] += 1
+      } else if (m['state'] === 1) {
+        state.model_counts_per_algorith['Running'] += 1
+      } else {
+        if (m['algorithm'] === 0) {
+          state.model_counts_per_algorith['C-GCNN'] += 1
+        } else if (m['algorithm'] === 1) {
+          state.model_counts_per_algorith['Kernel-GCNN'] += 1
+        } else if (m['algorithm'] === 0) {
+          state.model_counts_per_algorith['DBSCAN-GCNN'] += 1
+        }
+      }
+    }
+
+    // TODO: select last model if selected_model_id is undefined
   },
 
   // set sort key
@@ -82,5 +99,27 @@ export default {
   // set labels
   setLabels (state, payload) {
     state.labels = payload.labels
+  },
+
+  /**
+  * mdoal
+  */
+  setTrainCount (state, payload) {
+    state.train_count = payload.train_count
+  },
+  setValidCount (state, payload) {
+    state.valid_count = payload.valid_count
+  },
+  setTargetTrain (state, payload) {
+    state.target_train = payload.target_train
+  },
+  setTargetValid (state, payload) {
+    state.target_valid = payload.target_valid
+  },
+  setTrainIndex (state, payload) {
+    state.train_index = payload.train_index
+  },
+  setValidIndex (state, payload) {
+    state.valid_index = payload.valid_index
   }
 }

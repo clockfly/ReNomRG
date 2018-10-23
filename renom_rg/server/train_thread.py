@@ -16,6 +16,7 @@ from renom.utility.distributor.distributor import NdarrayDistributor
 
 from renom_rg.server import GPU_NUM, STATE_RUNNING, RUN_STATE_TRAINING, RUN_STATE_VALIDATING, RUN_STATE_STARTING, RUN_STATE_STOPPING, C_GCNN, Kernel_GCNN, DBSCAN_GCNN, DB_DIR_TRAINED_WEIGHT, DATASRC_DIR
 from renom_rg.api.regression.gcnn import GCNet
+from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
 from renom_rg.server.storage import storage
 
 
@@ -30,7 +31,8 @@ class TrainThread(object):
     gpus = set(range(GPU_NUM or 1))
 
     def __init__(self, model_id, dataset_id, algorithm,
-                 algorithm_params, batch_size, epoch):
+                 algorithm_params, batch_size, epoch,
+                 train_index, valid_index, target_column_id):
 
         # Model will be created in __call__ function.
         self.model = None
@@ -51,11 +53,15 @@ class TrainThread(object):
         self.error_msg = None
 
         # Train hyperparameters
-        self.dataset_id
+        self.dataset_id = dataset_id
         self.total_epoch = epoch
         self.batch_size = batch_size
+        self.epoch = epoch
         self.algorithm = algorithm
         self.algorithm_params = algorithm_params
+        self.train_index = train_index
+        self.valid_index = valid_index
+        self.target_column_id = target_column_id
 
         self.stop_event = Event()
 
@@ -85,26 +91,7 @@ class TrainThread(object):
     def _exec(self):
         # This func works as thread.
         try:
-            # Algorithm and model preparation.
-            # Pretrained weights are must be prepared.
-            # This have to be done in thread.
-            if self.algorithm == C_GCNN:
-                # self.feature_mat = feature_mat()
-                pass
-            elif self.algorithm == Kernel_GCNN:
-                # self.feature_mat = feature_mat()
-                pass
-            elif self.algorithm == DBSCAN_GCNN:
-                # self.feature_mat = feature_mat()
-                pass
-            else:
-                self.error_msg = "{} is not supported algorithm id.".format(self.algorithm)
-            self.model = GCNet()
-
-            self.model.set_gpu(self._gpu)
-            release_mem_pool()
-            filename = '{}.h5'.format(int(time.time()))
-
+            print("run thread")
             with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
                 data = pickle.load(f)
             X, y = split_target(np.array(data), self.target_column_id)
@@ -112,6 +99,22 @@ class TrainThread(object):
             X_valid = X[self.valid_index]
             y_train = y[self.train_index]
             y_test = y[self.valid_index]
+            # Algorithm and model preparation.
+            # Pretrained weights are must be prepared.
+            # This have to be done in thread.
+            if self.algorithm == C_GCNN:
+                self.feature_graph = get_corr_graph(X_train, self.algorithm_params["num_neighbors"])
+            elif self.algorithm == Kernel_GCNN:
+                self.feature_graph = get_kernel_graph(X_train, self.algorithm_params["num_neighbors"], 0.01)
+            elif self.algorithm == DBSCAN_GCNN:
+                self.feature_graph = get_dbscan_graph(X_train, self.algorithm_params["num_neighbors"])
+            else:
+                self.error_msg = "{} is not supported algorithm id.".format(self.algorithm)
+            self.model = GCNet(self.feature_graph, neighbors=self.algorithm_params["num_neighbors"])
+
+            self.model.set_gpu(self._gpu)
+            release_mem_pool()
+            filename = '{}.h5'.format(int(time.time()))
 
             optimizer = Adam()
             storage.update_model_state(self.model_id, STATE_RUNNING)
@@ -148,17 +151,17 @@ class TrainThread(object):
                 N = X_valid.shape[0]
 
                 pred = self.model(X_valid.reshape(-1, 1, X_valid.shape[1], 1))
-                valid_loss = rm.mse(pred, y_test)
+                valid_loss = float(rm.mse(pred, y_test))
                 self.valid_loss_list.append(valid_loss)
-
+                print("epoch: {}, valid_loss: {}".format(e, valid_loss))
                 # calc evaluation
                 if self.best_loss is None or self.best_loss > valid_loss:
                     self.model.save(os.path.join(DB_DIR_TRAINED_WEIGHT, filename))
 
                     self.best_loss = valid_loss
-                    rmse = np.sqrt(valid_loss)
-                    max_abs_error = np.max(np.abs(y_test - pred))
-                    r2 = r2_score(y_test, pred)
+                    rmse = float(np.sqrt(valid_loss))
+                    max_abs_error = float(np.max(np.abs(y_test - pred)))
+                    r2 = float(r2_score(y_test, pred))
                     storage.update_best_epoch(self.model_id, e, valid_loss,
                                               rmse, max_abs_error, r2, filename)
 

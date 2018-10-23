@@ -144,8 +144,8 @@ def confirm_dataset():
         X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
         body = json.dumps({
-            "train_count": X_train.shape[0],
-            "valid_count": y_train.shape[0],
+            "train_count": y_train.shape[0],
+            "valid_count": y_valid.shape[0],
             "target_train": y_train.values.tolist(),
             "target_valid": y_valid.values.tolist(),
             "train_index": np.array(y_train.index).tolist(),
@@ -162,11 +162,11 @@ def create_dataset():
     try:
         name = request.params.name
         description = request.params.description
-        target_column_id = request.params.target_column_id
-        labels = request.params.labels
-        train_ratio = request.params.train_ratio
-        train_index = request.params.train_index
-        valid_index = request.params.valid_index
+        target_column_id = int(request.params.target_column_id)
+        labels = json.loads(request.params.labels)
+        train_ratio = float(request.params.train_ratio)
+        train_index = json.loads(request.params.train_index)
+        valid_index = json.loads(request.params.valid_index)
 
         storage.register_dataset(name, description, target_column_id,
                                  labels, train_ratio, train_index, valid_index)
@@ -213,11 +213,11 @@ def get_model(model_id):
 @route("/api/renom_rg/models", method="POST")
 def create_model():
     try:
-        dataset_id = request.params.dataset_id
-        algorithm = request.params.algorithm
-        algorithm_params = request.params.algorithm_params
-        batch_size = request.params.batch_size
-        epoch = request.params.epoch
+        dataset_id = int(request.params.dataset_id)
+        algorithm = int(request.params.algorithm)
+        algorithm_params = json.loads(request.params.algorithm_params)
+        batch_size = int(request.params.batch_size)
+        epoch = int(request.params.epoch)
 
         model_id = storage.register_model(dataset_id, algorithm, algorithm_params,
                                           batch_size, epoch)
@@ -267,14 +267,16 @@ def train_model(model_id):
     try:
         # run train thread
         model = storage.fetch_model(model_id)
+        dataset = storage.fetch_dataset(model['dataset_id'])
         th = TrainThread(model_id,
                          model['dataset_id'],
                          model['algorithm'],
                          model['algorithm_params'],
                          model["batch_size"],
                          model['epoch'],
-                         model['train_index'],
-                         model['valid_index'])
+                         dataset['train_index'],
+                         dataset['valid_index'],
+                         dataset['target_column_id'])
         ft = executor.submit(th)
         train_thread_pool[model_id] = [ft, th]
 

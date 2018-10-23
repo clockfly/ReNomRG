@@ -3,7 +3,8 @@
     <div class="add-button-area">
       <Button
         :text="'Add new model'"
-        :w="'100%'">
+        :w="'100%'"
+        @click="showModal">
         <FaIcon slot="icon"
           :cls="'fa fa-plus'"
           :textcolor="white"></FaIcon>
@@ -14,7 +15,8 @@
       :banner_text="'Model List'">
       <div slot="pannel_content">
         <div class="model-list-item"
-          v-for="(model,index) in $store.state.model_list">
+          v-for="(model,index) in $store.state.model_list"
+          @click="selectModel(model)">
           <LabelValueText v-for="(item, index) in model"
             :key="index"
             :labeltext="index+':'"
@@ -44,6 +46,18 @@ export default {
     return {
       'white': WHITE
     }
+  },
+  methods: {
+    selectModel: function (m) {
+      this.$store.commit('setSelectedModelId', {'model_id': m['model_id']})
+      this.$store.commit('setSelectedModel', {'model': m})
+    },
+    showModal: function () {
+      this.$store.commit('setAddModelModalShowFlag', {'flag': true})
+    }
+  },
+  created: function () {
+    this.$store.dispatch('loadModels')
   }
 }
 </script>

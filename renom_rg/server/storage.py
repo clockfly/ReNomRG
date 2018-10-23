@@ -67,11 +67,6 @@ class Storage:
              epoch INTEGER NOT NULL,
              train_loss_list BLOB,
              valid_loss_list BLOB,
-             total_batch INTEGER,
-             running_state INTEGER,
-             last_batch INTEGER,
-             last_epoch INTEGER,
-             last_train_loss NUMBER,
              best_epoch INTEGER,
              best_epoch_valid_loss NUMBER,
              best_epoch_rmse NUMBER,
@@ -92,15 +87,17 @@ class Storage:
             c = self.cursor()
             now = self.now()
             dumped_algorithm_params = pickle_dump(algorithm_params)
-            dumped_valid_pred = pickle_dump([])
+            dumped_empty_list = pickle_dump([])
             c.execute("""
                 INSERT INTO
                     model(dataset_id, algorithm, algorithm_params,
-                          batch_size, epoch, valid_predicted, created, updated)
+                          batch_size, epoch, train_loss_list, valid_loss_list,
+                          valid_predicted, created, updated)
                 VALUES
-                    (?, ?, ?, ?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (dataset_id, algorithm, dumped_algorithm_params,
-                      batch_size, epoch, dumped_valid_pred, now, now))
+                      batch_size, epoch, dumped_empty_list,
+                      dumped_empty_list, dumped_empty_list, now, now))
             return c.lastrowid
 
     def update_model_state(self, model_id, state):
@@ -146,39 +143,6 @@ class Storage:
                 SET
                     deployed=0, updated=?
                 """, (now,))
-            return c.lastrowid
-
-    def update_model_result(self, model_id, best_epoch_num, valid_loss, rmse,
-                            max_abs_error, r2_score, valid_predicted):
-        with self.db:
-            c = self.cursor()
-            now = self.now()
-            dumped_valid_pred = pickle_dump(valid_predicted)
-            c.execute("""
-                UPDATE model
-                SET
-                    best_epoch=?, best_epoch_valid_loss=?,
-                    best_epoch_rmse=?,best_epoch_max_abs_error=?,
-                    best_epoch_r2=?, valid_predicted=?, updated=?
-                WHERE
-                    model_id=?
-                """, (best_epoch_num, valid_loss, rmse,
-                      max_abs_error, r2_score, dumped_valid_pred,
-                      now, model_id))
-            return c.lastrowid
-
-    def update_last_state(self, model_id, last_batch, last_epoch,
-                          last_train_loss):
-        with self.db:
-            c = self.cursor()
-            now = self.now()
-            c.execute("""
-                UPDATE model
-                SET
-                    last_batch=?, last_epoch=?, last_train_loss=?, updated=?
-                WHERE
-                    model_id=?
-                """, (last_batch, last_epoch, last_train_loss, now, model_id))
             return c.lastrowid
 
     def update_best_epoch(self, model_id, nth_epoch, valid_loss,
@@ -323,9 +287,8 @@ class Storage:
                 FROM dataset_def
                 """)
 
-            ret = []
             for index, data in enumerate(c):
-                ret.append({
+                ret = {
                     "dataset_id": data[0],
                     "name": data[1],
                     "description": data[2],
@@ -335,8 +298,8 @@ class Storage:
                     "train_index": pickle_load(data[6]),
                     "valid_index": pickle_load(data[7]),
                     "created": data[8]
-                })
-            return ret
+                }
+                return ret
 
     def delete_dataset(self, dataset_id):
         with self.db:

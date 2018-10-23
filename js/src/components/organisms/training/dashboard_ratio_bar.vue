@@ -1,5 +1,5 @@
 <template>
-  <div id="model-ratio-bar">
+  <div class="dashboard-ratio-bar">
     <LabelValueText
       :labeltext="'Total Models:'"
       :valuetext="model_list.length"></LabelValueText>
@@ -29,7 +29,7 @@ import PlainText from '@/components/atoms/plain_text'
 import LabelValueText from '@/components/molecules/label_value_text'
 
 export default {
-  name: 'ModelRatioBar',
+  name: 'DashboardRatioBar',
   components: {
     PlainText,
     LabelValueText
@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#model-ratio-bar {
+.dashboard-ratio-bar {
   width: $full-parent-width;
 
   .bar-legends {

@@ -12,21 +12,21 @@ export default {
   * dashboard
   */
   // model ratio bar
-  // model_counts_per_algorith: {
-  //   'C-GCNN': 0,
-  //   'Kernel-GCNN': 0,
-  //   'DBSCAN-GCNN': 0,
-  //   'Running': 0,
-  //   'Reserved': 0
-  // },
+  model_counts_per_algorith: {
+    'C-GCNN': 0,
+    'Kernel-GCNN': 0,
+    'DBSCAN-GCNN': 0,
+    'Running': 0,
+    'Reserved': 0
+  },
 
   // running models
-  // running_models: [],
+  running_models: [],
 
   /**
   * Model list
   */
-  // model_list: [],
+  model_list: [],
 
   // sort key
   sort_key: 0,
@@ -36,8 +36,8 @@ export default {
   /**
   * Model Detail
   */
-  // selected_model_id: undefined,
-  // selected_model: undefined,
+  selected_model_id: undefined,
+  selected_model: undefined,
 
   /**
   * prediction sample
@@ -51,74 +51,16 @@ export default {
   * features
   */
   // data
-  // labels: []
+  labels: [],
 
   /**
-  * dummy data
+  * modal
   */
-  model_list: [
-    {
-      'model_id': 10,
-      'algorithm': 'Kernel-GCNN',
-      'validation_loss': 0.9999,
-      'rmse': 0.9999,
-      'max_absolute_error': 0.9999
-    },
-    {
-      'model_id': 11,
-      'algorithm': 'DBSCAN-GCNN',
-      'validation_loss': 0.9999,
-      'rmse': 0.9999,
-      'max_absolute_error': 0.9999
-    },
-    {
-      'model_id': 12,
-      'algorithm': 'C-GCNN',
-      'validation_loss': 0.9999,
-      'rmse': 0.9999,
-      'max_absolute_error': 0.9999
-    }
-  ],
-  model_counts_per_algorith: {
-    'C-GCNN': 5,
-    'Kernel-GCNN': 2,
-    'DBSCAN-GCNN': 3,
-    'Running': 1,
-    'Reserved': 1
-  },
-  running_models: [
-    {
-      'model_id': 9999,
-      'algorithm': 'Kernel-GCNN',
-      'epoch': 9999,
-      'total_batch': 9999,
-      'last_epoch': 9999,
-      'last_batch': 9999,
-      'train_loss': 0.9999
-    },
-    {
-      'model_id': 9998,
-      'algorithm': 'DBSCAN-GCNN',
-      'epoch': 9999,
-      'total_batch': 9999,
-      'last_epoch': 9999,
-      'last_batch': 9999,
-      'train_loss': 0.9999
-    }
-  ],
-  selected_model_id: 10,
-  selected_model: {
-    'dataset_name': 'test_test_test',
-    'epoch': 9999,
-    'batch_size': 999,
-    'algorithm': 'Kernel-GCNN',
-    'num_neighbors': 99,
-    'validation_loss': 0.9999,
-    'rmse': 0.9999,
-    'max_absolute_error': 0.9999,
-    'r2_score': 0.9999
-  },
-  labels: ['label1', 'label2', 'label3', 'label4', 'label5',
-    'label6', 'label7', 'label8', 'label9', 'label10',
-    'label11', 'label12', 'label13', 'label14', 'label15']
+  train_count: 0,
+  valid_count: 0,
+  target_train: [],
+  target_valid: [],
+  train_index: [],
+  valid_index: []
+
 }
