@@ -1,26 +1,31 @@
 <template>
   <div class="modal-params-setting">
     <SelectBoxWithLabel
-      :labeltext="'target column id:'"
+      :labeltext="'dataset id:'"
       :options="$store.state.dataset_name_list"
-      @change="dataset_id = $event"></SelectBoxWithLabel>
+      :value="dataset_id"
+      @input="dataset_id = $event"></SelectBoxWithLabel>
 
     <SelectBoxWithLabel
       :labeltext="'algorithm:'"
       :options="['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN']"
-      @change="algorithm = $event"></SelectBoxWithLabel>
+      :value="algorithm"
+      @input="algorithm = parseInt($event)"></SelectBoxWithLabel>
 
     <InputTextWithLabel
       :labeltext="'batch size:'"
-      @change="batch_size = parseInt($event)"></InputTextWithLabel>
+      :value="batch_size"
+      @input="batch_size = parseInt($event)"></InputTextWithLabel>
 
     <InputTextWithLabel
       :labeltext="'epoch:'"
-      @change="epoch = parseInt($event)"></InputTextWithLabel>
+      :value="epoch"
+      @input="epoch = parseInt($event)"></InputTextWithLabel>
 
     <InputTextWithLabel
       :labeltext="'neighbors:'"
-      @change="algorithm_params['num_neighbors'] = parseInt($event)"></InputTextWithLabel>
+      :value="algorithm_params['num_neighbors']"
+      @input="algorithm_params['num_neighbors'] = parseInt($event)"></InputTextWithLabel>
 
     <Button :text="'Run'" @click="$emit('run', params())"></Button>
     <Button :text="'Cancel'" @click="$emit('cancel')"></Button>
@@ -41,7 +46,7 @@ export default {
   },
   data: function () {
     return {
-      'dataset_id': 1,
+      'dataset_id': 0,
       'algorithm': 0,
       'algorithm_params': {
         'num_neighbors': 5

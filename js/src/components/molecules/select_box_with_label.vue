@@ -5,7 +5,8 @@
       :textcolor="labelcolor"></PlainText>
     <SelectBox
       :options="options"
-      @change="$emit('change', $event)"></SelectBox>
+      :value="value"
+      @input="$emit('input', $event)"></SelectBox>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ export default {
     SelectBox
   },
   props: {
+    value: {},
     options: {
       type: Array
     },

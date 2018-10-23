@@ -1,8 +1,8 @@
 <template>
   <input type="text"
     :placeholder="placeholder"
-    v-model="localtext"
-    @change="$emit('change', localtext)">
+    :value="value"
+    @input="$emit('input', $event.target.value)">
 </template>
 
 <script>
@@ -10,12 +10,8 @@ import { INPUT_WIDTH, INPUT_HEIGHT } from '@/const'
 
 export default {
   name: 'InputText',
-  data: function () {
-    return {
-      'localtext': ''
-    }
-  },
   props: {
+    value: {},
     placeholder: {
       type: String
     },

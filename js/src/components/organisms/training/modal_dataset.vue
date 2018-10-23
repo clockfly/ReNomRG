@@ -2,20 +2,24 @@
   <div class="modal-dataset">
     <InputTextWithLabel
       :labeltext="'dataset name:'"
-      @change="name = $event"></InputTextWithLabel>
+      :value="name"
+      @input="name = $event"></InputTextWithLabel>
 
     <InputTextWithLabel
       :labeltext="'description:'"
-      @change="description = $event"></InputTextWithLabel>
+      :value="description"
+      @input="description = $event"></InputTextWithLabel>
 
     <InputTextWithLabel
       :labeltext="'train ratio:'"
-      @change="train_ratio = parseFloat($event)"></InputTextWithLabel>
+      :value="train_ratio"
+      @input="train_ratio = parseFloat($event)"></InputTextWithLabel>
 
     <SelectBoxWithLabel
       :labeltext="'target column id:'"
       :options="$store.state.labels"
-      @change="target_column_id = $event"></SelectBoxWithLabel>
+      :value="target_column_id"
+      @input="target_column_id = parseInt($event)"></SelectBoxWithLabel>
 
     <Button :text="'Confirm'" @click="$emit('confirm', params())"></Button>
     <Button :text="'Save'" @click="$emit('save', params())"></Button>

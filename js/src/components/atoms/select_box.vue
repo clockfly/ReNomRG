@@ -1,7 +1,7 @@
 <template>
   <select class="select-box"
-    v-model="selected"
-    @change="$emit('change', selected)">
+    v-model="value"
+    @input="$emit('input', $event.target.value)">
     <option v-for="(o, index) in options" :value="index" :key="index">
       {{ o }}
     </option>
@@ -13,12 +13,8 @@ import { INPUT_WIDTH, INPUT_HEIGHT } from '@/const'
 
 export default {
   name: 'SelectBox',
-  data: function () {
-    return {
-      'selected': 0
-    }
-  },
   props: {
+    value: {},
     options: {
       type: Array
     },

@@ -3,8 +3,9 @@
     <PlainText
       :text="labeltext"
       :textcolor="labelcolor"></PlainText>
-    <InputText :placeholder="placeholder"
-      @change="$emit('change', $event)"></InputText>
+    <InputText :value="value"
+      :placeholder="placeholder"
+      @input="$emit('input', $event)"></InputText>
   </div>
 </template>
 
@@ -20,6 +21,7 @@ export default {
     PlainText
   },
   props: {
+    value: {},
     labeltext: {
       type: String
     },
