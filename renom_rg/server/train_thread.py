@@ -14,7 +14,10 @@ from renom.optimizer import Adam
 from renom.cuda import set_cuda_active, release_mem_pool, use_device
 from renom.utility.distributor.distributor import NdarrayDistributor
 
-from renom_rg.server import GPU_NUM, STATE_RUNNING, RUN_STATE_TRAINING, RUN_STATE_VALIDATING, RUN_STATE_STARTING, RUN_STATE_STOPPING, C_GCNN, Kernel_GCNN, DBSCAN_GCNN, DB_DIR_TRAINED_WEIGHT, DATASRC_DIR
+from renom_rg.server import GPU_NUM, STATE_RUNNING
+from renom_rg.server import RUN_STATE_TRAINING, RUN_STATE_VALIDATING, RUN_STATE_STARTING, RUN_STATE_STOPPING
+from renom_rg.server import C_GCNN, Kernel_GCNN, DBSCAN_GCNN
+from renom_rg.server import DB_DIR_TRAINED_WEIGHT, DATASRC_DIR
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
 from renom_rg.server.storage import storage
