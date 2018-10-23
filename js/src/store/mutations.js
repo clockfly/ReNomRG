@@ -79,18 +79,16 @@ export default {
   // set selected model
   setSelectedModel (state, payload) {
     state.selected_model = payload.model
+    state.valid_loss_list = payload.model['valid_loss_list']
+    state.train_loss_list = payload.model['train_loss_list']
+    state.selected_y_valid = payload.model['valid_true']
+    state.selected_y_pred = payload.model['valid_predicted']
   },
 
   /**
   * prediction sample
   */
   // set validation true data
-  setSelectedYValid (state, payload) {
-    state.selected_y_valid = payload.selected_y_valid
-  },
-  setSelectedYPred (state, payload) {
-    state.selected_y_pred = payload.selected_y_pred
-  },
   setDeployedYValid (state, payload) {
     state.deployed_y_valid = payload.deployed_y_valid
   },
@@ -131,5 +129,15 @@ export default {
       state.dataset_name_list.push(d['name'])
     }
     state.dataset_list = payload.datasets
+  },
+
+  /**
+  * dataset page
+  */
+  setSelectedDatasetId (state, payload) {
+    state.selected_dataset_id = payload.dataset_id
+  },
+  setSelectedDataset (state, payload) {
+    state.selected_dataset = payload.dataset
   }
 }

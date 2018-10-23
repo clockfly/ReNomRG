@@ -73,6 +73,7 @@ class Storage:
              best_epoch_max_abs_error NUMBER,
              best_epoch_r2 NUMBER,
              valid_predicted BLOB,
+             valid_true BLOB,
              weight TEXT,
              deployed INTEGER NOT NULL DEFAULT 0,
              created TIMESTAMP,
@@ -92,11 +93,11 @@ class Storage:
                 INSERT INTO
                     model(dataset_id, algorithm, algorithm_params,
                           batch_size, epoch, train_loss_list, valid_loss_list,
-                          valid_predicted, created, updated)
+                          valid_predicted, valid_true, created, updated)
                 VALUES
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (dataset_id, algorithm, dumped_algorithm_params,
-                      batch_size, epoch, dumped_empty_list,
+                      batch_size, epoch, dumped_empty_list, dumped_empty_list,
                       dumped_empty_list, dumped_empty_list, now, now))
             return c.lastrowid
 
@@ -175,6 +176,26 @@ class Storage:
                 """, (weight, now, model_id))
             return c.lastrowid
 
+    def update_validation_result(self, model_id, train_loss_list,
+                                 valid_loss_list, valid_predicted,
+                                 valid_true):
+        with self.db:
+            c = self.cursor()
+            dumped_train_loss_list = pickle_dump(train_loss_list)
+            dumped_valid_loss_list = pickle_dump(valid_loss_list)
+            dumped_valid_predicted = pickle_dump(valid_predicted)
+            dumped_valid_true = pickle_dump(valid_true)
+            now = self.now()
+            c.execute("""
+                UPDATE model
+                SET
+                    train_loss_list=?, valid_loss_list=?,
+                    valid_predicted=?, valid_true=?, updated=?
+                WHERE
+                    model_id=?
+                """, (dumped_train_loss_list, dumped_valid_loss_list,
+                      dumped_valid_predicted, dumped_valid_true, now, model_id))
+
     def fetch_models(self):
         with self.db:
             c = self.cursor()
@@ -210,8 +231,8 @@ class Storage:
                        batch_size, epoch, train_loss_list,
                        valid_loss_list, best_epoch_valid_loss,
                        best_epoch_rmse, best_epoch_max_abs_error,
-                       best_epoch_r2, valid_predicted, deployed,
-                       weight
+                       best_epoch_r2, valid_predicted, valid_true,
+                       deployed, weight
                 FROM model WHERE model_id=?
                 """, (model_id,))
 
@@ -231,8 +252,9 @@ class Storage:
                     "best_epoch_max_abs_error": data[10],
                     "best_epoch_r2": data[11],
                     "valid_predicted": pickle_load(data[12]),
-                    "deployed": data[13],
-                    "weight": data[14]
+                    "valid_true": pickle_load(data[13]),
+                    "deployed": data[14],
+                    "weight": data[15]
                 }
                 return ret
 

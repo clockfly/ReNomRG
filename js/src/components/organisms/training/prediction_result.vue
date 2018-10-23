@@ -3,7 +3,8 @@
     <Panel
       :banner_text="'Prediction Sample'">
       <div slot="pannel_content">
-        sample
+        {{$store.state.selected_y_valid}}
+        {{$store.state.selected_y_pred}}
       </div>
     </Panel>
   </div>

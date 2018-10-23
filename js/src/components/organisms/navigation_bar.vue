@@ -55,21 +55,18 @@ export default {
   },
   methods: {
     goTraining: function () {
-      console.log('go training')
-      // this.$store.commit('setPageName', {'page_name': 'Training'})
-      // this.$router.push({path: '/'})
+      this.$store.commit('setPageName', {'page_name': 'Training'})
+      this.$router.push({path: '/'})
       this.hideMenu()
     },
     goPrediction: function () {
-      console.log('go prediction')
-      // this.$store.commit('setPageName', {'page_name': 'Prediction'})
-      // this.$router.push({path: '/prediction'})
+      this.$store.commit('setPageName', {'page_name': 'Prediction'})
+      this.$router.push({path: '/prediction'})
       this.hideMenu()
     },
     goDataset: function () {
-      console.log('go dataset')
-      // this.$store.commit('setPageName', {'page_name': 'Prediction'})
-      // this.$router.push({path: '/prediction'})
+      this.$store.commit('setPageName', {'page_name': 'Dataset'})
+      this.$router.push({path: '/dataset'})
       this.hideMenu()
     },
     hideMenu: function () {

@@ -124,8 +124,8 @@ def get_labels():
 @route('/api/renom_rg/datasets/<dataset_id:int>', method='GET')
 def get_dataset(dataset_id):
     try:
-        dataset_info = storage.fetch_dataset(dataset_id)
-        body = json.dumps({"dataset_info": dataset_info})
+        dataset = storage.fetch_dataset(dataset_id)
+        body = json.dumps({"dataset": dataset})
     except Exception as e:
         body = create_error_body(e)
     r = create_response(body)

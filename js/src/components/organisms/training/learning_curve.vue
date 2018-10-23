@@ -3,7 +3,8 @@
     <Panel
       :banner_text="'Learning Curve'">
       <div slot="pannel_content">
-        curve
+        {{$store.state.valid_loss_list}}
+        {{$store.state.train_loss_list}}
       </div>
     </Panel>
   </div>

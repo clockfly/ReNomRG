@@ -16,6 +16,21 @@ export default {
       })
   },
 
+  loadModel (context, payload) {
+    const url = '/api/renom_rg/models/' + payload.model_id
+    return axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          return
+        }
+
+        context.commit('setSelectedModel', {
+          'model': response.data.model
+        })
+      })
+  },
+
   async loadModels (context, payload) {
     const url = '/api/renom_rg/models'
     return axios.get(url)
@@ -171,6 +186,20 @@ export default {
         if (response.data.error_msg) {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
         }
+      })
+  },
+
+  loadSelectedDataset (context, payload) {
+    const url = '/api/renom_rg/datasets/' + payload.dataset_id
+    axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          return
+        }
+        context.commit('setSelectedDataset', {
+          'dataset': response.data.dataset
+        })
       })
   }
 

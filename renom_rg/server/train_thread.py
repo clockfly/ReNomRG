@@ -50,6 +50,8 @@ class TrainThread(object):
         self.best_loss = None
         self.train_loss_list = []
         self.valid_loss_list = []
+        self.valid_predicted = []
+        self.valid_true = []
 
         # Error message caused in thread.
         self.error_msg = None
@@ -100,7 +102,8 @@ class TrainThread(object):
             X_train = X[self.train_index]
             X_valid = X[self.valid_index]
             y_train = y[self.train_index]
-            y_test = y[self.valid_index]
+            y_valid = y[self.valid_index]
+            self.valid_true = y_valid
             # Algorithm and model preparation.
             # Pretrained weights are must be prepared.
             # This have to be done in thread.
@@ -152,9 +155,12 @@ class TrainThread(object):
                 self.model.set_models(inference=True)
                 N = X_valid.shape[0]
 
-                pred = self.model(X_valid.reshape(-1, 1, X_valid.shape[1], 1))
-                valid_loss = float(rm.mse(pred, y_test))
+                self.valid_predicted = self.model(X_valid.reshape(-1, 1, X_valid.shape[1], 1))
+                valid_loss = float(rm.mse(self.valid_predicted, y_valid))
                 self.valid_loss_list.append(valid_loss)
+                storage.update_validation_result(self.model_id, self.train_loss_list,
+                                                 self.valid_loss_list, self.valid_predicted.reshape(-1,).tolist(),
+                                                 self.valid_true.reshape(-1,).tolist())
                 print("epoch: {}, valid_loss: {}".format(e, valid_loss))
                 # calc evaluation
                 if self.best_loss is None or self.best_loss > valid_loss:
@@ -162,8 +168,8 @@ class TrainThread(object):
 
                     self.best_loss = valid_loss
                     rmse = float(np.sqrt(valid_loss))
-                    max_abs_error = float(np.max(np.abs(y_test - pred)))
-                    r2 = float(r2_score(y_test, pred))
+                    max_abs_error = float(np.max(np.abs(y_valid - self.valid_predicted)))
+                    r2 = float(r2_score(y_valid, self.valid_predicted))
                     storage.update_best_epoch(self.model_id, e, valid_loss,
                                               rmse, max_abs_error, r2, filename)
 

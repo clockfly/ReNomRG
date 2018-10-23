@@ -3,9 +3,6 @@
     <Panel
       :banner_text="'Model Detail'">
       <div slot="pannel_content">
-        <LabelValueText
-          :labeltext="'Model ID:'"
-          :valuetext="$store.state.selected_model_id"></LabelValueText>
         <LabelValueText v-for="(item, index) in $store.state.selected_model"
           :key="index"
           :labeltext="index+':'"

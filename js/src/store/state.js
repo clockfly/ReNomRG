@@ -40,6 +40,12 @@ export default {
   selected_model: undefined,
 
   /**
+  * learning curve
+  */
+  valid_loss_list: [],
+  train_loss_list: [],
+
+  /**
   * prediction sample
   */
   selected_y_valid: [],
@@ -67,6 +73,11 @@ export default {
   target_train: [],
   target_valid: [],
   train_index: [],
-  valid_index: []
+  valid_index: [],
 
+  /**
+  * dataset page
+  */
+  selected_dataset_id: undefined,
+  selected_dataset: undefined
 }
