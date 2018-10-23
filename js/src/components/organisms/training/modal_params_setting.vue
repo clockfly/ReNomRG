@@ -3,8 +3,8 @@
     <SelectBoxWithLabel
       :labeltext="'dataset id:'"
       :options="$store.state.dataset_name_list"
-      :value="dataset_id"
-      @input="dataset_id = $event"></SelectBoxWithLabel>
+      :value="dataset_index"
+      @input="dataset_index = $event"></SelectBoxWithLabel>
 
     <SelectBoxWithLabel
       :labeltext="'algorithm:'"
@@ -46,7 +46,7 @@ export default {
   },
   data: function () {
     return {
-      'dataset_id': 0,
+      'dataset_index': 0,
       'algorithm': 0,
       'algorithm_params': {
         'num_neighbors': 5
@@ -58,7 +58,7 @@ export default {
   methods: {
     params: function () {
       return {
-        'dataset_id': this.dataset_id,
+        'dataset_index': this.dataset_index,
         'algorithm': this.algorithm,
         'algorithm_params': this.algorithm_params,
         'batch_size': this.batch_size,

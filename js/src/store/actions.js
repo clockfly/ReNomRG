@@ -48,7 +48,7 @@ export default {
 
   async createModel (context, payload) {
     let fd = new FormData()
-    fd.append('dataset_id', payload.dataset_id)
+    fd.append('dataset_id', context.state.dataset_list[payload.dataset_index]['dataset_id'])
     fd.append('algorithm', payload.algorithm)
     fd.append('algorithm_params', JSON.stringify(payload.algorithm_params))
     fd.append('batch_size', payload.batch_size)
