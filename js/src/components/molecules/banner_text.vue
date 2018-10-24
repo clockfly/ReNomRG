@@ -18,17 +18,9 @@ export default {
     PlainText
   },
   props: {
-    text: {
-      type: String
-    },
-    textcolor: {
-      type: String,
-      default: WHITE
-    },
-    bgcolor: {
-      type: String,
-      default: DARK_BLUE
-    }
+    text: {},
+    textcolor: { type: String, default: WHITE },
+    bgcolor: { type: String, default: DARK_BLUE }
   }
 }
 </script>

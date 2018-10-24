@@ -12,17 +12,9 @@ export default {
   name: 'InputText',
   props: {
     value: {},
-    placeholder: {
-      type: String
-    },
-    w: {
-      type: String,
-      default: INPUT_WIDTH
-    },
-    h: {
-      type: String,
-      default: INPUT_HEIGHT
-    }
+    placeholder: { type: String },
+    w: { type: String, default: INPUT_WIDTH },
+    h: { type: String, default: INPUT_HEIGHT }
   }
 }
 </script>

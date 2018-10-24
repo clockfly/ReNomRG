@@ -20,13 +20,8 @@ export default {
     PlainText
   },
   props: {
-    text: {
-      type: String
-    },
-    textcolor: {
-      type: String,
-      default: BLACK
-    }
+    text: {},
+    textcolor: { type: String, default: BLACK }
   }
 }
 </script>

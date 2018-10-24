@@ -17,26 +17,11 @@ import { BLUE, WHITE, BUTTON_WIDTH, BUTTON_HEIGHT } from '@/const'
 export default {
   name: 'Button',
   props: {
-    text: {
-      type: String,
-      required: true
-    },
-    w: {
-      type: String,
-      default: BUTTON_WIDTH
-    },
-    h: {
-      type: String,
-      default: BUTTON_HEIGHT
-    },
-    backgroundcolor: {
-      type: String,
-      default: BLUE
-    },
-    textcolor: {
-      type: String,
-      default: WHITE
-    }
+    text: { type: String, required: true },
+    w: { type: String, default: BUTTON_WIDTH },
+    h: { type: String, default: BUTTON_HEIGHT },
+    backgroundcolor: { type: String, default: BLUE },
+    textcolor: { type: String, default: WHITE }
   }
 }
 </script>

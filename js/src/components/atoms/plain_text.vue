@@ -11,12 +11,8 @@ import { BLACK } from '@/const'
 export default {
   name: 'PlainText',
   props: {
-    text: {
-    },
-    textcolor: {
-      type: String,
-      default: BLACK
-    }
+    text: {},
+    textcolor: { type: String, default: BLACK }
   }
 }
 </script>

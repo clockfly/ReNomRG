@@ -18,9 +18,7 @@ export default {
     BannerText
   },
   props: {
-    banner_text: {
-      type: String
-    }
+    banner_text: {}
   }
 }
 </script>

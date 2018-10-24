@@ -9,14 +9,8 @@ import { BLACK } from '@/const'
 export default {
   name: 'FaIcon',
   props: {
-    cls: {
-      type: String,
-      required: true
-    },
-    textcolor: {
-      type: String,
-      default: BLACK
-    }
+    cls: { type: String, required: true },
+    textcolor: { type: String, default: BLACK }
   }
 }
 </script>

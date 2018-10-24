@@ -22,24 +22,11 @@ export default {
   },
   props: {
     value: {},
-    labeltext: {
-      type: String
-    },
-    labelcolor: {
-      type: String,
-      default: GRAY
-    },
-    placeholder: {
-      type: String
-    },
-    w: {
-      type: String,
-      default: LABEL_WIDTH
-    },
-    h: {
-      type: String,
-      default: LABEL_HEIGHT
-    }
+    labeltext: { type: String },
+    labelcolor: { type: String, default: GRAY },
+    placeholder: { type: String },
+    w: { type: String, default: LABEL_WIDTH },
+    h: { type: String, default: LABEL_HEIGHT }
   }
 }
 </script>

@@ -20,19 +20,10 @@ export default {
     PlainText
   },
   props: {
-    labeltext: {
-      type: String
-    },
-    valuetext: {
-    },
-    labelcolor: {
-      type: String,
-      default: GRAY
-    },
-    valuecolor: {
-      type: String,
-      default: BLACK
-    }
+    labeltext: { type: String },
+    valuetext: {},
+    labelcolor: { type: String, default: GRAY },
+    valuecolor: { type: String, default: BLACK }
   }
 }
 </script>

@@ -15,17 +15,9 @@ export default {
   name: 'SelectBox',
   props: {
     value: {},
-    options: {
-      type: Array
-    },
-    w: {
-      type: String,
-      default: INPUT_WIDTH
-    },
-    h: {
-      type: String,
-      default: INPUT_HEIGHT
-    }
+    options: { type: Array },
+    w: { type: String, default: INPUT_WIDTH },
+    h: { type: String, default: INPUT_HEIGHT }
   }
 }
 </script>
