@@ -3,12 +3,12 @@
     <Panel
       :banner_text="'Prediction Sample'">
       <div slot="pannel_content">
-        <ScatterPlot
+        <ChartScatter
           :w="500"
           :h="500"
           :x_values="$store.state.selected_y_valid"
           :y_values="$store.state.selected_y_pred"
-          :r="0.1"></ScatterPlot>
+          :r="5"></ChartScatter>
       </div>
     </Panel>
   </div>
@@ -16,13 +16,13 @@
 
 <script>
 import Panel from '@/components/organisms/panel'
-import ScatterPlot from '@/components/organisms/scatter_plot'
+import ChartScatter from '@/components/organisms/chart_scatter'
 
 export default {
   name: 'PreictionResult',
   components: {
     Panel,
-    ScatterPlot
+    ChartScatter
   }
 }
 </script>

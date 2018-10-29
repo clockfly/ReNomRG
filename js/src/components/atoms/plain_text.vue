@@ -1,18 +1,28 @@
 <template>
-  <div class="plain_text"
-    v-bind:style="{ 'color': textcolor }">
+  <div class="plain-text"
+    v-bind:style="{
+      'width': w,
+      'height': h,
+      'color': textcolor,
+      'font-size': fontsize,
+      'font-weight': fontweight,
+      'line-height': h }">
     {{text}}
   </div>
 </template>
 
 <script>
-import { BLACK } from '@/const'
+import { BLACK, TEXT_FONT_SIZE } from '@/const'
 
 export default {
   name: 'PlainText',
   props: {
     text: {},
-    textcolor: { type: String, default: BLACK }
+    w: { type: String },
+    h: { type: String },
+    textcolor: { type: String, default: BLACK },
+    fontsize: { type: String, default: TEXT_FONT_SIZE },
+    fontweight: { type: String, default: 'normal' }
   }
 }
 </script>

@@ -4,7 +4,7 @@
       :banner_text="'Dashboard'">
       <div slot="pannel_content">
         <DashboardRatioBar></DashboardRatioBar>
-        <DashboardRunning></DashboardRunning>
+        <!-- <DashboardRunning></DashboardRunning> -->
       </div>
     </Panel>
   </div>

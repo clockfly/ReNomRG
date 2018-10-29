@@ -12,14 +12,19 @@ export const BAR_COLORS = {
   'Reserved': '#cccccc'
 }
 
-export const TEXT_WIDTH = '80px'
+export const TEXT_WIDTH = '100px'
 export const TEXT_HEIGHT = '40px'
+export const TEXT_FONT_SIZE = '1rem'
 
 export const INPUT_WIDTH = '80px'
-export const INPUT_HEIGHT = '40px'
+export const INPUT_HEIGHT = '24px'
+export const INPUT_FONT_SIZE = '0.5rem'
 
 export const LABEL_WIDTH = '80px'
 export const LABEL_HEIGHT = '40px'
 
 export const BUTTON_WIDTH = '80px'
 export const BUTTON_HEIGHT = '40px'
+export const BUTTON_FONT_SIZE = '1rem'
+
+export const HEADER_HEIGHT = '40px'

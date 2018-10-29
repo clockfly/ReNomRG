@@ -1,9 +1,10 @@
 <template>
   <div class="panel">
     <BannerText
-      :text="banner_text"></BannerText>
+      :text="banner_text"
+      :h="'32px'"></BannerText>
 
-    <div class="panel-content">
+    <div class="panel-content margin-top-8">
       <slot name="pannel_content"></slot>
     </div>
   </div>
@@ -28,7 +29,7 @@ export default {
   padding: 8px;
 
   .panel-content {
-    margin-top: 8px;
+    padding: 16px;
     background-color: $white;
   }
 }

@@ -205,3 +205,25 @@ $content-right-width: 40%;
   left: 50%;
   @include prefix("transform", "translateY(-50%) translateX(-50%)");
 }
+
+/**
+* create margin loop
+*/
+$sides: (top, bottom, left, right);
+@for $i from 0 through 10 {
+  .margin-#{$i * 4} {
+    margin: #{$i * 4}px;
+  }
+  .padding-#{$i * 4} {
+    padding: #{$i * 4}px;
+  }
+
+  @each $side in $sides {
+    .margin-#{$side}-#{$i * 4} {
+      margin-#{$side}: #{$i * 4}px;
+    }
+    .padding-#{$side}-#{$i * 4} {
+      padding-#{$side}: #{$i * 4}px;
+    }
+  }
+}

@@ -1,15 +1,13 @@
 <template>
-  <div class="clickable_text"
-    @click="$emit('click')">
-    <slot name="icon"></slot>
-    <PlainText
-      :text="text"
+  <div class="legend">
+    <div class="legend-color margin-right-4"
+      v-bind:style="{ 'background': legendcolor }"></div>
+    <PlainText :text="text"
       :w="w"
       :h="h"
       :textcolor="textcolor"
       :fontsize="fontsize"
-      :fontweight="fontweight">
-    </PlainText>
+      :fontweight="fontweight"></PlainText>
   </div>
 </template>
 
@@ -18,11 +16,13 @@ import { BLACK, TEXT_FONT_SIZE } from '@/const'
 import PlainText from '@/components/atoms/plain_text'
 
 export default {
-  name: 'ClickableText',
+  name: 'Legend',
   components: {
     PlainText
   },
   props: {
+    // legend color
+    legendcolor: { type: String, default: BLACK },
     // text
     text: {},
     w: { type: String },
@@ -35,7 +35,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.clickable_text {
+.legend {
   @include prefix("display", "flex");
+  justify-content: center;
+  align-items: center;
+
+  .legend-color {
+    width: 8px;
+    height: 8px;
+  }
 }
 </style>

@@ -2,11 +2,19 @@
   <div class="label-value-text">
     <PlainText
       :text="labeltext"
-      :textcolor="labelcolor"></PlainText>
+      :w="labelwidth"
+      :h="h"
+      :textcolor="labelcolor"
+      :fontsize="labelfontsize"
+      :fontweight="labelfontweight"></PlainText>
 
     <PlainText
       :text="valuetext"
-      :textcolor="valuecolor"></PlainText>
+      :w="valuewidth"
+      :h="h"
+      :textcolor="valuecolor"
+      :fontsize="valuefontsize"
+      :fontweight="valuefontweight"></PlainText>
   </div>
 </template>
 
@@ -20,10 +28,19 @@ export default {
     PlainText
   },
   props: {
+    h: {},
+    // label
     labeltext: { type: String },
-    valuetext: {},
+    labelwidth: {},
     labelcolor: { type: String, default: GRAY },
-    valuecolor: { type: String, default: BLACK }
+    labelfontsize: {},
+    labelfontweight: {},
+    // value
+    valuetext: {},
+    valuewidth: {},
+    valuecolor: { type: String, default: BLACK },
+    valuefontsize: {},
+    valuefontweight: {}
   }
 }
 </script>

@@ -1,13 +1,21 @@
 <template lang="html">
 <footer>
-  <img :src="url">
+  <img class="margin-16" :src="url">
   <PlainText
+    class="margin-left-16"
     :text="'ReNom RG '+version"
-    :textcolor="white">
+    :h="'24px'"
+    :textcolor="white"
+    :fontsize="'0.8rem'"
+    :fontweight="'light'">
   </PlainText>
   <PlainText
+    class="margin-left-16"
     :text="'&copy; 2018 GRID INC. ALL rights reserved.'"
-    :textcolor="white">
+    :h="'24px'"
+    :textcolor="white"
+    :fontsize="'0.8rem'"
+    :fontweight="'light'">
   </PlainText>
 </footer>
 </template>

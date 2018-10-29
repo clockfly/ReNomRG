@@ -3,12 +3,12 @@
     <Panel
       :banner_text="'Model Map'">
       <div slot="pannel_content">
-        <ScatterPlot
+        <ChartScatter
           :w="300"
           :h="300"
           :x_values="mapValues.x_values"
           :y_values="mapValues.y_values"
-          :r="0.1"></ScatterPlot>
+          :r="5"></ChartScatter>
       </div>
     </Panel>
   </div>
@@ -16,13 +16,13 @@
 
 <script>
 import Panel from '@/components/organisms/panel'
-import ScatterPlot from '@/components/organisms/scatter_plot'
+import ChartScatter from '@/components/organisms/chart_scatter'
 
 export default {
   name: 'ModelMap',
   components: {
     Panel,
-    ScatterPlot
+    ChartScatter
   },
   computed: {
     mapValues: function () {

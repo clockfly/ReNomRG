@@ -3,8 +3,10 @@
     <Panel
       :banner_text="'Learning Curve'">
       <div slot="pannel_content">
-        {{$store.state.valid_loss_list}}
-        {{$store.state.train_loss_list}}
+        <ChartLine
+          :w="300" :h="300"
+          :line_values="[$store.state.valid_loss_list,$store.state.train_loss_list]">
+        </ChartLine>
       </div>
     </Panel>
   </div>
@@ -12,10 +14,13 @@
 
 <script>
 import Panel from '@/components/organisms/panel'
+import ChartLine from '@/components/organisms/chart_line'
+
 export default {
   name: 'LerningCurve',
   components: {
-    Panel
+    Panel,
+    ChartLine
   }
 }
 </script>

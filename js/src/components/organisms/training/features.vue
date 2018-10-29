@@ -4,9 +4,11 @@
       :banner_text="'Features'">
       <div slot="pannel_content">
         <div class="feature-list">
-          <div v-for="(l,index) in $store.state.labels">
+          <div class="feature-item margin-top-8 padding-left-4"
+            v-for="(l,index) in $store.state.labels">
             <PlainText
-              :text="l"></PlainText>
+              :text="l"
+              :w="'120px'"></PlainText>
           </div>
         </div>
       </div>
@@ -31,6 +33,11 @@ export default {
 #features {
   .feature-list {
     @include prefix('display', 'flex');
+    flex-wrap: wrap;
+
+    .feature-item {
+      border-left: 2px solid "#ccc";
+    }
   }
 }
 </style>

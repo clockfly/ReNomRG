@@ -1,15 +1,16 @@
 <template>
-  <div class="banner-text"
-    v-bind:style="{ 'background': bgcolor,
-                    'color': textcolor }">
+  <div class="banner-text padding-left-16"
+    v-bind:style="{ 'background': bgcolor }">
     <PlainText
       :text="text"
+      :w="w"
+      :h="h"
       :textcolor="textcolor"></PlainText>
   </div>
 </template>
 
 <script>
-import { WHITE, DARK_BLUE } from '@/const'
+import { WHITE, DARK_BLUE, TEXT_FONT_SIZE } from '@/const'
 import PlainText from '@/components/atoms/plain_text'
 
 export default {
@@ -18,9 +19,15 @@ export default {
     PlainText
   },
   props: {
+    // banner
+    bgcolor: { type: String, default: DARK_BLUE },
+    // text
     text: {},
+    w: { type: String },
+    h: { type: String },
     textcolor: { type: String, default: WHITE },
-    bgcolor: { type: String, default: DARK_BLUE }
+    fontsize: { type: String, default: TEXT_FONT_SIZE },
+    fontweight: { type: String, default: 'normal' }
   }
 }
 </script>

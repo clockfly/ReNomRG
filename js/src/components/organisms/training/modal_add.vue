@@ -2,7 +2,7 @@
   <div id="add-model-modal">
     <div class="modal-background" @click="hideModal"></div>
 
-    <div class="modal-content">
+    <div class="modal-content padding-16">
       <div class="modal-tab">
         <div @click="setTab('params')">params</div>
         <div @click="setTab('dataset')">dataset</div>

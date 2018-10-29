@@ -1,21 +1,25 @@
 <template>
-<header>
+<header class="padding-left-8">
   <ClickableText
+    :h="header_height"
     @click="toggleMenu">
     <FaIcon slot="icon"
+      :h="header_height"
       :textcolor="white"
-      :cls="'fa fa-bars'"></FaIcon>
+      :cls="'fa fa-bars margin-right-8'"></FaIcon>
   </ClickableText>
 
   <PlainText
     :text="'ReNom RG > '+$store.state.page_name"
-    :textcolor="white">
+    :h="header_height"
+    :textcolor="white"
+    :fontsize="'1.25rem'">
   </PlainText>
 </header>
 </template>
 
 <script>
-import { WHITE } from '@/const'
+import { WHITE, HEADER_HEIGHT } from '@/const'
 import FaIcon from '@/components/atoms/fa_icon'
 import PlainText from '@/components/atoms/plain_text'
 import ClickableText from '@/components/molecules/clickable_text.vue'
@@ -29,7 +33,8 @@ export default {
   },
   data: function () {
     return {
-      'white': WHITE
+      'white': WHITE,
+      'header_height': HEADER_HEIGHT
     }
   },
   methods: {

@@ -2,15 +2,29 @@
   <div class="input-text-with-label">
     <PlainText
       :text="labeltext"
-      :textcolor="labelcolor"></PlainText>
-    <InputText :value="value"
+      :w="labelwidth"
+      :h="h"
+      :textcolor="labelcolor"
+      :fontsize="labelfontsize"
+      :fontweight="labelfontweight"></PlainText>
+    <InputText
+      :value="value"
       :placeholder="placeholder"
+      :w="inputwidth"
+      :h="h"
+      :padding="inputpadding"
+      :borderwidth="inputborderwidth"
+      :bordertype="inputbordertype"
+      :bordercolor="inputbordercolor"
+      :backgroundcolor="inputbackgroundcolor"
+      :textcolor="inputtextcolor"
+      :fontsize="inputfontsize"
       @input="$emit('input', $event)"></InputText>
   </div>
 </template>
 
 <script>
-import { GRAY, LABEL_WIDTH, LABEL_HEIGHT } from '@/const'
+import { GRAY, WHITE, BLACK, INPUT_FONT_SIZE, LABEL_WIDTH, LABEL_HEIGHT } from '@/const'
 import InputText from '@/components/atoms/input_text'
 import PlainText from '@/components/atoms/plain_text'
 
@@ -21,12 +35,24 @@ export default {
     PlainText
   },
   props: {
-    value: {},
+    h: { type: String, default: LABEL_HEIGHT },
+    // label
     labeltext: { type: String },
+    labelwidth: { type: String, default: LABEL_WIDTH },
     labelcolor: { type: String, default: GRAY },
+    labelfontsize: {},
+    labelfontweight: {},
+    // input
+    value: {},
     placeholder: { type: String },
-    w: { type: String, default: LABEL_WIDTH },
-    h: { type: String, default: LABEL_HEIGHT }
+    inputwidth: {},
+    inputpadding: {},
+    inputborderwidth: { type: String, default: '1px' },
+    inputbordertype: { type: String, default: 'solid' },
+    inputbordercolor: { type: String, default: GRAY },
+    inputbackgroundcolor: { type: String, default: WHITE },
+    inputtextcolor: { type: String, default: BLACK },
+    inputfontsize: { type: String, default: INPUT_FONT_SIZE }
   }
 }
 </script>

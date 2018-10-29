@@ -2,15 +2,15 @@
   <div class="dashboard-ratio-bar">
     <LabelValueText
       :labeltext="'Total Models:'"
+      :h="'40px'"
+      :labelwidth="'120px'"
       :valuetext="model_list.length"></LabelValueText>
 
     <div class="bar-legends">
-      <div class="legend-item"
-        v-for="(color, index) in bar_colors">
-        <div class="legend-color-box"
-          v-bind:style="{ 'background': color }"></div>
-        <PlainText :text="index"></PlainText>
-      </div>
+      <Legend
+        class="margin-right-8"
+        v-for="(color, index) in bar_colors"
+        :key="index" :text="index" :legendcolor="color"></Legend>
     </div>
 
     <div class="horizontal-bar">
@@ -27,12 +27,14 @@ import { mapState } from 'vuex'
 import { BAR_COLORS } from '@/const'
 import PlainText from '@/components/atoms/plain_text'
 import LabelValueText from '@/components/molecules/label_value_text'
+import Legend from '@/components/molecules/legend'
 
 export default {
   name: 'DashboardRatioBar',
   components: {
     PlainText,
-    LabelValueText
+    LabelValueText,
+    Legend
   },
   data: function () {
     return {
@@ -49,13 +51,6 @@ export default {
 
   .bar-legends {
     @include prefix("display", "flex");
-    .legend-item {
-      @include prefix("display", "flex");
-      .legend-color-box {
-        width: 8px;
-        height: 8px;
-      }
-    }
   }
 
   .horizontal-bar {
