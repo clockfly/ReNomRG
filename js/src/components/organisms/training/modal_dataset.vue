@@ -122,7 +122,6 @@ export default {
       const train_min = min(target_train)
       const valid_max = max(target_valid)
       const valid_min = min(target_valid)
-      const threshold = (train_max - train_min) / 10
       const width = this.w
       const height = this.h
 
@@ -141,10 +140,9 @@ export default {
       let histogram = d3.histogram()
         .value(function (d) { return d })
         .domain(xScale.domain())
-        .thresholds(threshold)
+        .thresholds(xScale.ticks(10))
       const train_bins = histogram(target_train)
       const valid_bins = histogram(target_valid)
-      console.log(valid_bins)
 
       svg.selectAll('.train_bars')
         .data(train_bins)
