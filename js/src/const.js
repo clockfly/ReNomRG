@@ -12,6 +12,11 @@ export const BAR_COLORS = {
   'Reserved': '#cccccc'
 }
 
+export const CURVE_COLORS = {
+  'train': '#0762ad',
+  'validation': '#ef8200'
+}
+
 export const TEXT_WIDTH = '100px'
 export const TEXT_HEIGHT = '40px'
 export const TEXT_FONT_SIZE = '1rem'

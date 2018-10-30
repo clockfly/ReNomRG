@@ -106,8 +106,6 @@ export default {
 
         context.commit('setSelectedModelId', payload)
         context.commit('setSelectedModel', {'model': response.data.model})
-        context.commit('setSelectedYValid', {'selected_y_valid': response.data.model.selected_y_valid})
-        context.commit('setSelectedYPred', {'selected_y_pred': response.data.model.selected_y_pred})
       })
   },
 

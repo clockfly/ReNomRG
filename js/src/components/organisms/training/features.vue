@@ -6,9 +6,7 @@
         <div class="feature-list">
           <div class="feature-item margin-top-8 padding-left-4"
             v-for="(l,index) in $store.state.labels">
-            <PlainText
-              :text="l"
-              :w="'120px'"></PlainText>
+            <PlainText :text="l" :w="'120px'"></PlainText>
           </div>
         </div>
       </div>
