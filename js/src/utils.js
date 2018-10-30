@@ -1,9 +1,9 @@
-export function min (array) {
-  return Math.min.apply(null, array)
-}
-
 export function max (array) {
   return Math.max.apply(null, array)
+}
+
+export function min (array) {
+  return Math.min.apply(null, array)
 }
 
 export function round (v, round_off) {
