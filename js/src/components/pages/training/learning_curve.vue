@@ -11,19 +11,13 @@
 
 <script>
 import * as d3 from 'd3'
+const train_color = '#0762ad'
+const valid_color = '#ef8200'
+const width = 300
+const height = 300
 
 export default {
   name: 'LerningCurve',
-  data: function () {
-    return {
-      'w': 300,
-      'h': 300,
-      'curve_colors': {
-        'train': '#0762ad',
-        'validation': '#ef8200'
-      }
-    }
-  },
   computed: {
     trainList: function () {
       return this.$store.state.train_loss_list
@@ -48,32 +42,32 @@ export default {
       this.removeData()
       const svg = d3.select('#curve-canvas')
         .append('svg')
-        .attr('width', this.w)
-        .attr('height', this.h)
+        .attr('width', width)
+        .attr('height', height)
 
       const xScale = d3.scaleLinear()
         .domain([0, this.trainList.length])
-        .range([0, this.w])
+        .range([0, width])
       const yScale = d3.scaleLinear()
         .domain([0, d3.max(this.trainList, function (d) { return d })])
-        .range([this.h, 0])
+        .range([height, 0])
 
       // get axes
       const axisx = d3.axisBottom(xScale)
-        .tickSizeInner(-this.h)
+        .tickSizeInner(-height)
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
       const axisy = d3.axisLeft(yScale)
         .ticks(10)
-        .tickSizeInner(-this.w)
+        .tickSizeInner(-width)
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
 
       // draw x axis
       let gX = svg.append('g')
-        .attr('transform', 'translate(' + 0 + ',' + this.h + ')')
+        .attr('transform', 'translate(' + 0 + ',' + height + ')')
         .call(axisx)
       // draw y axis
       let gY = svg.append('g')
@@ -87,7 +81,7 @@ export default {
       LineLayer.append('path')
         .datum(this.trainList)
         .attr('fill', 'none')
-        .attr('stroke', this.curve_colors.train)
+        .attr('stroke', train_color)
         .attr('stroke-width', 1.5)
         .attr('d', d3.line()
           .x(function (d, index) { return xScale(index) })
@@ -99,7 +93,7 @@ export default {
       LineLayer.append('path')
         .datum(this.validList)
         .attr('fill', 'none')
-        .attr('stroke', this.curve_colors.validation)
+        .attr('stroke', valid_color)
         .attr('stroke-width', 1.5)
         .attr('d', d3.line()
           .x(function (d, index) { return xScale(index) })
@@ -107,23 +101,24 @@ export default {
           .curve(d3.curveLinear)
         )
 
+      const axis_color = d3.rgb(128, 128, 128, 0.5)
       function stylingAxes () {
         gX.selectAll('path')
-          .style('stroke', d3.rgb(128, 128, 128, 0.5))
+          .style('stroke', axis_color)
         gX.selectAll('line')
           .style('stroke', d3.rgb(0, 0, 0, 0.2))
           .style('stroke-dasharray', '2,2')
         gX.selectAll('.tick').selectAll('text')
-          .style('fill', d3.rgb(0, 0, 0, 0.5))
+          .style('fill', axis_color)
           .style('font-size', '0.60em')
 
         gY.selectAll('path')
-          .style('stroke', d3.rgb(128, 128, 128, 0.5))
+          .style('stroke', axis_color)
         gY.selectAll('line')
           .style('stroke', d3.rgb(0, 0, 0, 0.2))
           .style('stroke-dasharray', '2,2')
         gY.selectAll('.tick').selectAll('text')
-          .style('fill', d3.rgb(0, 0, 0, 0.5))
+          .style('fill', axis_color)
           .style('font-size', '0.60em')
       }
     },

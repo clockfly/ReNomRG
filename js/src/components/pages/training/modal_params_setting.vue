@@ -38,7 +38,7 @@
 
     <div class="button-area">
       <button @click="runModel">Run</button>
-      <button class="button-cancel" @click="$emit('cancel')">Cancel</button>
+      <button class="button-cancel" @click="hideModal">Cancel</button>
     </div>
   </div>
 </template>
@@ -71,6 +71,9 @@ export default {
     runModel: function () {
       this.$store.dispatch('addModel', this.params())
       this.hideModal()
+    },
+    hideModal: function () {
+      this.$store.commit('setAddModelModalShowFlag', {'flag': false})
     }
   }
 }

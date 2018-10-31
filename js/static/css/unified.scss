@@ -18,11 +18,6 @@ $modal-content-width: 70%;
 $modal-content-height: 70%;
 
 /**
-* panel
-*/
-$sub-title-height: 32px;
-
-/**
 * header
 */
 $header-height: 40px;
@@ -69,6 +64,9 @@ $content-right-width: 40%;
   color: $black;
 }
 
+/**
+* button base css
+*/
 button {
   height: 40px;
   width: 80px;
@@ -79,6 +77,9 @@ button {
   color: $white;
 }
 
+/**
+* cancel button base css
+*/
 .button-cancel {
   border: 1px solid $gray;
   background-color: $white;
@@ -86,17 +87,21 @@ button {
   color: $gray;
 }
 
+/**
+* panel content base css
+*/
+$panel-title-height: 32px;
 .panel {
   width: 100%;
   padding: 8px;
 
   .panel-title {
     width: 100%;
-    height: $sub-title-height;
+    height: $panel-title-height;
     padding-left: 16px;
     background-color: $dark-blue;
     color: $white;
-    line-height: $sub-title-height;
+    line-height: $panel-title-height;
   }
 
   .panel-content {
@@ -107,6 +112,31 @@ button {
   }
 }
 
+/**
+* algorithm background color class
+*/
+.c-gcnn {
+  background: #903e84;
+}
+.kernel-gcnn {
+  background: #423885;
+}
+.dbscan-gcnn {
+  background: #136eab;
+}
+.running {
+  background: #0099ce;
+}
+.reserved {
+  background: #cccccc;
+}
+
+.train {
+  background: #0762ad;
+}
+.validation {
+  background: #ef8200;
+}
 
 /**
 * mixins

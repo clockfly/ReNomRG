@@ -14,16 +14,17 @@
           </div>
 
           <div class="bar-legends">
-            <div class="legend" v-for="(color, index) in bar_colors">
-              <div class="legend-color" v-bind:style="{ 'background': color }"></div>
-              <div class="legend-name">{{index}}</div>
+            <div class="legend" v-for="(a, index) in algorithms">
+              <div :class="'legend-color '+a.toLowerCase()"></div>
+              <div class="legend-name">{{a}}</div>
             </div>
           </div>
 
           <div class="horizontal-bar">
             <div class="bar-item"
-              v-for="(model_count, index) in model_counts_per_algorith"
-              v-bind:style="{ 'background': bar_colors[index], 'flex-grow': model_count }">
+              v-for="(a, index) in algorithms"
+              :class="a.toLowerCase()"
+              v-bind:style="{ 'flex-grow': model_counts_per_algorith[a] }">
             </div>
           </div>
         </div>
@@ -40,18 +41,7 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Dashboard',
-  data: function () {
-    return {
-      'bar_colors': {
-        'C-GCNN': '#903e84',
-        'Kernel-GCNN': '#423885',
-        'DBSCAN-GCNN': '#136eab',
-        'Running': '#0099ce',
-        'Reserved': '#cccccc'
-      }
-    }
-  },
-  computed: mapState(['model_list', 'model_counts_per_algorith'])
+  computed: mapState(['algorithms', 'model_list', 'model_counts_per_algorith'])
 }
 </script>
 

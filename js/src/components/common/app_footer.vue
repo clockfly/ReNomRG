@@ -1,21 +1,15 @@
 <template lang="html">
 <footer>
-  <img class="logo-img" :src="url">
+  <img class="logo-img" src="/static/img/renomlogo.png">
 
-  <div class="version">ReNom RG {{version}}</div>
-  <div class="copyright">&copy; 2018 GRID INC. ALL rights reserved.</div>
+  <div class="version">ReNom RG beta</div>
+  <div class="copyright">©︎2018 GRID INC. ALL rights reserved.</div>
 </footer>
 </template>
 
 <script>
 export default {
-  name: 'AppFooter',
-  data () {
-    return {
-      'version': 'beta',
-      'url': require('../../../static/img/renomlogo.png')
-    }
-  }
+  name: 'AppFooter'
 }
 </script>
 

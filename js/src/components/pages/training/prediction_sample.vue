@@ -15,15 +15,11 @@
 
 <script>
 import * as d3 from 'd3'
+const width = 300
+const height = 300
 
 export default {
   name: 'PreictionResult',
-  data: function () {
-    return {
-      'w': 300,
-      'h': 300
-    }
-  },
   computed: {
     selectedModel: function () {
       return this.$store.state.selected_model
@@ -52,32 +48,32 @@ export default {
 
       const svg = d3.select('#selected-plot')
         .append('svg')
-        .attr('width', this.w)
-        .attr('height', this.h)
+        .attr('width', width)
+        .attr('height', height)
 
       const xScale = d3.scaleLinear()
         .domain([d3.min(y_valid, function (d) { return d }), d3.max(y_valid, function (d) { return d })])
-        .range([0, this.w])
+        .range([0, width])
       const yScale = d3.scaleLinear()
         .domain([d3.min(y_pred, function (d) { return d }), d3.max(y_pred, function (d) { return d })])
-        .range([this.h, 0])
+        .range([height, 0])
 
       // get axes
       const axisx = d3.axisBottom(xScale)
-        .tickSizeInner(-this.h)
+        .tickSizeInner(-height)
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
       const axisy = d3.axisLeft(yScale)
         .ticks(10)
-        .tickSizeInner(-this.w)
+        .tickSizeInner(-width)
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
 
       // draw x axis
       let gX = svg.append('g')
-        .attr('transform', 'translate(' + 0 + ',' + this.h + ')')
+        .attr('transform', 'translate(' + 0 + ',' + height + ')')
         .call(axisx)
       // draw y axis
       let gY = svg.append('g')
@@ -100,8 +96,8 @@ export default {
       svg.append('line')
         .attr('x1', d3.min(y_valid, function (d) { return xScale(d) }))
         .attr('x2', d3.max(y_valid, function (d) { return xScale(d) }))
-        .attr('y1', this.h - d3.min(y_valid, function (d) { return xScale(d) }))
-        .attr('y2', this.h - d3.max(y_valid, function (d) { return xScale(d) }))
+        .attr('y1', height - d3.min(y_valid, function (d) { return xScale(d) }))
+        .attr('y2', height - d3.max(y_valid, function (d) { return xScale(d) }))
         .attr('stroke-width', 1)
         .attr('stroke', 'gray')
 

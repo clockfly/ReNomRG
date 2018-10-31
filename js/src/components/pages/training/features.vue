@@ -7,8 +7,7 @@
 
       <div class="panel-content">
         <div class="feature-list">
-          <div class="feature-item"
-            v-for="(l,index) in $store.state.labels">
+          <div class="feature-item" v-for="(l,index) in $store.state.labels">
             {{ l }}
           </div>
         </div>

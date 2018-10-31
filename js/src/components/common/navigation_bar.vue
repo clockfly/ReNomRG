@@ -12,12 +12,12 @@
       </div>
 
       <div class="menu-item" @click="goDataset()">
-        <i class="fa fa-home" aria-hidden="true"></i>
+        <i class="fa fa-home icon" aria-hidden="true"></i>
         <div class="menu-name">Dataset</div>
       </div>
 
       <div class="menu-item" @click="goPrediction()">
-        <i class="fa fa-home" aria-hidden="true"></i>
+        <i class="fa fa-home icon" aria-hidden="true"></i>
         <div class="menu-name">Prediction</div>
       </div>
     </div>
@@ -81,7 +81,9 @@ export default {
       height: $nav-item-height;
       line-height: $nav-item-height;
 
-      .icon, .manu-name {
+      .icon, .menu-name {
+        height: $nav-item-height;
+        line-height: $nav-item-height;
         color: $white;
       }
     }

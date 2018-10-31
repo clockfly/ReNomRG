@@ -7,8 +7,7 @@
         <div @click="setTab('params')">params</div>
         <div @click="setTab('dataset')">dataset</div>
       </div>
-      <ModalParamsSetting v-if="tab === 'params'"
-        @cancel="hideModal"></ModalParamsSetting>
+      <ModalParamsSetting v-if="tab === 'params'"></ModalParamsSetting>
       <ModalDataset v-if="tab === 'dataset'"
         @cancel="setTab('params')"></ModalDataset>
     </div>

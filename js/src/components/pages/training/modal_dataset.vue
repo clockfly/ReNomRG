@@ -41,10 +41,10 @@
           train: {{$store.state.train_index.length}}
           validation: {{$store.state.valid_index.length}}
           <div class="train-ratio-bar">
-            <div class="bar-item"
-              v-bind:style="{ 'background': curve_colors.train, 'flex-grow': $store.state.train_index.length }"></div>
-            <div class="bar-item"
-              v-bind:style="{ 'background': curve_colors.validation, 'flex-grow': $store.state.valid_index.length }"></div>
+            <div class="bar-item train"
+              v-bind:style="{ 'flex-grow': $store.state.train_index.length }"></div>
+            <div class="bar-item validation"
+              v-bind:style="{ 'flex-grow': $store.state.valid_index.length }"></div>
           </div>
         </div>
         <div id="train-test-histogram"></div>
@@ -52,7 +52,7 @@
       <div class="button-area">
         <button @click="saveDataset">Save</button>
         <button class="button-cancel"
-          @click="$emit('save', $emit('cancel'))">Cancel</button>
+          @click="$emit('cancel')">Cancel</button>
       </div>
     </div>
   </div>
@@ -61,6 +61,10 @@
 <script>
 import * as d3 from 'd3'
 import { max, min } from '@/utils'
+const train_color = '#0762ad'
+const valid_color = '#ef8200'
+const width = 300
+const height = 300
 
 export default {
   name: 'ModalDataset',
@@ -69,13 +73,7 @@ export default {
       'name': '',
       'description': '',
       'train_ratio': 0.8,
-      'target_column_id': 0,
-      'w': 300,
-      'h': 300,
-      'curve_colors': {
-        'train': '#0762ad',
-        'validation': '#ef8200'
-      }
+      'target_column_id': 0
     }
   },
   computed: {
@@ -107,8 +105,6 @@ export default {
       const train_min = min(target_train)
       const valid_max = max(target_valid)
       const valid_min = min(target_valid)
-      const width = this.w
-      const height = this.h
 
       const svg = d3.select('#train-test-histogram')
         .append('svg')
@@ -133,7 +129,7 @@ export default {
         .data(train_bins)
         .enter().append('rect')
         .attr('class', 'train_bars')
-        .attr('fill', this.curve_colors.train)
+        .attr('fill', train_color)
         .attr('opacity', 0.5)
         .attr('x', 1)
         .attr('transform', function (d) { return 'translate(' + xScale(d.x0) + ',' + yScale(height - d.length) + ')' })
@@ -144,7 +140,7 @@ export default {
         .data(valid_bins)
         .enter().append('rect')
         .attr('class', 'valid_bars')
-        .attr('fill', this.curve_colors.validation)
+        .attr('fill', valid_color)
         .attr('opacity', 0.5)
         .attr('x', 1)
         .attr('transform', function (d) { return 'translate(' + xScale(d.x0) + ',' + yScale(height - d.length) + ')' })

@@ -1,6 +1,7 @@
 export default {
   page_name: '',
   error_msg: undefined,
+  algorithms: ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN', 'Running', 'Reserved'],
 
   // show nav bar or not
   navigation_bar_shown_flag: false,

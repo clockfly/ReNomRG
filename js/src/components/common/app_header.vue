@@ -1,6 +1,6 @@
 <template>
 <header>
-  <div class="menu-button" @click="toggleMenu()">
+  <div class="menu-button" @click="toggleMenu">
     <i class="fa fa-bars icon" aria-hidden="true"></i>
   </div>
 
