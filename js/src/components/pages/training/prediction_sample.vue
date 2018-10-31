@@ -1,24 +1,23 @@
 <template>
   <div id="prediction-result">
-    <Panel
-      :banner_text="'Prediction Sample'">
-      <div class="plots-area" slot="pannel_content">
+    <div class="panel">
+      <div class="panel-title">
+        Prediction Sample
+      </div>
+
+      <div class="panel-content plots-area">
         <div id="deployed-plot" class="column"></div>
         <div id="selected-plot" class="column"></div>
       </div>
-    </Panel>
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3'
-import Panel from '@/components/organisms/panel'
 
 export default {
   name: 'PreictionResult',
-  components: {
-    Panel
-  },
   data: function () {
     return {
       'w': 300,
@@ -150,8 +149,6 @@ export default {
 
   .plots-area {
     @include prefix("display", "flex");
-    width: 100%;
-
     .column {
       width: 50%;
     }

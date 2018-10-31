@@ -1,27 +1,27 @@
 <template>
   <div id="learning-curve">
-    <Panel
-      :banner_text="'Learning Curve'">
-      <div id="curve-canvas" slot="pannel_content"></div>
-    </Panel>
+    <div class="panel">
+      <div class="panel-title">
+        Learning Curve
+      </div>
+      <div id="curve-canvas" class="panel-content"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3'
-import { CURVE_COLORS } from '@/const'
-import Panel from '@/components/organisms/panel'
 
 export default {
   name: 'LerningCurve',
-  components: {
-    Panel
-  },
   data: function () {
     return {
       'w': 300,
       'h': 300,
-      'curve_colors': CURVE_COLORS
+      'curve_colors': {
+        'train': '#0762ad',
+        'validation': '#ef8200'
+      }
     }
   },
   computed: {
@@ -87,7 +87,7 @@ export default {
       LineLayer.append('path')
         .datum(this.trainList)
         .attr('fill', 'none')
-        .attr('stroke', CURVE_COLORS.train)
+        .attr('stroke', this.curve_colors.train)
         .attr('stroke-width', 1.5)
         .attr('d', d3.line()
           .x(function (d, index) { return xScale(index) })
@@ -99,7 +99,7 @@ export default {
       LineLayer.append('path')
         .datum(this.validList)
         .attr('fill', 'none')
-        .attr('stroke', CURVE_COLORS.validation)
+        .attr('stroke', this.curve_colors.validation)
         .attr('stroke-width', 1.5)
         .attr('d', d3.line()
           .x(function (d, index) { return xScale(index) })

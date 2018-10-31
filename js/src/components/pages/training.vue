@@ -14,14 +14,14 @@
 
         <div class="content-columns">
           <div class="content-left">
-            <ModelParams></ModelParams>
+            <ModelDetail></ModelDetail>
           </div>
           <div class="content-right">
             <LearningCurve></LearningCurve>
           </div>
         </div>
 
-        <PredictionResult></PredictionResult>
+        <PredictionSample></PredictionSample>
         <Features></Features>
       </div>
 
@@ -35,14 +35,14 @@
 </template>
 
 <script>
-import Dashboard from '@/components/organisms/training/dashboard.vue'
-import Features from '@/components/organisms/training/features'
-import LearningCurve from '@/components/organisms/training/learning_curve.vue'
-import ModalAdd from '@/components/organisms/training/modal_add'
-import ModelList from '@/components/organisms/training/model_list'
-import ModelMap from '@/components/organisms/training/model_map.vue'
-import ModelParams from '@/components/organisms/training/model_params.vue'
-import PredictionResult from '@/components/organisms/training/prediction_result'
+import Dashboard from '@/components/pages/training/dashboard.vue'
+import Features from '@/components/pages/training/features'
+import LearningCurve from '@/components/pages/training/learning_curve.vue'
+import ModalAdd from '@/components/pages/training/modal_add'
+import ModelDetail from '@/components/pages/training/model_detail.vue'
+import ModelList from '@/components/pages/training/model_list'
+import ModelMap from '@/components/pages/training/model_map.vue'
+import PredictionSample from '@/components/pages/training/prediction_sample'
 
 export default {
   name: 'TrainingPage',
@@ -51,10 +51,10 @@ export default {
     Features,
     LearningCurve,
     ModalAdd,
+    ModelDetail,
     ModelList,
     ModelMap,
-    ModelParams,
-    PredictionResult
+    PredictionSample
   },
   created: function () {
     this.$store.dispatch('loadDatasets')
@@ -65,18 +65,18 @@ export default {
 
 <style lang="scss" scoped>
 #page {
-  width: $full-parent-width;
+  width: 100%;
 
   .training {
     @include prefix('display', 'flex');
-    width: $full-parent-width;
+    width: 100%;
 
     .content {
       width: $content-width;
 
       .content-columns {
         @include prefix('display', 'flex');
-        width: $full-parent-width;
+        width: 100%;
 
         .content-left {
           width: $content-left-width;

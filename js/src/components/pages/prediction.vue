@@ -11,6 +11,6 @@ export default {
 
 <style lang="scss" scoped>
 #page {
-  width: $full-parent-width;
+  width: 100%;
 }
 </style>

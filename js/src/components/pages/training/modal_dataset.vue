@@ -1,38 +1,35 @@
 <template>
-  <div class="modal-dataset padding-bottom-16">
+  <div class="modal-dataset">
     <div class="column">
       dataset setting
-      <InputTextWithLabel
-        class="margin-bottom-8"
-        :labeltext="'dataset name:'"
-        :labelwidth="label_width"
-        :value="name"
-        @input="name = $event"></InputTextWithLabel>
 
-      <InputTextWithLabel
-        class="margin-bottom-8"
-        :labeltext="'description:'"
-        :labelwidth="label_width"
-        :value="description"
-        @input="description = $event"></InputTextWithLabel>
+      <div class="input-with-label">
+        <div class="label">dataset name: </div>
+        <input type="text" v-model="name">
+      </div>
 
-      <InputTextWithLabel
-        class="margin-bottom-8"
-        :labeltext="'train ratio:'"
-        :labelwidth="label_width"
-        :value="train_ratio"
-        @input="train_ratio = parseFloat($event)"></InputTextWithLabel>
+      <div class="input-with-label">
+        <div class="label">description: </div>
+        <input type="text" v-model="description">
+      </div>
 
-      <SelectBoxWithLabel
-        class="margin-bottom-8"
-        :labeltext="'target columns:'"
-        :labelwidth="label_width"
-        :options="$store.state.labels"
-        :value="target_column_id"
-        @input="target_column_id = parseInt($event)"></SelectBoxWithLabel>
+      <div class="input-with-label">
+        <div class="label">train ratio: </div>
+        <input type="text" v-model="train_ratio">
+      </div>
+
+      <div class="input-with-label">
+        <div class="label">target column id: </div>
+        <select v-model="target_column_id">
+          <option v-for="(o, index) in $store.state.labels"
+            :value="index" :key="index">
+            {{ o }}
+          </option>
+        </select>
+      </div>
 
       <div class="button-area">
-        <Button :text="'Confirm'" @click="$emit('confirm', params())"></Button>
+        <button @click="confirmDataset">Confirm</button>
       </div>
     </div>
 
@@ -53,12 +50,9 @@
         <div id="train-test-histogram"></div>
       </div>
       <div class="button-area">
-        <Button :text="'Save'" @click="$emit('save', params())"></Button>
-        <Button :text="'Cancel'"
-          :bordercolor="gray"
-          :backgroundcolor="white"
-          :textcolor="gray"
-          @click="$emit('cancel')"></Button>
+        <button @click="saveDataset">Save</button>
+        <button class="button-cancel"
+          @click="$emit('save', $emit('cancel'))">Cancel</button>
       </div>
     </div>
   </div>
@@ -66,31 +60,22 @@
 
 <script>
 import * as d3 from 'd3'
-import { GRAY, WHITE, CURVE_COLORS } from '@/const'
 import { max, min } from '@/utils'
-import Button from '@/components/atoms/button'
-import InputTextWithLabel from '@/components/molecules/input_text_with_label'
-import SelectBoxWithLabel from '@/components/molecules/select_box_with_label'
 
 export default {
   name: 'ModalDataset',
-  components: {
-    Button,
-    InputTextWithLabel,
-    SelectBoxWithLabel
-  },
   data: function () {
     return {
       'name': '',
       'description': '',
       'train_ratio': 0.8,
       'target_column_id': 0,
-      'gray': GRAY,
-      'white': WHITE,
-      'label_width': '160px',
       'w': 300,
       'h': 300,
-      'curve_colors': CURVE_COLORS
+      'curve_colors': {
+        'train': '#0762ad',
+        'validation': '#ef8200'
+      }
     }
   },
   computed: {
@@ -148,7 +133,7 @@ export default {
         .data(train_bins)
         .enter().append('rect')
         .attr('class', 'train_bars')
-        .attr('fill', CURVE_COLORS.train)
+        .attr('fill', this.curve_colors.train)
         .attr('opacity', 0.5)
         .attr('x', 1)
         .attr('transform', function (d) { return 'translate(' + xScale(d.x0) + ',' + yScale(height - d.length) + ')' })
@@ -159,7 +144,7 @@ export default {
         .data(valid_bins)
         .enter().append('rect')
         .attr('class', 'valid_bars')
-        .attr('fill', CURVE_COLORS.validation)
+        .attr('fill', this.curve_colors.validation)
         .attr('opacity', 0.5)
         .attr('x', 1)
         .attr('transform', function (d) { return 'translate(' + xScale(d.x0) + ',' + yScale(height - d.length) + ')' })
@@ -168,6 +153,12 @@ export default {
     },
     removeHistogram: function () {
       d3.select('#train-test-histogram').selectAll('*').remove()
+    },
+    confirmDataset: function () {
+      this.$store.dispatch('confirmDataset', this.params())
+    },
+    saveDataset: function (value) {
+      this.$store.dispatch('saveDataset', this.params())
     }
   }
 }
@@ -183,10 +174,18 @@ export default {
     position: relative;
     width: 50%;
     height: 100%;
+
+    .input-with-label {
+      @include prefix("display", "flex");
+      .label {
+        color: $gray;
+      }
+    }
+
     .button-area {
       position: absolute;
-      bottom: 0;
-      right: 0;
+      bottom: 16px;
+      right: 16px;
     }
   }
 

@@ -2,25 +2,22 @@
   <div id="add-model-modal">
     <div class="modal-background" @click="hideModal"></div>
 
-    <div class="modal-content padding-16">
+    <div class="modal-content">
       <div class="modal-tab">
         <div @click="setTab('params')">params</div>
         <div @click="setTab('dataset')">dataset</div>
       </div>
       <ModalParamsSetting v-if="tab === 'params'"
-        @cancel="hideModal"
-        @run="runModel"></ModalParamsSetting>
+        @cancel="hideModal"></ModalParamsSetting>
       <ModalDataset v-if="tab === 'dataset'"
-        @cancel="setTab('params')"
-        @confirm="confirmDataset"
-        @save="saveDataset"></ModalDataset>
+        @cancel="setTab('params')"></ModalDataset>
     </div>
   </div>
 </template>
 
 <script>
-import ModalDataset from '@/components/organisms/training/modal_dataset'
-import ModalParamsSetting from '@/components/organisms/training/modal_params_setting'
+import ModalDataset from '@/components/pages/training/modal_dataset'
+import ModalParamsSetting from '@/components/pages/training/modal_params_setting'
 
 export default {
   name: 'ModalAdd',
@@ -39,16 +36,6 @@ export default {
     },
     setTab: function (value) {
       this.tab = value
-    },
-    runModel: function (value) {
-      this.$store.dispatch('addModel', value)
-      this.hideModal()
-    },
-    confirmDataset: function (value) {
-      this.$store.dispatch('confirmDataset', value)
-    },
-    saveDataset: function (value) {
-      this.$store.dispatch('saveDataset', value)
     }
   }
 }
@@ -63,16 +50,17 @@ export default {
   height: calc(#{$full-screen-height} - #{$header-height});
 
   .modal-background {
-    width: $full-parent-width;
-    height: $full-parent-height;
+    width: 100%;
+    height: 100%;
     background-color: $black;
     opacity: $modal-opacity;
   }
-  //
+
   .modal-content {
     @include transform-center();
     width: $modal-content-width;
     height: $modal-content-height;
+    padding: 16px;
     background-color: $white;
 
     .modal-tab {

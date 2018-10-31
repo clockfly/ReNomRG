@@ -1,29 +1,25 @@
 <template>
   <div id="features">
-    <Panel
-      :banner_text="'Features'">
-      <div slot="pannel_content">
+    <div class="panel">
+      <div class="panel-title">
+        Features
+      </div>
+
+      <div class="panel-content">
         <div class="feature-list">
-          <div class="feature-item margin-top-8 padding-left-4"
+          <div class="feature-item"
             v-for="(l,index) in $store.state.labels">
-            <PlainText :text="l" :w="'120px'"></PlainText>
+            {{ l }}
           </div>
         </div>
       </div>
-    </Panel>
+    </div>
   </div>
 </template>
 
 <script>
-import PlainText from '@/components/atoms/plain_text'
-import Panel from '@/components/organisms/panel'
-
 export default {
-  name: 'Features',
-  components: {
-    PlainText,
-    Panel
-  }
+  name: 'Features'
 }
 </script>
 
@@ -32,8 +28,11 @@ export default {
   .feature-list {
     @include prefix('display', 'flex');
     flex-wrap: wrap;
+    padding: 8px;
 
     .feature-item {
+      margin-right: 8px;
+      padding-left: 4px;
       border-left: 2px solid "#ccc";
     }
   }

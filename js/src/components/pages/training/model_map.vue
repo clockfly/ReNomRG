@@ -1,21 +1,20 @@
 <template>
   <div id="model-map">
-    <Panel
-      :banner_text="'Model Map'">
-      <div id="value-map" slot="pannel_content"></div>
-    </Panel>
+    <div class="panel">
+      <div class="panel-title">
+        Model Map
+      </div>
+
+      <div id="value-map" class="panel-content"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3'
-import Panel from '@/components/organisms/panel'
 
 export default {
   name: 'ModelMap',
-  components: {
-    Panel
-  },
   data: function () {
     return {
       'w': 300,

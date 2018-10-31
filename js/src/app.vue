@@ -8,16 +8,13 @@
   </div>
 
   <AppFooter></AppFooter>
-
-  <!-- <alert-modal v-if="$store.state.alert_modal_flag"></alert-modal> -->
 </div>
 </template>
 
 <script>
-import AppHeader from '@/components/organisms/app_header.vue'
-import AppFooter from '@/components/organisms/app_footer.vue'
-import NavigationBar from '@/components/organisms/navigation_bar.vue'
-// import AlertModal from '@/components/common/alert_modal.vue'
+import AppHeader from '@/components/common/app_header.vue'
+import AppFooter from '@/components/common/app_footer.vue'
+import NavigationBar from '@/components/common/navigation_bar.vue'
 
 require('@fortawesome/fontawesome')
 require('@fortawesome/fontawesome-free-solid')
@@ -30,7 +27,6 @@ export default {
     AppHeader,
     AppFooter,
     NavigationBar
-    // 'alert-modal': AlertModal
   },
   created: function () {
     this.$store.commit('setPageName', {
@@ -48,9 +44,9 @@ export default {
   background-color: $background-gray;
 
   .container {
-    @include horizon-center();
     width: $full-screen-width;
     max-width: $max-width;
+    margin: 0 auto;
   }
 }
 </style>
