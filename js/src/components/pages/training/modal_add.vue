@@ -4,12 +4,12 @@
 
     <div class="modal-content">
       <div class="modal-tab">
-        <div @click="setTab('params')">params</div>
-        <div @click="setTab('dataset')">dataset</div>
+        <div @click="tab = 'params'">params</div>
+        <div @click="tab = 'dataset'">dataset</div>
       </div>
       <ModalParamsSetting v-if="tab === 'params'"></ModalParamsSetting>
       <ModalDataset v-if="tab === 'dataset'"
-        @cancel="setTab('params')"></ModalDataset>
+        @cancel="tab = 'params'"></ModalDataset>
     </div>
   </div>
 </template>
