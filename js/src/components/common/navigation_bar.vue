@@ -6,53 +6,28 @@
 
   <transition name="nav">
     <div id="navigation-bar" v-if="$store.state.navigation_bar_shown_flag">
-      <ClickableText
-        :text="'Training'"
-        :textcolor="white"
-        @click="goTraining()">
-        <FaIcon slot="icon"
-          :textcolor="white"
-          :cls="'fa fa-home'"></FaIcon>
-      </ClickableText>
+      <div class="menu-item" @click="goTraining()">
+        <i class="fa fa-home icon" aria-hidden="true"></i>
+        <div class="menu-name">Training</div>
+      </div>
 
-      <ClickableText
-        :text="'Dataset'"
-        :textcolor="white"
-        @click="goDataset()">
-        <FaIcon slot="icon"
-          :textcolor="white"
-          :cls="'fa fa-home'"></FaIcon>
-      </ClickableText>
+      <div class="menu-item" @click="goDataset()">
+        <i class="fa fa-home icon" aria-hidden="true"></i>
+        <div class="menu-name">Dataset</div>
+      </div>
 
-      <ClickableText
-        :text="'Prediction'"
-        :textcolor="white"
-        @click="goPrediction()">
-        <FaIcon slot="icon"
-          :textcolor="white"
-          :cls="'fa fa-home'"></FaIcon>
-      </ClickableText>
+      <div class="menu-item" @click="goPrediction()">
+        <i class="fa fa-home icon" aria-hidden="true"></i>
+        <div class="menu-name">Prediction</div>
+      </div>
     </div>
   </transition>
 </div>
 </template>
 
 <script>
-import { WHITE } from '@/const'
-import FaIcon from '@/components/atoms/fa_icon'
-import ClickableText from '@/components/molecules/clickable_text'
-
 export default {
   name: 'NavigationBar',
-  components: {
-    FaIcon,
-    ClickableText
-  },
-  data: function () {
-    return {
-      'white': WHITE
-    }
-  },
   methods: {
     goTraining: function () {
       this.$store.commit('setPageName', {'page_name': 'Training'})
@@ -78,6 +53,8 @@ export default {
 
 <style lang="scss" scoped>
 #navigation {
+  $nav-item-height: 32px;
+
   position: fixed;
   z-index: 999;
 
@@ -88,16 +65,28 @@ export default {
     width: $full-screen-width;
     height: $full-screen-height;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: $black;
+    opacity: $modal-opacity;
   }
 
   #navigation-bar {
     position: fixed;
     top: $header-height;
     height: $full-screen-height;
-
-    background-color: #262a4e;
+    background-color: $dark-blue;
     z-index: 2;
+
+    .menu-item {
+      @include prefix('display', 'flex');
+      height: $nav-item-height;
+      line-height: $nav-item-height;
+
+      .icon, .menu-name {
+        height: $nav-item-height;
+        line-height: $nav-item-height;
+        color: $white;
+      }
+    }
   }
 
   // transition of navigation menu

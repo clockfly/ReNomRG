@@ -1,27 +1,22 @@
 <template>
   <div id="model-map">
-    <Panel
-      :banner_text="'Model Map'">
-      <div id="value-map" slot="pannel_content"></div>
-    </Panel>
+    <div class="panel">
+      <div class="panel-title">
+        Model Map
+      </div>
+
+      <div id="value-map" class="panel-content"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3'
-import Panel from '@/components/organisms/panel'
+const width = 300
+const height = 300
 
 export default {
   name: 'ModelMap',
-  components: {
-    Panel
-  },
-  data: function () {
-    return {
-      'w': 300,
-      'h': 300
-    }
-  },
   computed: {
     modelList: function () {
       return this.$store.state.model_list
@@ -41,32 +36,32 @@ export default {
 
       const svg = d3.select('#value-map')
         .append('svg')
-        .attr('width', this.w)
-        .attr('height', this.h)
+        .attr('width', width)
+        .attr('height', height)
 
       const xScale = d3.scaleLinear()
         .domain([0, d3.max(rmse_list, function (d) { return d })])
-        .range([0, this.w])
+        .range([0, width])
       const yScale = d3.scaleLinear()
         .domain([0, d3.max(max_abs_error_list, function (d) { return d })])
-        .range([this.h, 0])
+        .range([height, 0])
 
       // get axes
       const axisx = d3.axisBottom(xScale)
-        .tickSizeInner(-this.h)
+        .tickSizeInner(-height)
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
       const axisy = d3.axisLeft(yScale)
         .ticks(10)
-        .tickSizeInner(-this.w)
+        .tickSizeInner(-width)
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
 
       // draw x axis
       let gX = svg.append('g')
-        .attr('transform', 'translate(' + 0 + ',' + this.h + ')')
+        .attr('transform', 'translate(' + 0 + ',' + height + ')')
         .call(axisx)
       // draw y axis
       let gY = svg.append('g')
