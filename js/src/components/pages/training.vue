@@ -59,6 +59,7 @@ export default {
   created: function () {
     this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadLabels')
+    this.$store.dispatch('loadModels')
   }
 }
 </script>

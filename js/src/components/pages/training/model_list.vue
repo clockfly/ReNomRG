@@ -12,6 +12,7 @@
 
       <div class="model-list-scrollable-area">
         <div class="model-list-item"
+          v-bind:class="{ active: model.model_id === $store.state.selected_model_id }"
           v-for="(model,index) in $store.state.model_list"
           @click="selectModel(model)">
 
@@ -39,6 +40,10 @@
             <div class="label">Max Absolute Error:</div>
             <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
           </div>
+
+          <div v-if="model.deployed === 1" class="deployed">
+            deployed
+          </div>
         </div>
       </div>
     </div>
@@ -56,14 +61,11 @@ export default {
     },
     selectModel: function (m) {
       this.$store.commit('setSelectedModelId', {'model_id': m['model_id']})
-      this.$store.dispatch('loadModel', {'model_id': m['model_id']})
+      this.$store.dispatch('selectModel', {'model_id': m['model_id']})
     },
     showModal: function () {
       this.$store.commit('setAddModelModalShowFlag', {'flag': true})
     }
-  },
-  created: function () {
-    this.$store.dispatch('loadModels')
   }
 }
 </script>
@@ -103,6 +105,13 @@ export default {
         color: $gray;
       }
     }
+  }
+  .model-list-item:hover {
+    background-color: #CCCCCC;
+    cursor:pointer;
+  }
+  .active {
+    border: solid 1px $blue;
   }
 }
 </style>

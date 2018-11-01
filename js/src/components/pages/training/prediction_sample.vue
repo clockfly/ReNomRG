@@ -23,30 +23,28 @@ export default {
   computed: {
     selectedModel: function () {
       return this.$store.state.selected_model
+    },
+    deployedModelPred: function () {
+      return this.$store.state.deployed_model_y_pred
     }
   },
   watch: {
     selectedModel: function () {
       this.drawSelected()
+    },
+    deployedModelPred: function () {
+      this.drawDeployed()
     }
   },
   mounted: function () {
     this.drawSelected()
-    // this.drawDeployed()
+    this.drawDeployed()
   },
   methods: {
-    drawDeployed: function () {
-      console.log('deployed')
-    },
-    drawSelected: function () {
-      if (!this.$store.state.selected_model) return
-      this.removeSelected()
+    drawTruePredPlot: function (id, y_valid, y_pred) {
+      const dataset = this.shapeDataset(y_valid, y_pred)
 
-      const y_valid = this.$store.state.selected_y_valid
-      const y_pred = this.$store.state.selected_y_pred
-      const dataset = this.shapeDataset()
-
-      const svg = d3.select('#selected-plot')
+      const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -121,16 +119,30 @@ export default {
           .style('font-size', '0.60em')
       }
     },
+    drawDeployed: function () {
+      if (!this.$store.state.deployed_model_y_pred) return
+      this.removeDeployed()
+      const y_valid = this.$store.state.deployed_model_y_valid
+      const y_pred = this.$store.state.deployed_model_y_pred
+      this.drawTruePredPlot('#deployed-plot', y_valid, y_pred)
+    },
+    drawSelected: function () {
+      if (!this.$store.state.selected_model) return
+      this.removeSelected()
+      const y_valid = this.$store.state.selected_y_valid
+      const y_pred = this.$store.state.selected_y_pred
+      this.drawTruePredPlot('#selected-plot', y_valid, y_pred)
+    },
     removeDeployed: function () {
       d3.select('#deployed-plot').selectAll('*').remove()
     },
     removeSelected: function () {
       d3.select('#selected-plot').selectAll('*').remove()
     },
-    shapeDataset: function () {
+    shapeDataset: function (valid, pred) {
       let dataset = []
-      for (let i in this.$store.state.selected_y_valid) {
-        let d = [this.$store.state.selected_y_valid[i], this.$store.state.selected_y_pred[i]]
+      for (let i in valid) {
+        let d = [valid[i], pred[i]]
         dataset.push(d)
       }
       return dataset

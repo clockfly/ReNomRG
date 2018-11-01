@@ -40,6 +40,8 @@ export default {
     state.model_counts_per_algorith = { 'C-GCNN': 0, 'Kernel-GCNN': 0, 'DBSCAN-GCNN': 0, 'Running': 0, 'Reserved': 0 }
     for (let m of payload.model_list) {
       state.model_list.push(m)
+
+      // count models per algorithm
       if (m['state'] === 0) {
         state.model_counts_per_algorith['Reserved'] += 1
       } else if (m['state'] === 1) {
@@ -53,9 +55,17 @@ export default {
           state.model_counts_per_algorith['DBSCAN-GCNN'] += 1
         }
       }
+
+      // set deployed model
+      if (m['deployed'] === 1) {
+        state.deployed_model_id = m.model_id
+      }
     }
 
-    // TODO: select last model if selected_model_id is undefined
+    // default select last model
+    if (!state.selected_model_id) {
+      state.selected_model_id = payload.model_list[0].model_id
+    }
   },
 
   // set sort key
@@ -79,10 +89,22 @@ export default {
   // set selected model
   setSelectedModel (state, payload) {
     state.selected_model = payload.model
-    state.valid_loss_list = payload.model['valid_loss_list']
-    state.train_loss_list = payload.model['train_loss_list']
-    state.selected_y_valid = payload.model['valid_true']
-    state.selected_y_pred = payload.model['valid_predicted']
+    state.valid_loss_list = payload.model.valid_loss_list
+    state.train_loss_list = payload.model.train_loss_list
+    state.selected_y_valid = payload.model.valid_true
+    state.selected_y_pred = payload.model.valid_predicted
+  },
+
+  updateDeployModel (state, payload) {
+    state.deployed_model_id = state.selected_model_id
+    state.deployed_model_y_valid = state.selected_y_valid
+    state.deployed_model_y_pred = state.selected_y_pred
+  },
+
+  setDeployededModel (state, payload) {
+    state.deployed_model_id = payload.model.model_id
+    state.deployed_model_y_valid = payload.model.valid_true
+    state.deployed_model_y_pred = payload.model.valid_predicted
   },
 
   /**
