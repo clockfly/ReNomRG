@@ -15,10 +15,10 @@ export default {
 
 <style lang="scss" scoped>
 footer {
-  display: block;
+  position: relative;
   width: $full-screen-width;
   background: $dark-blue;
-  z-index: 99999;
+  z-index: 1;
 
   .logo-img {
     margin: 16px;

@@ -66,13 +66,18 @@ export default {
 <style lang="scss" scoped>
 #page {
   width: 100%;
+  height: 100%;
 
   .training {
     @include prefix('display', 'flex');
+    position: relative;
     width: 100%;
+    height: 100%;
 
     .content {
       width: $content-width;
+      height: 100%;
+      height: 100%;
 
       .content-columns {
         @include prefix('display', 'flex');
@@ -87,7 +92,11 @@ export default {
       }
     }
     .list {
-      width: $list-width;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      width: #{$list-width};
+      height: 100%;
     }
   }
 }
