@@ -254,7 +254,7 @@ def deploy_model(model_id):
 @route("/api/renom_rg/models/<model_id:int>/undeploy", method="POST")
 def undeploy_model(model_id):
     try:
-        storage.update_model_deploy(model_id)
+        storage.update_model_undeploy(model_id)
         body = json.dumps({"model_id": model_id})
     except Exception as e:
         body = create_error_body(e)

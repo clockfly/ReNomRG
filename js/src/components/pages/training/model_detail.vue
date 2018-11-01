@@ -1,8 +1,14 @@
 <template>
   <div id="model-params">
     <div class="panel">
-      <div class="panel-title">
+      <div class="panel-title panel-with-button">
         Model Detail
+        <div class="deploy-button" v-if="model && model.deployed === 0" @click="deploy">
+          > Deploy Model
+        </div>
+        <div class="deploy-button" v-if="model && model.deployed === 1" @click="undeploy">
+          > Undeploy Model
+        </div>
       </div>
 
       <div class="panel-content detail">
@@ -75,6 +81,13 @@ export default {
   methods: {
     round: function (v) {
       return round(v, 1000)
+    },
+    deploy: function () {
+      this.$store.dispatch('deployAndUpdate', { 'model_id': this.model.model_id })
+      this.$store.commit('updateDeployModel')
+    },
+    undeploy: function () {
+      this.$store.dispatch('undeployAndUpdate', { 'model_id': this.model.model_id })
     }
   }
 }
@@ -82,6 +95,16 @@ export default {
 
 <style lang="scss" scoped>
 #model-params {
+  .panel-with-button {
+    @include prefix("display", "flex");
+    .deploy-button {
+      margin-left: auto;
+      padding: 0 16px;
+      background: $blue;
+      color: $white;
+    }
+  }
+
   .detail {
     @include prefix("display", "flex");
     width: 100%;
