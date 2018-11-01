@@ -5,9 +5,9 @@ import sqlite3
 import json
 from renom_rg.server import DB_DIR
 try:
-    import _pickle as pickle
-except:
     import cPickle as pickle
+except ImportError:
+    import pickle
 
 unicode = "ascii"
 

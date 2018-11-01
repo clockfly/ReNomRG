@@ -48,10 +48,14 @@ class Model(Base):
     updated = Column(DateTime, onupdate=datetime.datetime.utcnow)
 
 
-def initdb(path):
+
+def get_engine(path):
     db = os.path.join(path, 'storage.db')
     engine = create_engine('sqlite:///'+db, echo=True)
+    return engine
 
+def initdb(path):
+    engine = get_engine(path)
     Base.metadata.create_all(engine)
 
 
