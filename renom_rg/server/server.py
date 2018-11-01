@@ -25,15 +25,13 @@ from sklearn.model_selection import train_test_split
 import renom as rm
 from renom.cuda import release_mem_pool
 
-from renom_rg.server import create_dirs
-create_dirs()
 from renom_rg.server import MAX_THREAD_NUM, DATASRC_DIR, STATE_RESERVED, STATE_RUNNING, STATE_FINISHED, STATE_DELETED
 from renom_rg.server import wsgi_server
 from renom_rg.server.train_thread import TrainThread
 from renom_rg.server.storage import storage
+from . import *
+from . import db
 
-executor = Executor(max_workers=MAX_THREAD_NUM)
-train_thread_pool = {}
 
 def create_response(body):
     r = HTTPResponse(status=200, body=body)
@@ -324,7 +322,26 @@ def predict_model(model_id):
     return r
 
 
+def _init_cuda():
+    try:
+        import renom.cuda
+        if renom.cuda.has_cuda():
+            MAX_THREAD_NUM = GPU_NUM = renom.cuda.cuGetDeviceCount()
+    except Exception:
+        pass
+
+def _create_dirs():
+    # Create directories
+    for path in [DATASRC_PREDICTION, DB_DIR_TRAINED_WEIGHT]:
+        if not os.path.exists(path):
+            os.makedirs(path)
+            print("Directory %s is newly created." % (path))
+
 def main():
+    _init_cuda()
+    _create_dirs()
+    db.initdb(DB_DIR)
+
     # Parser settings.
     parser = argparse.ArgumentParser(description='ReNomRG')
     parser.add_argument('--host', default='0.0.0.0', help='Server address')
