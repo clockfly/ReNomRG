@@ -10,33 +10,35 @@
     <div class="panel list-area">
       <div class="panel-title">Model List</div>
 
-      <div class="model-list-item"
-        v-for="(model,index) in $store.state.model_list"
-        @click="selectModel(model)">
+      <div class="model-list-scrollable-area">
+        <div class="model-list-item"
+          v-for="(model,index) in $store.state.model_list"
+          @click="selectModel(model)">
 
-        <div class="label-value">
-          <div class="label">Model ID:</div>
-          <div class="value">{{model.model_id}}</div>
-        </div>
+          <div class="label-value">
+            <div class="label">Model ID:</div>
+            <div class="value">{{model.model_id}}</div>
+          </div>
 
-        <div class="label-value">
-          <div class="label">Algorithm:</div>
-          <div class="value">{{model.algorithm}}</div>
-        </div>
+          <div class="label-value">
+            <div class="label">Algorithm:</div>
+            <div class="value">{{model.algorithm}}</div>
+          </div>
 
-        <div class="label-value">
-          <div class="label">Validation Loss:</div>
-          <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
-        </div>
+          <div class="label-value">
+            <div class="label">Validation Loss:</div>
+            <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
+          </div>
 
-        <div class="label-value">
-          <div class="label">RMSE:</div>
-          <div class="value">{{round(model.best_epoch_rmse)}}</div>
-        </div>
+          <div class="label-value">
+            <div class="label">RMSE:</div>
+            <div class="value">{{round(model.best_epoch_rmse)}}</div>
+          </div>
 
-        <div class="label-value">
-          <div class="label">Max Absolute Error:</div>
-          <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
+          <div class="label-value">
+            <div class="label">Max Absolute Error:</div>
+            <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -68,6 +70,9 @@ export default {
 
 <style lang="scss" scoped>
 #model-list {
+  width: 100%;
+  height: 100%;
+
   .add-button-area, .list-area {
     padding: 8px;
   }
@@ -75,6 +80,16 @@ export default {
     width: 100%;
     .icon {
       color: $white;
+    }
+  }
+
+  .list-area {
+    width: 100%;
+    height: calc(100% - 100px);
+    .model-list-scrollable-area {
+      overflow: scroll;
+      width: 100%;
+      height: 100%;
     }
   }
 

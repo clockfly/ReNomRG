@@ -56,7 +56,7 @@ export default {
   $nav-item-height: 32px;
 
   position: fixed;
-  z-index: 999;
+  z-index: 2;
 
   #mask {
     position: fixed;

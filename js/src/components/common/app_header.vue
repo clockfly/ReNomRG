@@ -35,7 +35,7 @@ header {
   margin: 0;
   padding: 0;
   background-color: $dark-blue;
-  z-index: 999;
+  z-index: 3;
 
   .menu-button, .title, .icon {
     height: $header-height;

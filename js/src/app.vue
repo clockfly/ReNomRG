@@ -46,7 +46,9 @@ export default {
   .container {
     width: $full-screen-width;
     max-width: $max-width;
+    height: $content-height;
     margin: 0 auto;
+    z-index: 0;
   }
 }
 </style>
