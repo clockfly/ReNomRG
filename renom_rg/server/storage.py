@@ -332,5 +332,5 @@ class Storage:
                 """, (dataset_id,))
 
 
-global storage
-storage = Storage()
+#global storage
+#storage = Storage()

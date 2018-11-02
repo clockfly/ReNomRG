@@ -340,7 +340,7 @@ def _create_dirs():
 def main():
     _init_cuda()
     _create_dirs()
-    db.initdb(DB_DIR)
+#    db.initdb(DB_DIR)
 
     # Parser settings.
     parser = argparse.ArgumentParser(description='ReNomRG')

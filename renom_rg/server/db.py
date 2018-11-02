@@ -1,4 +1,5 @@
 import datetime
+import configparser
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -50,16 +51,20 @@ class Model(Base):
 
 
 def get_engine(path):
-    db = os.path.join(path, 'storage.db')
-    engine = create_engine('sqlite:///'+db, echo=True)
+    config = configparser.ConfigParser()
+    config.read('alembic.ini')
+    url = config['alembic']['sqlalchemy.url']
+    engine = create_engine(url, echo=True)
     return engine
 
 def initdb(path):
+    ret = os.system("alembic upgrade head")
+    if ret:
+        raise RuntimeError("Failed to upgrade database")
+
     engine = get_engine(path)
-    Base.metadata.create_all(engine)
-
-
     session_factory = sessionmaker(engine)
 
     global Session
     Session = scoped_session(session_factory)()
+
