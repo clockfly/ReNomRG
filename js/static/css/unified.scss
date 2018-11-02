@@ -30,8 +30,14 @@ $content-width: 80%;
 $content-left-width: 60%;
 // main content right
 $content-right-width: 40%;
+
 // content height
 $content-height: 1500px;
+$dashboard-height: 360px;
+$model-map-height: 360px;
+$model-detail-height: 360px;
+$learning-curve-height: 360px;
+$prediction-sample-height: 480px;
 
 /**
 * custom scroll bar
@@ -94,6 +100,7 @@ button {
 $panel-title-height: 32px;
 .panel {
   width: 100%;
+  height: 100%;
   padding: 8px;
 
   .panel-title {
@@ -107,8 +114,8 @@ $panel-title-height: 32px;
 
   .panel-content {
     width: 100%;
+    height: calc(100% - #{$panel-title-height} - 8px);
     margin-top: 8px;
-    padding: 16px;
     background: $white;
   }
 }
