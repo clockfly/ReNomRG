@@ -1,60 +1,92 @@
 <template>
   <div class="modal-dataset">
     <div class="column">
-      dataset setting
 
-      <div class="input-with-label">
-        <div class="label">dataset name: </div>
-        <input type="text" v-model="name">
-      </div>
+      <div class="setting-block">
+        <div class="setting-type">
+          Dataset Setting
+        </div>
 
-      <div class="input-with-label">
-        <div class="label">description: </div>
-        <input type="text" v-model="description">
-      </div>
+        <div class="sub-block">
+          <div class="label">Dataset Name</div>
+          <div class="input-value">
+            <input type="text" v-model="name">
+          </div>
+        </div>  <!-- sub block -->
 
-      <div class="input-with-label">
-        <div class="label">train ratio: </div>
-        <input type="text" v-model="train_ratio">
-      </div>
+        <div class="sub-block">
+          <div class="label">Description</div>
+          <div class="input-value">
+            <input type="text" v-model="description">
+          </div>
+        </div>  <!-- sub block -->
 
-      <div class="input-with-label">
-        <div class="label">target column id: </div>
-        <select v-model="target_column_id">
-          <option v-for="(o, index) in $store.state.labels"
-            :value="index" :key="index">
-            {{ o }}
-          </option>
-        </select>
-      </div>
+        <div class="sub-block">
+          <div class="label">Ratio of training data</div>
+          <div class="input-value">
+            <input type="text" v-model="train_ratio">
+          </div>
+        </div>  <!-- sub block -->
+
+        <div class="sub-block">
+          <div class="label">Target Valiable</div>
+          <div class="input-value">
+            <select v-model="target_column_id">
+              <option v-for="(o, index) in $store.state.labels"
+                :value="index" :key="index">
+                {{ o }}
+              </option>
+            </select>
+          </div>
+        </div>  <!-- sub block -->
+      </div>  <!-- setting block -->
 
       <div class="button-area">
         <button @click="confirmDataset">Confirm</button>
       </div>
-    </div>
+
+    </div>  <!-- column -->
 
     <div class="column">
-      <div class="dataset-detail">
-        detail
-        <div class="train-test-ratio">
-          total: {{$store.state.train_index.length+$store.state.valid_index.length}}
-          train: {{$store.state.train_index.length}}
-          validation: {{$store.state.valid_index.length}}
-          <div class="train-ratio-bar">
-            <div class="bar-item train"
-              v-bind:style="{ 'flex-grow': $store.state.train_index.length }"></div>
-            <div class="bar-item validation"
-              v-bind:style="{ 'flex-grow': $store.state.valid_index.length }"></div>
+
+      <div class="setting-block">
+        <div class="setting-type">
+          Detail
+        </div>
+
+        <div class="sub-block">
+          <div class="label">Number of data size</div>
+          <div class="values">
+            <div class="train-number">Train {{$store.state.train_index.length}}</div>
+            <div class="valid-number">Validation {{$store.state.valid_index.length}}</div>
           </div>
         </div>
+
+        <div class="sub-block">
+          <div class="label">All {{$store.state.train_index.length+$store.state.valid_index.length}}</div>
+          <div class="values">
+            <div class="train-ratio-bar">
+              <div class="bar-item train"
+                v-bind:style="{ 'flex-grow': $store.state.train_index.length }"></div>
+              <div class="bar-item validation"
+                v-bind:style="{ 'flex-grow': $store.state.valid_index.length }"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-block">
+          <div class="label">Histogram</div>
+        </div>
         <div id="train-test-histogram"></div>
-      </div>
+      </div> <!-- setting block -->
+
       <div class="button-area">
         <button @click="saveDataset">Save</button>
         <button class="button-cancel"
           @click="$emit('cancel')">Cancel</button>
       </div>
-    </div>
+
+    </div> <!-- column -->
   </div>
 </template>
 
@@ -63,8 +95,8 @@ import * as d3 from 'd3'
 import { max, min } from '@/utils'
 const train_color = '#0762ad'
 const valid_color = '#ef8200'
-const width = 300
-const height = 300
+const width = 150
+const height = 150
 
 export default {
   name: 'ModalDataset',
@@ -171,24 +203,42 @@ export default {
 .modal-dataset {
   @include prefix("display", "flex");
   width: 100%;
-  height: 100%;
+  height: calc(100% - #{$modal-tab-height});
 
   .column {
     position: relative;
     width: 50%;
-    height: 100%;
 
-    .input-with-label {
+    .setting-block {
+      margin-top: 24px;
+      margin-left: 24px;
+    }
+    .sub-block {
       @include prefix("display", "flex");
-      .label {
-        color: $gray;
+      margin-top: 16px;
+      margin-left: 16px;
+
+      .label, .input-value, .values {
+        width: 50%;
       }
+      .values {
+        @include prefix("display", "flex");
+        .train-number, .valid-number {
+          color: $gray;
+        }
+        .valid-number {
+          margin-left: auto;
+        }
+      }
+    }
+    .setting-type, .label {
+      color: $gray;
     }
 
     .button-area {
       position: absolute;
-      bottom: 16px;
-      right: 16px;
+      bottom: 0px;
+      right: 0px;
     }
   }
 

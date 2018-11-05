@@ -59,6 +59,7 @@ export default {
   */
   // data
   labels: [],
+  target_column_ids: [],
 
   /**
   * modal params setting
