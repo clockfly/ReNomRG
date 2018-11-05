@@ -137,14 +137,14 @@ export default {
       font-size: $fs-small;
     }
     .delete-button {
-      color: $gray;
+      color: $light-gray;
     }
     .deployed {
       color: $blue;
     }
   }
   .model-list-item:hover {
-    background-color: #CCCCCC;
+    background-color: $light-gray;
     cursor:pointer;
   }
   .active {

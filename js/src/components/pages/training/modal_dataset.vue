@@ -17,7 +17,7 @@
         <div class="sub-block">
           <div class="label">Description</div>
           <div class="input-value">
-            <input type="text" v-model="description">
+            <textarea name="description" rows="3" v-model="description"></textarea>
           </div>
         </div>  <!-- sub block -->
 
