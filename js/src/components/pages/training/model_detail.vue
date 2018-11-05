@@ -12,57 +12,61 @@
       </div>
 
       <div class="panel-content detail">
-        <div class="column" v-if="model">
-
-          <div class="label-value">
-            <div class="label">Model ID:</div>
+        <div class="column">
+          <div class="label-value model-id">
+            <div class="label">Model ID</div>
             <div class="value">{{model.model_id}}</div>
           </div>
+        </div>
 
+        <div class="column" v-if="model">
           <div class="label-value">
-            <div class="label">Algorithm:</div>
-            <div class="value">{{model.algorithm}}</div>
+            <div class="label">Algorithm</div>
+            <div class="value">{{$store.state.algorithms[model.algorithm]}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">Total Epoch:</div>
+            <div class="label">Total Epoch</div>
             <div class="value">{{model.epoch}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">Batch Size:</div>
+            <div class="label">Batch Size</div>
             <div class="value">{{model.batch_size}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">Number of Neighbors:</div>
-            <div class="value">{{model.algorithm_params.num_neighbors}}</div>
-          </div>
-
-        </div>
-
-        <div class="column" v-if="model">
-          <div class="label-value">
-            <div class="label">Validation Loss:</div>
+            <div class="label">Validation Loss</div>
             <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">RMSE:</div>
+            <div class="label">RMSE</div>
             <div class="value">{{round(model.best_epoch_rmse)}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">Max Absolute Error:</div>
+            <div class="label">Max Absolute Error</div>
             <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">R2 Score:</div>
+            <div class="label">R2 Score</div>
             <div class="value">{{round(model.best_epoch_r2)}}</div>
           </div>
-
         </div>
+
+        <div class="column" v-if="model">
+          <div class="label-value">
+            <div class="label">Graph Comvolution Params</div>
+          </div>
+
+          <div class="label-value">
+            <div class="label">Number of Neighbors</div>
+            <div class="value">{{model.algorithm_params.num_neighbors}}</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -95,6 +99,9 @@ export default {
 
 <style lang="scss" scoped>
 #model-params {
+  width: 100%;
+  height: $model-detail-height;
+
   .panel-with-button {
     @include prefix("display", "flex");
     .deploy-button {
@@ -108,17 +115,23 @@ export default {
   .detail {
     @include prefix("display", "flex");
     width: 100%;
-    height: 100%;
+    padding: 16px;
 
     .column {
-      width: 50%;
+      flex-grow: 1;
       height: 100%;
 
       .label-value {
         @include prefix("display", "flex");
+        margin-bottom: 8px;
+        font-size: $fs-small;
         .label {
+          margin-right: 8px;
           color: $gray;
         }
+      }
+      .model-id {
+        font-size: $fs-regular;
       }
     }
   }

@@ -1,9 +1,12 @@
 <template lang="html">
 <footer>
-  <img class="logo-img" src="/static/img/renomlogo.png">
-
-  <div class="version">ReNom RG beta</div>
-  <div class="copyright">©︎2018 GRID INC. ALL rights reserved.</div>
+  <div class="footer-content">
+    <img class="logo-img" src="/static/img/renomlogo.png">
+    <div class="version">ReNom RG beta</div>
+  </div>
+  <div class="copyright-bar">
+    <div class="copyright">©︎2018 GRID INC. ALL rights reserved.</div>
+  </div>
 </footer>
 </template>
 
@@ -20,16 +23,26 @@ footer {
   background: $dark-blue;
   z-index: 1;
 
-  .logo-img {
-    margin: 16px;
-  }
+  .footer-content {
+    max-width: $max-width;
+    margin: 0 auto;
 
-  .version, .copyright {
-    line-height: 32px;
-    color: $white;
+    .logo-img {
+      margin: 24px 8px 8px 8px;
+    }
+    .version {
+      line-height: 32px;
+      color: $white;
+    }
   }
-  .copyright {
-    background: $dark-blue;
+  .copyright-bar {
+    background: #02294C;
+    .copyright {
+      max-width: $max-width;
+      margin: 0 auto;
+      line-height: 32px;
+      color: $white;
+    }
   }
 }
 </style>

@@ -5,14 +5,14 @@
         Dashboard
       </div>
 
-      <div class="panel-content">
+      <div class="panel-content dashboard-content">
         <!-- ratio bar -->
-        <div class="dashboard-ratio-bar">
-          <div class="label-value">
-            <div class="label">Total Models:</div>
-            <div class="value">{{model_list.length}}</div>
-          </div>
+        <div class="total-models">
+          <div class="label">Total Models:</div>
+          <div class="value">{{model_list.length}}</div>
+        </div>
 
+        <div class="dashboard-ratio-bar">
           <div class="bar-legends">
             <div class="legend" v-for="(a, index) in algorithms">
               <div :class="'legend-color '+a.toLowerCase()"></div>
@@ -47,35 +47,47 @@ export default {
 
 <style lang="scss" scoped>
 #dashboard {
-  .dashboard-ratio-bar {
+  $group-margin: 16px;
+  width: 100%;
+  height: $dashboard-height;
+
+  .dashboard-content {
+    padding: 16px;
+  }
+  .total-models {
+    @include prefix("display", "flex");
+  }
+  .dashboard-ratio-bar, .running-models {
     width: 100%;
-    .label-value {
-      @include prefix("display", "flex");
-    }
+    margin-top: $group-margin;
+  }
+  .dashboard-ratio-bar {
     .bar-legends {
       @include prefix("display", "flex");
       .legend {
         @include prefix("display", "flex");
         justify-content: center;
         align-items: center;
-        margin-right: 16px;
+        margin-right: 8px;
 
         .legend-color {
           width: 8px;
           height: 8px;
           margin-right: 4px;
         }
+        .legend-name {
+          font-size: $fs-small;
+        }
       }
     }
 
     .horizontal-bar {
       @include prefix("display", "flex");
+      margin-top: 8px;
       .bar-item {
-        height: 8px;
+        height: 16px;
       }
     }
   }
-
-  .running-models {}
 }
 </style>

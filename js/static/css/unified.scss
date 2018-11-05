@@ -12,10 +12,17 @@ $black: #666666;
 $dark-blue: #063662;
 $blue: #136eab;
 
+// font-size
+$fs-regular: 1rem;
+$fs-small: 0.8rem;
+
 // modal
 $modal-opacity: 0.5;
 $modal-content-width: 70%;
 $modal-content-height: 70%;
+$modal-content-padding: 32px;
+$modal-tab-width: 200px;
+$modal-tab-height: 40px;
 
 /**
 * header
@@ -32,12 +39,14 @@ $content-left-width: 60%;
 $content-right-width: 40%;
 
 // content height
-$content-height: 1500px;
+$content-height: 1440px;
 $dashboard-height: 360px;
 $model-map-height: 360px;
 $model-detail-height: 360px;
 $learning-curve-height: 360px;
 $prediction-sample-height: 480px;
+$features-height: 240px;
+$model-list-item-height: 120px;
 
 /**
 * custom scroll bar

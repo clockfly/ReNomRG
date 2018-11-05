@@ -1,45 +1,89 @@
 <template>
   <div class="modal-params-setting">
+    <div class="column">
 
-    <div class="input-with-label">
-      <div class="label">dataset id: </div>
-      <select v-model="dataset_index">
-        <option v-for="(name, index) in $store.state.dataset_name_list"
-          :value="index" :key="index">
-          {{ name }}
-        </option>
-      </select>
-    </div>
+      <div class="setting-block">
+        <div class="setting-type">
+          Dataset Setting
+        </div>
 
-    <div class="input-with-label">
-      <div class="label">algorithm: </div>
-      <select v-model="algorithm">
-        <option v-for="(algorithm, index) in algorithms"
-          :value="index" :key="index">
-          {{ algorithm }}
-        </option>
-      </select>
-    </div>
+        <div class="sub-block">
+          <div class="label">Dataset Name</div>
+          <div class="input-value">
+            <select v-model="dataset_index">
+              <option v-for="(name, index) in $store.state.dataset_name_list"
+                :value="index" :key="index">
+                {{ name }}
+              </option>
+            </select>
+            <div class="to-setting-dataset" @click="$emit('todataset')">
+              > Setting of Dataset
+            </div>
+          </div>
+        </div>  <!-- sub block -->
+      </div>  <!-- setting block -->
 
-    <div class="input-with-label">
-      <div class="label">batch size: </div>
-      <input type="text" v-model="batch_size">
-    </div>
+      <div class="setting-block">
+        <div class="setting-type">
+          Algorithm Setting
+        </div>
 
-    <div class="input-with-label">
-      <div class="label">epoch: </div>
-      <input type="text" v-model="epoch">
-    </div>
+        <div class="sub-block">
+          <div class="label">CNN Architecture</div>
+          <div class="input-value">
+            <select v-model="algorithm">
+              <option v-for="(algorithm, index) in algorithms"
+                :value="index" :key="index">
+                {{ algorithm }}
+              </option>
+            </select>
+          </div>
+        </div>  <!-- sub block -->
+      </div>  <!-- setting block -->
 
-    <div class="input-with-label">
-      <div class="label">neighbors: </div>
-      <input type="text" v-model="algorithm_params['num_neighbors']">
-    </div>
+      <div class="setting-block">
+        <div class="setting-type">
+          Training Loop Setting
+        </div>
+
+        <div class="sub-block">
+          <div class="label">Batch Size</div>
+          <div class="input-value">
+            <input type="text" v-model="batch_size">
+          </div>
+        </div>  <!-- sub block -->
+
+        <div class="sub-block">
+          <div class="label">Total Epoch</div>
+          <div class="input-value">
+            <input type="text" v-model="epoch">
+          </div>
+        </div>  <!-- sub block -->
+      </div>  <!-- setting block -->
+
+    </div>  <!-- column -->
+
+    <div class="column">
+      <div class="setting-block">
+        <div class="setting-type">
+          Graph Comvolution Params
+        </div>
+
+        <div class="sub-block">
+          <div class="label">Number of neighbors</div>
+          <div class="input-value">
+            <input type="text" v-model="algorithm_params['num_neighbors']">
+          </div>
+        </div>  <!-- sub block -->
+      </div>  <!-- setting block -->
+
+    </div>  <!-- column -->
 
     <div class="button-area">
       <button @click="runModel">Run</button>
       <button class="button-cancel" @click="hideModal">Cancel</button>
     </div>
+
   </div>
 </template>
 
@@ -81,17 +125,40 @@ export default {
 
 <style lang="scss" scoped>
 .modal-params-setting {
-  .input-with-label {
+  @include prefix("display", "flex");
+  width: 100%;
+  height: calc(100% - #{$modal-tab-height});
+
+  .column {
+    position: relative;
+    width: 50%;
+  }
+  .setting-block {
+    margin-top: 24px;
+    margin-left: 24px;
+  }
+  .sub-block {
     @include prefix("display", "flex");
-    .label {
-      color: $gray;
+    margin-top: 16px;
+    margin-left: 16px;
+
+    .label, .input-value {
+      width: 50%;
     }
+  }
+  .setting-type, .label {
+    color: $gray;
+  }
+
+  .to-setting-dataset {
+    font-size: $fs-small;
+    color: $blue;
   }
 
   .button-area {
     position: absolute;
-    bottom: 16px;
-    right: 16px;
+    bottom: $modal-content-padding;
+    right: $modal-content-padding;
   }
 }
 </style>

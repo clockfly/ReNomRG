@@ -16,31 +16,36 @@
           v-for="(model,index) in $store.state.model_list"
           @click="selectModel(model)">
 
+          <div :class="'algorithm-color '+$store.state.algorithms[model.algorithm].toLowerCase()"></div>
+
           <div class="label-value">
-            <div class="label">Model ID:</div>
+            <div class="label">Model ID</div>
             <div class="value">{{model.model_id}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">Algorithm:</div>
-            <div class="value">{{model.algorithm}}</div>
+            <div class="label">Algorithm</div>
+            <div class="value">{{$store.state.algorithms[model.algorithm]}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">Validation Loss:</div>
-            <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
-          </div>
-
-          <div class="label-value">
-            <div class="label">RMSE:</div>
+            <div class="label">RMSE</div>
             <div class="value">{{round(model.best_epoch_rmse)}}</div>
           </div>
 
           <div class="label-value">
-            <div class="label">Max Absolute Error:</div>
+            <div class="label">Max Absolute Error</div>
             <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
           </div>
 
+          <div class="label-value">
+            <div class="label">Validation Loss</div>
+            <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
+          </div>
+
+          <div v-if="model.deployed === 0" class="delete-button" @click="deleteModel(model)">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </div>
           <div v-if="model.deployed === 1" class="deployed">
             deployed
           </div>
@@ -65,6 +70,10 @@ export default {
     },
     showModal: function () {
       this.$store.commit('setAddModelModalShowFlag', {'flag': true})
+    },
+    deleteModel: function (m) {
+      alert('削除　未実装')
+      // this.$store.dispatch('deleteModel', {'model_id': m['model_id']})
     }
   }
 }
@@ -96,14 +105,42 @@ export default {
   }
 
   .model-list-item {
+    position: relative;
+    width: 100%;
+    height: $model-list-item-height;
     margin-top: 8px;
+    padding: 8px 8px 8px 16px;
     background: $white;
+
+    .algorithm-color {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 100%;
+    }
 
     .label-value {
       @include prefix('display', 'flex');
+      margin-bottom: 8px;
+      font-size: $fs-small;
       .label {
+        margin-right: 8px;
         color: $gray;
       }
+    }
+
+    .delete-button, .deployed {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      font-size: $fs-small;
+    }
+    .delete-button {
+      color: $gray;
+    }
+    .deployed {
+      color: $blue;
     }
   }
   .model-list-item:hover {
