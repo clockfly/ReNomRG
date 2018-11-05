@@ -7,6 +7,7 @@ $max-width: 1280px;
 // colors
 $background-gray: #f3f3f1;
 $white: #ffffff;
+$light-gray: #cccccc;
 $gray: #999999;
 $black: #666666;
 $dark-blue: #063662;
@@ -80,6 +81,36 @@ $model-list-item-height: 120px;
   color: $black;
 }
 
+$input-base-width: 160px;
+/**
+* textarea resize none
+*/
+textarea {
+  resize: none;
+  width: $input-base-width;
+  border: 1px solid $light-gray;
+  color: $gray;
+}
+
+/**
+* input
+*/
+input {
+  width: $input-base-width;
+  border: 1px solid $light-gray;
+  color: $gray;
+}
+
+/**
+* select
+*/
+select {
+  width: $input-base-width;
+  background: $white;
+  border: 1px solid $light-gray;
+  color: $gray;
+}
+
 /**
 * button base css
 */
@@ -89,7 +120,7 @@ button {
   border: none;
   background-color: $blue;
   line-height: 40px;
-  font-size: 1rem;
+  font-size: $fs-regular;
   color: $white;
 }
 
@@ -97,7 +128,7 @@ button {
 * cancel button base css
 */
 .button-cancel {
-  border: 1px solid $gray;
+  border: 1px solid $light-gray;
   background-color: $white;
   line-height: 38px;
   color: $gray;
