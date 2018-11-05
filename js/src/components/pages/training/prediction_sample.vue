@@ -143,7 +143,7 @@ export default {
       }
     },
     drawDeployed: function () {
-      if (!this.$store.state.deployed_model_y_pred) return
+      if (this.$store.state.deployed_model_y_pred.length === 0) return
       this.removeDeployed()
       const y_valid = this.$store.state.deployed_model_y_valid
       const y_pred = this.$store.state.deployed_model_y_pred

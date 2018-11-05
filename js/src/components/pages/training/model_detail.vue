@@ -15,7 +15,7 @@
         <div class="column">
           <div class="label-value model-id">
             <div class="label">Model ID</div>
-            <div class="value">{{model.model_id}}</div>
+            <div class="value" v-if="model">{{model.model_id}}</div>
           </div>
         </div>
 

@@ -244,6 +244,7 @@ export default {
 
   .train-ratio-bar {
     @include prefix("display", "flex");
+    width: 100%;
     .bar-item {
       height: 8px;
     }
