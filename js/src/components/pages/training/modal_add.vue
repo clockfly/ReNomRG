@@ -13,7 +13,7 @@
         <div class="tab-rest"></div>
       </div>
 
-      <ModalParamsSetting v-if="tab === 'params'"></ModalParamsSetting>
+      <ModalParamsSetting v-if="tab === 'params'" @todataset="tab = 'dataset'"></ModalParamsSetting>
       <ModalDataset v-if="tab === 'dataset'" @cancel="tab = 'params'"></ModalDataset>
     </div>
   </div>

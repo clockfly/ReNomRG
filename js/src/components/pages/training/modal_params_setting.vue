@@ -16,6 +16,9 @@
                 {{ name }}
               </option>
             </select>
+            <div class="to-setting-dataset" @click="$emit('todataset')">
+              > Setting of Dataset
+            </div>
           </div>
         </div>  <!-- sub block -->
       </div>  <!-- setting block -->
@@ -145,6 +148,11 @@ export default {
   }
   .setting-type, .label {
     color: $gray;
+  }
+
+  .to-setting-dataset {
+    font-size: $fs-small;
+    color: $blue;
   }
 
   .button-area {
