@@ -33,6 +33,7 @@ export default {
   sort_key: 0,
   // prediction model
   deployed_model_id: undefined,
+  deployed_model: undefined,
 
   /**
   * Model Detail
