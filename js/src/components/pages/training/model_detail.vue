@@ -106,7 +106,7 @@ export default {
     @include prefix("display", "flex");
     .deploy-button {
       margin-left: auto;
-      padding: 0 16px;
+      padding: 0 $panel-content-padding;
       background: $blue;
       color: $white;
     }
@@ -115,7 +115,7 @@ export default {
   .detail {
     @include prefix("display", "flex");
     width: 100%;
-    padding: 16px;
+    padding: $panel-content-padding;
 
     .column {
       flex-grow: 1;

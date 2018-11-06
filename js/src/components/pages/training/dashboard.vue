@@ -52,7 +52,7 @@ export default {
   height: $dashboard-height;
 
   .dashboard-content {
-    padding: 16px;
+    padding: $panel-content-padding;
   }
   .total-models {
     @include prefix("display", "flex");

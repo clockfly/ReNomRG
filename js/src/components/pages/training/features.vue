@@ -36,13 +36,14 @@ export default {
 
 <style lang="scss" scoped>
 #features {
+  $feature-item-height: 24px;
   width: 100%;
   height: $features-height;
 
   .features-content {
     @include prefix('display', 'flex');
     width: 100%;
-    padding: 16px;
+    padding: $panel-content-padding;
     overflow: scroll;
 
     .target-feature-list {
@@ -63,17 +64,17 @@ export default {
       }
     }
     .feature-type {
-      height: 24px;
+      height: $feature-item-height;
       margin-bottom: 8px;
-      line-height: 24px;
+      line-height: $feature-item-height;
     }
     .feature-item {
-      height: 24px;
+      height: $feature-item-height;
       margin-bottom: 8px;
       padding-left: 8px;
       border-left: 1px solid "#ccc";
       font-size: $fs-small;
-      line-height: 24px;
+      line-height: $feature-item-height;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

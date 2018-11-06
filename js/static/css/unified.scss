@@ -138,6 +138,7 @@ button {
 * panel content base css
 */
 $panel-title-height: 32px;
+$panel-content-padding: 16px;
 .panel {
   width: 100%;
   height: 100%;
@@ -146,7 +147,7 @@ $panel-title-height: 32px;
   .panel-title {
     width: 100%;
     height: $panel-title-height;
-    padding-left: 16px;
+    padding-left: $panel-content-padding;
     background-color: $dark-blue;
     color: $white;
     line-height: $panel-title-height;

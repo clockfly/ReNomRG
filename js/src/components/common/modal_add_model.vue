@@ -14,19 +14,19 @@
       </div>
 
       <ModalParamsSetting v-if="tab === 'params'" @todataset="tab = 'dataset'"></ModalParamsSetting>
-      <ModalDataset v-if="tab === 'dataset'" @cancel="tab = 'params'"></ModalDataset>
+      <ModalDatasetSetting v-if="tab === 'dataset'" @cancel="tab = 'params'"></ModalDatasetSetting>
     </div>
   </div>
 </template>
 
 <script>
-import ModalDataset from '@/components/pages/training/modal_dataset'
-import ModalParamsSetting from '@/components/pages/training/modal_params_setting'
+import ModalDatasetSetting from '@/components/common/modal_dataset_setting'
+import ModalParamsSetting from '@/components/common/modal_params_setting'
 
 export default {
   name: 'ModalAdd',
   components: {
-    ModalDataset,
+    ModalDatasetSetting,
     ModalParamsSetting
   },
   data: function () {
