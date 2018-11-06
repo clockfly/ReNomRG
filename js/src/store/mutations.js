@@ -156,10 +156,8 @@ export default {
   /**
   * dataset page
   */
-  setSelectedDatasetId (state, payload) {
-    state.selected_dataset_id = payload.dataset_id
-  },
   setSelectedDataset (state, payload) {
+    state.selected_dataset_id = payload.dataset.dataset_id
     state.selected_dataset = payload.dataset
   }
 }

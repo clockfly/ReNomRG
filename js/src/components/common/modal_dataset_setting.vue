@@ -187,13 +187,14 @@ export default {
         )
     },
     removeHistogram: function () {
-      d3.select('#train-test-histogram').selectAll('*').remove()
+      d3.select('#train-test-histogram').selectAll('svg').remove()
     },
     confirmDataset: function () {
       this.$store.dispatch('confirmDataset', this.params())
     },
     saveDataset: function (value) {
-      this.$store.dispatch('saveDataset', this.params())
+      this.$store.dispatch('saveAndUpdateDataset', this.params())
+      this.$emit('cancel')
     }
   }
 }

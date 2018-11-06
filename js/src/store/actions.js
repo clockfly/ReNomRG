@@ -135,9 +135,9 @@ export default {
     await context.dispatch('loadModels')
   },
 
-  loadDatasets (context, payload) {
+  async loadDatasets (context, payload) {
     const url = '/api/renom_rg/datasets'
-    axios.get(url)
+    return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
@@ -172,7 +172,7 @@ export default {
       })
   },
 
-  saveDataset (context, payload) {
+  async saveDataset (context, payload) {
     let fd = new FormData()
     fd.append('name', payload.name)
     fd.append('description', payload.description)
@@ -203,6 +203,11 @@ export default {
           'dataset': response.data.dataset
         })
       })
+  },
+
+  async saveAndUpdateDataset (context, payload) {
+    await context.dispatch('saveDataset', payload)
+    await context.dispatch('loadDatasets')
   }
 
   // runPrediction (context, payload) {

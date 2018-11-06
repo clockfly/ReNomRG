@@ -35,10 +35,10 @@
 </template>
 
 <script>
+import ModalAdd from '@/components/common/modal_add_model'
 import Dashboard from '@/components/pages/training/dashboard.vue'
 import Features from '@/components/pages/training/features'
 import LearningCurve from '@/components/pages/training/learning_curve.vue'
-import ModalAdd from '@/components/pages/training/modal_add'
 import ModelDetail from '@/components/pages/training/model_detail.vue'
 import ModelList from '@/components/pages/training/model_list'
 import ModelMap from '@/components/pages/training/model_map.vue'
@@ -67,13 +67,12 @@ export default {
 <style lang="scss" scoped>
 #page {
   width: 100%;
-  height: 100%;
 
   .training {
     @include prefix('display', 'flex');
     position: relative;
     width: 100%;
-    height: 100%;
+    height: $content-height;
 
     .content {
       width: $content-width;
