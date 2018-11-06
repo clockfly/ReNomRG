@@ -208,18 +208,18 @@ export default {
   async saveAndUpdateDataset (context, payload) {
     await context.dispatch('saveDataset', payload)
     await context.dispatch('loadDatasets')
-  }
+  },
 
-  // runPrediction (context, payload) {
-  //   const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
-  //   axios.get(url)
-  //     .then(function (response) {
-  //       if (response.data.error_msg) {
-  //         context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
-  //         return
-  //       }
-  //       console.log(response.data)
-  //       // context.commit('setDeployedModel', {'model': response.data.model})
-  //     })
-  // }
+  runPrediction (context, payload) {
+    const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
+    axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          return
+        }
+        console.log(response.data)
+        // context.commit('setDeployedModel', {'model': response.data.model})
+      })
+  }
 }

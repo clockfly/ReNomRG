@@ -105,6 +105,7 @@ export default {
     state.deployed_model_id = payload.model.model_id
     state.deployed_model_y_valid = payload.model.valid_true
     state.deployed_model_y_pred = payload.model.valid_predicted
+    state.deployed_model = payload.model
   },
 
   /**
