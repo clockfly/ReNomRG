@@ -8,6 +8,7 @@
       <div id="value-map" class="panel-content">
         <div class="x-axis-name">Root Mean Squared Error</div>
         <div class="y-axis-name">Max Absolute Error</div>
+        <div id="map-tooltip"></div>
       </div>
     </div>
   </div>
@@ -16,7 +17,7 @@
 <script>
 import * as d3 from 'd3'
 import { train_color } from '@/const'
-import { max, min, getScale, removeSvg, styleAxis } from '@/utils'
+import { max, min, round, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'ModelMap',
@@ -36,6 +37,7 @@ export default {
       const id = '#value-map'
       removeSvg(id)
 
+      const store = this.$store
       const [rmse_list, max_abs_error_list, dataset] = this.shapeDataset()
 
       const parent_area = d3.select(id)
@@ -77,6 +79,8 @@ export default {
         .call(y_axis_define)
       styleAxis(y_axis)
 
+      const tooltip = d3.select('#map-tooltip')
+      const algorithms = this.$store.state.algorithms
       svg.append('g')
         .selectAll('circle')
         .data(dataset)
@@ -86,15 +90,30 @@ export default {
         .attr('cy', function (d) { return y_scale(d[1]) })
         .attr('fill', train_color)
         .attr('r', 3)
+        .on('mouseover', function (d) {
+          console.log(d3.select(this))
+          tooltip.html('model_id: ' + d[2] + '<br>algorithm: ' + algorithms[d[3]] + '<br>RMSE: ' + round(d[0], 1000) + '<br>MaxAbsError: ' + round(d[1], 1000))
+            .attr('class', algorithms[d[3]].toLowerCase())
+            .style('left', (parseInt(d3.select(this).attr('cx')) - 100) + 'px')
+            .style('top', (parseInt(d3.select(this).attr('cy')) + 10) + 'px')
+            .style('display', 'inline-block')
+        })
+        .on('mouseout', function (d) {
+          tooltip.style('display', 'none')
+        })
+        .on('click', function (d) {
+          store.commit('setSelectedModelId', {'model_id': d[2]})
+          store.dispatch('selectModel', {'model_id': d[2]})
+        })
     },
     shapeDataset: function () {
       let rmse_list = []
       let max_abs_error_list = []
       let dataset = []
       for (let m of this.$store.state.model_list) {
-        let d = [m['best_epoch_rmse'], m['best_epoch_max_abs_error']]
-        rmse_list.push(m['best_epoch_rmse'])
-        max_abs_error_list.push(m['best_epoch_max_abs_error'])
+        let d = [m.best_epoch_rmse, m.best_epoch_max_abs_error, m.model_id, m.algorithm]
+        rmse_list.push(m.best_epoch_rmse)
+        max_abs_error_list.push(m.best_epoch_max_abs_error)
         dataset.push(d)
       }
       return [rmse_list, max_abs_error_list, dataset]
@@ -124,6 +143,16 @@ export default {
     .y-axis-name {
       top: 16px;
       left: 16px;
+    }
+    #map-tooltip {
+      display: none;
+      position: absolute;
+      z-index: 999;
+      width: 200px;
+      padding: 16px;
+      font-size: $fs-small;
+      line-height:  1.5;
+      color: $white;
     }
   }
 }
