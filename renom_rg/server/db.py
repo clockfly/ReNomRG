@@ -7,7 +7,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.orm import relationship
 
-session = None
 Base = declarative_base()
 
 from sqlalchemy import Column, BigInteger, Integer, TEXT, BLOB, FLOAT, DateTime, ForeignKey
@@ -17,7 +16,7 @@ NONE_PICLKLES = pickle.dumps(None)
 class DatasetDef(Base):
     __tablename__ = 'dataset_def'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(TEXT)
     description = Column(TEXT)
     target_column_id = Column(Integer)
@@ -57,7 +56,7 @@ class Model(Base):
 
     dataset = relationship('DatasetDef')
 
-def get_engine(path):
+def get_engine():
     config = configparser.ConfigParser()
     config.read('alembic.ini')
     url = config['alembic']['sqlalchemy.url']
@@ -65,16 +64,16 @@ def get_engine(path):
     return engine
 
 def initsession(engine):
-    session_factory = sessionmaker(engine)
+    global _session
+    _session = scoped_session(sessionmaker(bind=engine))
 
-    global session
-    session = scoped_session(session_factory)()
+def session():
+    return _session
 
-
-def initdb(path):
+def initdb():
     ret = os.system("alembic upgrade head")
     if ret:
         raise RuntimeError("Failed to upgrade database")
 
-    engine = get_engine(path)
+    engine = get_engine()
     initsession(engine)

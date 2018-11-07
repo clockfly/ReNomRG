@@ -35,7 +35,7 @@ def session():
     renom_rg.server.db.initsession(engine)
 
     try:
-        yield renom_rg.server.db.session
+        yield 1
     finally:
         try:
             engine.dispose()

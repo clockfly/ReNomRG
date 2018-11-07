@@ -48,7 +48,7 @@ def test_create_dataset(app):
         })
 
     assert resp.status_int == 200
-    q = db.session.query(db.DatasetDef)
+    q = db.session().query(db.DatasetDef)
     ds = q.filter(db.DatasetDef.name=='test_create_dataset_1').one()
     assert ds
 
@@ -59,8 +59,9 @@ def _add_dataset():
                        train_ratio=0.1, train_index=pickle.dumps([2,3,4]),
                        valid_index=pickle.dumps([3,4,5]))
 
-    db.session.add(ds)
-    db.session.commit()
+    session = db.session()
+    session.add(ds)
+    session.commit()
     return ds
 
 def test_delete_dataset(app):
@@ -68,7 +69,7 @@ def test_delete_dataset(app):
     resp = app.delete('/api/renom_rg/datasets/%d' % ds.id)
 
     assert resp.status_int == 200
-    assert db.session.query(db.DatasetDef).filter(db.DatasetDef.id==ds.id).count() == 0
+    assert db.session().query(db.DatasetDef).filter(db.DatasetDef.id==ds.id).count() == 0
 
     resp = app.delete('/api/renom_rg/datasets/%d' % ds.id)
     assert resp.status_int == 404
@@ -100,8 +101,9 @@ def _add_model():
         algorithm_params=pickle.dumps(None), batch_size=10,
         epoch=10)
 
-    db.session.add(model)
-    db.session.commit()
+    session = db.session()
+    session.add(model)
+    session.commit()
     return model
 
 def test_create_model(app):
@@ -115,7 +117,7 @@ def test_create_model(app):
         })
 
     assert resp.status_int == 200
-    model = db.session.query(db.Model).filter(db.Model.dataset_id==ds.id).one()
+    model = db.session().query(db.Model).filter(db.Model.dataset_id==ds.id).one()
     assert model
 
 
@@ -124,7 +126,7 @@ def test_delete_model(app):
     resp = app.delete('/api/renom_rg/models/%d' % model.id)
 
     assert resp.status_int == 200
-    assert db.session.query(db.Model).filter(db.Model.id==model.id).count() == 0
+    assert db.session().query(db.Model).filter(db.Model.id==model.id).count() == 0
 
     resp = app.delete('/api/renom_rg/models/%d' % model.id)
     assert resp.status_int == 404
@@ -158,8 +160,9 @@ def test_model_deploy(app):
     model2 = _add_model()
     model2.deployed = 1
 
-    db.session.add_all([model1, model2])
-    db.session.commit()
+    session = db.session()
+    session.add_all([model1, model2])
+    session.commit()
 
     resp = app.post('/api/renom_rg/models/%s/deploy' % model2.id)
 
@@ -169,10 +172,11 @@ def test_model_deploy(app):
     assert ret['id'] == model2.id
     assert ret['deployed'] == 1
 
-    assert db.session.query(db.Model).get(model1.id).deployed == 0
-    assert db.session.query(db.Model).get(model2.id).deployed == 1
+    session = db.session()
+    assert session.query(db.Model).get(model1.id).deployed == 0
+    assert session.query(db.Model).get(model2.id).deployed == 1
 
-    db.session.delete(model2)
+    session.delete(model2)
     resp = app.post('/api/renom_rg/models/%s/deploy' % model2.id)
     assert resp.status_int == 404
 

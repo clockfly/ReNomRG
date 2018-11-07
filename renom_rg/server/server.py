@@ -125,14 +125,14 @@ def _dataset_to_dict(ds):
 
 @route('/api/renom_rg/datasets', method='GET')
 def get_datasets():
-    q = db.session.query(db.DatasetDef).all()
+    q = db.session().query(db.DatasetDef).all()
     ret = [_dataset_to_dict(ds) for ds in q]
     return create_response({'datasets':ret})
 
 
 @route('/api/renom_rg/datasets/<dataset_id:int>', method='GET')
 def get_dataset(dataset_id):
-    ds = db.session.query(db.DatasetDef).get(dataset_id)
+    ds = db.session().query(db.DatasetDef).get(dataset_id)
     if ds:
         return create_response({'dataset':_dataset_to_dict(ds)})
     else:
@@ -141,25 +141,22 @@ def get_dataset(dataset_id):
 
 @route('/api/renom_rg/datasets/confirm', method='POST')
 def confirm_dataset():
-    try:
-        target_column_id = int(request.params.target_column_id)
-        train_ratio = float(request.params.train_ratio)
+    target_column_id = int(request.params.target_column_id)
+    train_ratio = float(request.params.train_ratio)
 
-        with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
-            data = pickle.load(f)
-        X, y = split_target(data, target_column_id)
-        X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
+    with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
+        data = pickle.load(f)
+    X, y = split_target(data, target_column_id)
+    X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
-        body = json.dumps({
-            "train_count": y_train.shape[0],
-            "valid_count": y_valid.shape[0],
-            "target_train": y_train.values.tolist(),
-            "target_valid": y_valid.values.tolist(),
-            "train_index": np.array(y_train.index).tolist(),
-            "valid_index": np.array(y_valid.index).tolist()
-        })
-    except Exception as e:
-        body = create_error_body(e)
+    body = {
+        "train_count": y_train.shape[0],
+        "valid_count": y_valid.shape[0],
+        "target_train": y_train.values.tolist(),
+        "target_valid": y_valid.values.tolist(),
+        "train_index": np.array(y_train.index).tolist(),
+        "valid_index": np.array(y_valid.index).tolist()
+    }
     r = create_response(body)
     return r
 
@@ -180,19 +177,20 @@ def create_dataset():
                             train_ratio=train_ratio,
                             train_index=pickle.dumps(train_index),
                             valid_index=pickle.dumps(valid_index))
-
-    db.session.add(dataset)
-    db.session.commit()
+    session = db.session()
+    session.add(dataset)
+    session.commit()
 
     return create_response({'dataset':_dataset_to_dict(dataset)})
 
 
 @route('/api/renom_rg/datasets/<dataset_id:int>', method='DELETE')
 def delete_dataset(dataset_id):
-    ds = db.session.query(db.DatasetDef).get(dataset_id)
+    session = db.session()
+    ds = session.query(db.DatasetDef).get(dataset_id)
 
     if ds:
-        db.session.delete(ds)
+        session.delete(ds)
         return create_response({})
     else:
         return create_response({}, 404, err='dataset not found')
@@ -225,14 +223,14 @@ def _model_to_dict(model):
 
 @route("/api/renom_rg/models", method="GET")
 def get_models():
-    q = db.session.query(db.Model).all()
+    q = db.session().query(db.Model).all()
     ret = [_model_to_dict(model) for model in q]
     return create_response({'models':ret})
 
 
 @route("/api/renom_rg/models/<model_id:int>", method="GET")
 def get_model(model_id):
-    model = db.session.query(db.Model).get(model_id)
+    model = db.session().query(db.Model).get(model_id)
     if model:
         return create_response({'model':_model_to_dict(model)})
     else:
@@ -250,15 +248,17 @@ def create_model():
     model = db.Model(dataset_id=dataset_id, algorithm=algorithm,
         algorithm_params=pickle.dumps(algorithm_params), batch_size=batch_size,
         epoch=epoch)
-    db.session.add(model)
-    db.session.commit()
+
+    session = db.session()
+    session.add(model)
+    session.commit()
 
     return create_response({'model':_model_to_dict(model)})
 
 
 @route("/api/renom_rg/models/<model_id:int>", method="DELETE")
 def delete_model(model_id):
-    q = db.session.query(db.Model).filter(db.Model.id==model_id)
+    q = db.session().query(db.Model).filter(db.Model.id==model_id)
     n = q.delete() 
     if n:
         return create_response({})
@@ -268,13 +268,15 @@ def delete_model(model_id):
 
 @route("/api/renom_rg/models/<model_id:int>/deploy", method="POST")
 def deploy_model(model_id):
-    db.session.query(db.Model).update({'deployed': 0})
-    model = db.session.query(db.Model).get(model_id)
+    session = db.session()
+
+    session.query(db.Model).update({'deployed': 0})
+    model = session.query(db.Model).get(model_id)
 
     if model:
         model.deployed = 1
-        db.session.add(model)
-        db.session.commit()
+        session.add(model)
+        session.commit()
 
         return create_response({'model':_model_to_dict(model)})
     else:
@@ -283,13 +285,15 @@ def deploy_model(model_id):
 
 @route("/api/renom_rg/models/<model_id:int>/undeploy", method="POST")
 def undeploy_model(model_id):
-    db.session.query(db.Model).update({'deployed': 0})
-    model = db.session.query(db.Model).get(model_id)
+    session = db.session()
+
+    session.query(db.Model).update({'deployed': 0})
+    model = session.query(db.Model).get(model_id)
 
     if model:
         model.deployed = 1
-        db.session.add(model)
-        db.session.commit()
+        session.add(model)
+        session.commit()
 
         return create_response({'model':_model_to_dict(model)})
     else:
@@ -319,7 +323,7 @@ executor = Executor()
 
 @route("/api/renom_rg/models/<model_id:int>/train", method="GET")
 def train_model(model_id):
-    model = db.session.query(db.Model).get(model_id)
+    model = db.session().query(db.Model).get(model_id)
     if not model:
         return create_response({}, 404, err='not found')
 
@@ -361,12 +365,12 @@ def plugin(func):
     def wrapper(*args,**kwargs):
         try:
             ret = func(*args,**kwargs)
-            db.session.commit()
+            db.session().commit()
             return ret
 
         except Exception as e:
             logger.exception("Exception:")
-            db.session.rollback()
+            db.session().rollback()
             return (500, str(e))
 
     return wrapper
@@ -406,6 +410,7 @@ def _init_gpu():
 
 def main():
     _create_dirs()
+    db.initdb()
     _init_gpu()
 
     # Parser settings.
