@@ -16,7 +16,7 @@
 
 <script>
 import * as d3 from 'd3'
-import { train_color } from '@/const'
+import { algorithm_colors } from '@/const'
 import { max, min, round, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
@@ -88,10 +88,9 @@ export default {
         .append('circle')
         .attr('cx', function (d) { return x_scale(d[0]) })
         .attr('cy', function (d) { return y_scale(d[1]) })
-        .attr('fill', train_color)
+        .attr('fill', function (d) { return algorithm_colors[algorithms[d[3]]] })
         .attr('r', 3)
         .on('mouseover', function (d) {
-          console.log(d3.select(this))
           tooltip.html('model_id: ' + d[2] + '<br>algorithm: ' + algorithms[d[3]] + '<br>RMSE: ' + round(d[0], 1000) + '<br>MaxAbsError: ' + round(d[1], 1000))
             .attr('class', algorithms[d[3]].toLowerCase())
             .style('left', (parseInt(d3.select(this).attr('cx')) - 100) + 'px')
