@@ -56,7 +56,7 @@ export default {
   $nav-item-height: 32px;
 
   position: fixed;
-  z-index: 999;
+  z-index: 2;
 
   #mask {
     position: fixed;
@@ -72,6 +72,7 @@ export default {
   #navigation-bar {
     position: fixed;
     top: $header-height;
+    width: 10%;
     height: $full-screen-height;
     background-color: $dark-blue;
     z-index: 2;
@@ -86,6 +87,12 @@ export default {
         line-height: $nav-item-height;
         color: $white;
       }
+      .icon {
+        margin: 0px 8px;
+      }
+    }
+    .menu-item:hover {
+      background-color: $blue;
     }
   }
 

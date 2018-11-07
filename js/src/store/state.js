@@ -33,6 +33,7 @@ export default {
   sort_key: 0,
   // prediction model
   deployed_model_id: undefined,
+  deployed_model: undefined,
 
   /**
   * Model Detail
@@ -59,6 +60,7 @@ export default {
   */
   // data
   labels: [],
+  target_column_ids: [],
 
   /**
   * modal params setting

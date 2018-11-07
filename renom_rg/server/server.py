@@ -314,6 +314,7 @@ class TaskStatus:
 
     canceled = False
 
+
 executor = Executor()
 
 @route("/api/renom_rg/models/<model_id:int>/train", method="GET")

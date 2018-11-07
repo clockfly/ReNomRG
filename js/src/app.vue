@@ -47,6 +47,7 @@ export default {
     width: $full-screen-width;
     max-width: $max-width;
     margin: 0 auto;
+    z-index: 0;
   }
 }
 </style>

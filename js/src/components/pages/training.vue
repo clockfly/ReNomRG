@@ -35,10 +35,10 @@
 </template>
 
 <script>
+import ModalAdd from '@/components/common/modal_add_model'
 import Dashboard from '@/components/pages/training/dashboard.vue'
 import Features from '@/components/pages/training/features'
 import LearningCurve from '@/components/pages/training/learning_curve.vue'
-import ModalAdd from '@/components/pages/training/modal_add'
 import ModelDetail from '@/components/pages/training/model_detail.vue'
 import ModelList from '@/components/pages/training/model_list'
 import ModelMap from '@/components/pages/training/model_map.vue'
@@ -59,6 +59,7 @@ export default {
   created: function () {
     this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadLabels')
+    this.$store.dispatch('loadModels')
   }
 }
 </script>
@@ -69,10 +70,14 @@ export default {
 
   .training {
     @include prefix('display', 'flex');
+    position: relative;
     width: 100%;
+    height: $content-height;
 
     .content {
       width: $content-width;
+      height: 100%;
+      height: 100%;
 
       .content-columns {
         @include prefix('display', 'flex');
@@ -87,7 +92,11 @@ export default {
       }
     }
     .list {
-      width: $list-width;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      width: #{$list-width};
+      height: 100%;
     }
   }
 }

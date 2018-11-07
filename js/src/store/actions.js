@@ -16,22 +16,13 @@ export default {
       })
   },
 
-  loadModel (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id
-    return axios.get(url)
-      .then(function (response) {
-        if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
-          return
-        }
-
-        context.commit('setSelectedModel', {
-          'model': response.data.model
-        })
-      })
+  async loadModels (context, payload) {
+    await context.dispatch('loadModelList')
+    await context.dispatch('selectModel', { 'model_id': context.state.selected_model_id })
+    await context.dispatch('loadDeployedModel', { 'model_id': context.state.deployed_model_id })
   },
 
-  async loadModels (context, payload) {
+  async loadModelList (context, payload) {
     const url = '/api/renom_rg/models'
     return axios.get(url)
       .then(function (response) {
@@ -42,6 +33,35 @@ export default {
 
         context.commit('setModelList', {
           'model_list': response.data.models
+        })
+      })
+  },
+
+  async selectModel (context, payload) {
+    const url = '/api/renom_rg/models/' + payload.model_id
+    axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          return
+        }
+
+        context.commit('setSelectedModelId', payload)
+        context.commit('setSelectedModel', {'model': response.data.model})
+      })
+  },
+
+  async loadDeployedModel (context, payload) {
+    const url = '/api/renom_rg/models/' + payload.model_id
+    return axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          return
+        }
+
+        context.commit('setDeployededModel', {
+          'model': response.data.model
         })
       })
   },
@@ -82,7 +102,7 @@ export default {
       return
     }
 
-    await context.dispatch('loadModels')
+    await context.dispatch('loadModelList')
   },
 
   async deleteModel (context, payload) {
@@ -93,20 +113,6 @@ export default {
   async deleteAndUpdate (context, payload) {
     await context.dispatch('deleteModel', payload)
     await context.dispatch('loadModels')
-  },
-
-  async selectModel (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id
-    axios.get(url)
-      .then(function (response) {
-        if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
-          return
-        }
-
-        context.commit('setSelectedModelId', payload)
-        context.commit('setSelectedModel', {'model': response.data.model})
-      })
   },
 
   async deployModel (context, payload) {
@@ -122,18 +128,16 @@ export default {
   async deployAndUpdate (context, payload) {
     await context.dispatch('deployModel', payload)
     await context.dispatch('loadModels')
-    await context.dispatch('selectModel', payload)
   },
 
   async undeployAndUpdate (context, payload) {
     await context.dispatch('undeployModel', payload)
     await context.dispatch('loadModels')
-    await context.dispatch('selectModel', payload)
   },
 
-  loadDatasets (context, payload) {
+  async loadDatasets (context, payload) {
     const url = '/api/renom_rg/datasets'
-    axios.get(url)
+    return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
@@ -168,7 +172,7 @@ export default {
       })
   },
 
-  saveDataset (context, payload) {
+  async saveDataset (context, payload) {
     let fd = new FormData()
     fd.append('name', payload.name)
     fd.append('description', payload.description)
@@ -199,18 +203,23 @@ export default {
           'dataset': response.data.dataset
         })
       })
-  }
+  },
 
-  // runPrediction (context, payload) {
-  //   const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
-  //   axios.get(url)
-  //     .then(function (response) {
-  //       if (response.data.error_msg) {
-  //         context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
-  //         return
-  //       }
-  //       console.log(response.data)
-  //       // context.commit('setDeployedModel', {'model': response.data.model})
-  //     })
-  // }
+  async saveAndUpdateDataset (context, payload) {
+    await context.dispatch('saveDataset', payload)
+    await context.dispatch('loadDatasets')
+  },
+
+  runPrediction (context, payload) {
+    const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
+    axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          return
+        }
+        console.log(response.data)
+        // context.commit('setDeployedModel', {'model': response.data.model})
+      })
+  }
 }
