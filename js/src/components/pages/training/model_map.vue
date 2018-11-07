@@ -15,6 +15,8 @@
 
 <script>
 import * as d3 from 'd3'
+import { train_color } from '@/const'
+import { max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'ModelMap',
@@ -31,83 +33,59 @@ export default {
   methods: {
     drawMap: function () {
       if (!this.$store.state.model_list) return
-      this.removeMap()
+      const id = '#value-map'
+      removeSvg(id)
 
       const [rmse_list, max_abs_error_list, dataset] = this.shapeDataset()
 
-      const parent_area = d3.select('#value-map')
+      const parent_area = d3.select(id)
       const width = parent_area._groups[0][0].clientWidth
       const height = parent_area._groups[0][0].clientHeight
       const margin = { 'left': 60, 'top': 40, 'right': 40, 'bottom': 60 }
+      const rmse_min = min(rmse_list)
+      const rmse_max = max(rmse_list)
+      const mae_min = min(max_abs_error_list)
+      const mae_max = max(max_abs_error_list)
 
-      const svg = d3.select('#value-map')
+      const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
 
-      const xScale = d3.scaleLinear()
-        .domain([0, d3.max(rmse_list, function (d) { return d })])
-        .range([margin.left, width - margin.right])
-      const yScale = d3.scaleLinear()
-        .domain([0, d3.max(max_abs_error_list, function (d) { return d })])
-        .range([height - margin.bottom, margin.top])
+      const x_scale = getScale([rmse_min, rmse_max], [margin.left, width - margin.right])
+      const y_scale = getScale([mae_min, mae_max], [height - margin.bottom, margin.top])
 
-      // get axes
-      const axisx = d3.axisBottom(xScale)
+      // draw x axis
+      const x_axis_define = d3.axisBottom(x_scale)
         .tickSizeInner(-(height - margin.top - margin.bottom))
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
-      const axisy = d3.axisLeft(yScale)
-        .ticks(10)
+      const x_axis = svg.append('g')
+        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
+        .call(x_axis_define)
+      styleAxis(x_axis)
+
+      // draw y axis
+      const y_axis_define = d3.axisLeft(y_scale)
         .tickSizeInner(-(width - margin.left - margin.right))
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
-
-      // draw x axis
-      let gX = svg.append('g')
-        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
-        .call(axisx)
-      // draw y axis
-      let gY = svg.append('g')
+      const y_axis = svg.append('g')
         .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
-        .call(axisy)
-
-      stylingAxes()
+        .call(y_axis_define)
+      styleAxis(y_axis)
 
       svg.append('g')
         .selectAll('circle')
         .data(dataset)
         .enter()
         .append('circle')
-        .attr('cx', function (d) { return xScale(d[0]) })
-        .attr('cy', function (d) { return yScale(d[1]) })
-        .attr('fill', 'blue')
-        .attr('r', 4)
-
-      function stylingAxes () {
-        gX.selectAll('path')
-          .style('stroke', d3.rgb(128, 128, 128, 0.5))
-        gX.selectAll('line')
-          .style('stroke', d3.rgb(0, 0, 0, 0.2))
-          .style('stroke-dasharray', '2,2')
-        gX.selectAll('.tick').selectAll('text')
-          .style('fill', d3.rgb(0, 0, 0, 0.5))
-          .style('font-size', '0.60em')
-
-        gY.selectAll('path')
-          .style('stroke', d3.rgb(128, 128, 128, 0.5))
-        gY.selectAll('line')
-          .style('stroke', d3.rgb(0, 0, 0, 0.2))
-          .style('stroke-dasharray', '2,2')
-        gY.selectAll('.tick').selectAll('text')
-          .style('fill', d3.rgb(0, 0, 0, 0.5))
-          .style('font-size', '0.60em')
-      }
-    },
-    removeMap: function () {
-      d3.select('#value-map').selectAll('svg').remove()
+        .attr('cx', function (d) { return x_scale(d[0]) })
+        .attr('cy', function (d) { return y_scale(d[1]) })
+        .attr('fill', train_color)
+        .attr('r', 3)
     },
     shapeDataset: function () {
       let rmse_list = []

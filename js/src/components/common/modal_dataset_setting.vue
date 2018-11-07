@@ -92,11 +92,8 @@
 
 <script>
 import * as d3 from 'd3'
-import { max, min } from '@/utils'
-const train_color = '#0762ad'
-const valid_color = '#ef8200'
-const width = 150
-const height = 150
+import { train_color, valid_color } from '@/const'
+import { max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'ModalDataset',
@@ -129,7 +126,15 @@ export default {
     },
     drawHistogram: function () {
       if (this.$store.state.train_index.length === 0) return
-      this.removeHistogram()
+      const id = '#train-test-histogram'
+      removeSvg(id)
+
+      // const parent_area = d3.select(id)
+      // const width = parent_area._groups[0][0].clientWidth
+      // const height = parent_area._groups[0][0].clientHeight
+      const width = 150
+      const height = 150
+      const margin = { 'left': 20, 'top': 20, 'right': 20, 'bottom': 20 }
 
       const target_train = this.$store.state.target_train
       const target_valid = this.$store.state.target_valid
@@ -138,59 +143,79 @@ export default {
       const valid_max = max(target_valid)
       const valid_min = min(target_valid)
 
-      const svg = d3.select('#train-test-histogram')
+      const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
 
-      const xScale = d3.scaleLinear()
-        .domain([min([train_min, valid_min]), max([train_max, valid_max])])
-        .range([0, width])
-      const yScale = d3.scaleLinear()
-        .domain([height, 0])
-        .range([height, 0])
+      const x_scale = getScale([min([train_min, valid_min]), max([train_max, valid_max])], [margin.left, width - margin.right])
+      // draw x axis
+      const x_axis_define = d3.axisBottom(x_scale)
+        .tickSizeInner(-(height - margin.top - margin.bottom))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const x_axis = svg.append('g')
+        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
+        .call(x_axis_define)
+      styleAxis(x_axis)
 
-      let histogram = d3.histogram()
-        .value(function (d) { return d })
-        .domain(xScale.domain())
-        .thresholds(xScale.ticks(10))
+      // calc histogram
+      const histogram = this.getHistgram(x_scale, 10)
       const train_bins = histogram(target_train)
       const valid_bins = histogram(target_valid)
+      const hist_max = this.getHistgramSizeMax(train_bins)
 
-      let LineLayer = svg.append('g').attr('clip-path', 'url(#clip)')
+      const y_scale = getScale([0, hist_max], [height - margin.bottom, margin.top])
+      // draw y axis
+      const y_axis_define = d3.axisLeft(y_scale)
+        .tickSizeInner(-(width - margin.left - margin.right))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const y_axis = svg.append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
+        .call(y_axis_define)
+      styleAxis(y_axis)
 
       // draw cardinal area chart
-      LineLayer.append('path')
+      svg.append('path')
         .datum(train_bins)
         .attr('fill', train_color)
-        .attr('opacity', 0.3)
+        .attr('opacity', 0.2)
         .attr('stroke', train_color)
-        .attr('stroke-width', 1.5)
+        .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return xScale((d.x0 + d.x1) / 2) })
-          .y1(function (d) { return yScale(height - d.length) })
-          .y0(function (d) { return yScale(height) })
+          .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
+          .y1(function (d) { return y_scale(d.length) })
+          .y0(function (d) { return y_scale(0) })
           .curve(d3.curveCardinal)
         )
 
-      LineLayer.append('path')
+      svg.append('path')
         .datum(valid_bins)
         .attr('fill', valid_color)
-        .attr('opacity', 0.3)
+        .attr('opacity', 0.2)
         .attr('stroke', valid_color)
-        .attr('stroke-width', 1.5)
+        .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return xScale((d.x0 + d.x1) / 2) })
-          .y1(function (d) { return yScale(height - d.length) })
-          .y0(function (d) { return yScale(height) })
+          .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
+          .y1(function (d) { return y_scale(d.length) })
+          .y0(function (d) { return y_scale(0) })
           .curve(d3.curveCardinal)
         )
-    },
-    removeHistogram: function () {
-      d3.select('#train-test-histogram').selectAll('svg').remove()
     },
     confirmDataset: function () {
       this.$store.dispatch('confirmDataset', this.params())
+    },
+    getHistgram: function (scale, ticks) {
+      return d3.histogram()
+        .value(function (d) { return d })
+        .domain(scale.domain())
+        .thresholds(scale.ticks(ticks))
+    },
+    getHistgramSizeMax: function (hist) {
+      return max(hist.map(function (d) { return d.length }))
     },
     saveDataset: function (value) {
       this.$store.dispatch('saveAndUpdateDataset', this.params())

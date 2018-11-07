@@ -25,8 +25,8 @@
 
 <script>
 import * as d3 from 'd3'
-const train_color = '#0762ad'
-const valid_color = '#ef8200'
+import { train_color, valid_color } from '@/const'
+import { max, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'LerningCurve',
@@ -51,97 +51,69 @@ export default {
   },
   methods: {
     drawCurve: function () {
-      this.removeData()
+      const id = '#curve-canvas'
+      removeSvg(id)
 
-      const parent_area = d3.select('#curve-canvas')
+      const parent_area = d3.select(id)
       const width = parent_area._groups[0][0].clientWidth
       const height = parent_area._groups[0][0].clientHeight
       const margin = { 'left': 60, 'top': 40, 'right': 60, 'bottom': 40 }
+      const train_max = max(this.trainList)
+      const valid_max = max(this.validList)
 
-      const svg = d3.select('#curve-canvas')
+      const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
 
-      const xScale = d3.scaleLinear()
-        .domain([0, this.trainList.length])
-        .range([margin.left, width - margin.right])
-      const yScale = d3.scaleLinear()
-        .domain([0, d3.max(this.trainList, function (d) { return d })])
-        .range([height - margin.bottom, margin.top])
+      const x_scale = getScale([0, this.trainList.length], [margin.left, width - margin.right])
+      const y_scale = getScale([0, max([train_max, valid_max])], [height - margin.bottom, margin.top])
 
-      // get axes
-      const axisx = d3.axisBottom(xScale)
+      // draw x axis
+      const x_axis_define = d3.axisBottom(x_scale)
         .tickSizeInner(-(height - margin.top - margin.bottom))
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
-      const axisy = d3.axisLeft(yScale)
-        .ticks(10)
+      const x_axis = svg.append('g')
+        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
+        .call(x_axis_define)
+      styleAxis(x_axis)
+
+      // draw y axis
+      const y_axis_define = d3.axisLeft(y_scale)
         .tickSizeInner(-(width - margin.left - margin.right))
         .tickSizeOuter(0)
         .ticks(10)
         .tickPadding(10)
-
-      // draw x axis
-      let gX = svg.append('g')
-        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
-        .call(axisx)
-      // draw y axis
-      let gY = svg.append('g')
+      const y_axis = svg.append('g')
         .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
-        .call(axisy)
-
-      stylingAxes()
-
-      let LineLayer = svg.append('g').attr('clip-path', 'url(#clip)')
+        .call(y_axis_define)
+      styleAxis(y_axis)
 
       // draw line chart
-      LineLayer.append('path')
+      svg.append('path')
         .datum(this.trainList)
         .attr('fill', 'none')
         .attr('stroke', train_color)
         .attr('stroke-width', 1.5)
         .attr('d', d3.line()
-          .x(function (d, index) { return xScale(index) })
-          .y(function (d) { return yScale(d) })
+          .x(function (d, index) { return x_scale(index) })
+          .y(function (d) { return y_scale(d) })
           .curve(d3.curveLinear)
         )
 
       // draw line chart
-      LineLayer.append('path')
+      svg.append('path')
         .datum(this.validList)
         .attr('fill', 'none')
         .attr('stroke', valid_color)
         .attr('stroke-width', 1.5)
         .attr('d', d3.line()
-          .x(function (d, index) { return xScale(index) })
-          .y(function (d) { return yScale(d) })
+          .x(function (d, index) { return x_scale(index) })
+          .y(function (d) { return y_scale(d) })
           .curve(d3.curveLinear)
         )
-
-      function stylingAxes () {
-        gX.selectAll('path')
-          .style('stroke', d3.rgb(128, 128, 128, 0.5))
-        gX.selectAll('line')
-          .style('stroke', d3.rgb(0, 0, 0, 0.2))
-          .style('stroke-dasharray', '2,2')
-        gX.selectAll('.tick').selectAll('text')
-          .style('fill', d3.rgb(0, 0, 0, 0.5))
-          .style('font-size', '0.60em')
-
-        gY.selectAll('path')
-          .style('stroke', d3.rgb(128, 128, 128, 0.5))
-        gY.selectAll('line')
-          .style('stroke', d3.rgb(0, 0, 0, 0.2))
-          .style('stroke-dasharray', '2,2')
-        gY.selectAll('.tick').selectAll('text')
-          .style('fill', d3.rgb(0, 0, 0, 0.5))
-          .style('font-size', '0.60em')
-      }
-    },
-    removeData: function () {
-      d3.select('#curve-canvas').selectAll('svg').remove()
     }
   }
 }
