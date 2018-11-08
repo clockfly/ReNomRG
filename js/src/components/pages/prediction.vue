@@ -107,7 +107,7 @@ export default {
 #page {
   @include prefix('display', 'flex');
   width: 100%;
-  height: calc(100vh - 200px);
+  height: calc(100vh - #{$footer-height} - #{$header-height});
 
   .model-detail {
     width: 20%;

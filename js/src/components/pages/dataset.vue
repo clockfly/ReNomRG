@@ -135,10 +135,11 @@ export default {
   $table-width: 90%;
   $table-item-height: 32px;
   width: 100%;
+  height: calc(100vh - #{$footer-height} - #{$header-height});
 
   .dataset-list {
     width: 100%;
-    height: calc(100vh - 200px);
+    height: 100%;
   }
 
   .panel-with-button {

@@ -44,7 +44,7 @@ export default {
     @include prefix('display', 'flex');
     width: 100%;
     padding: $panel-content-padding;
-    overflow: scroll;
+    overflow-y: scroll;
 
     .target-feature-list {
       width: 20%;
