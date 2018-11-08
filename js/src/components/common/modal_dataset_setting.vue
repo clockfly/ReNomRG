@@ -24,7 +24,12 @@
         <div class="sub-block">
           <div class="label">Ratio of training data</div>
           <div class="input-value">
-            <input type="text" v-model="train_ratio">
+            <select v-model="train_ratio">
+              <option v-for="(ratio, index) in train_ratio_list"
+                :value="ratio" :key="ratio">
+                {{ ratio }}
+              </option>
+            </select>
           </div>
         </div>  <!-- sub block -->
 
@@ -39,16 +44,39 @@
             </select>
           </div>
         </div>  <!-- sub block -->
+
+        <div class="sub-block">
+          <div class="label">Target Valiables</div>
+          <div class="input-value">
+            <div class="target-variable-name" v-for="id in target_column_ids" :key="id">
+              {{ dummy_labels[id] }}
+            </div>
+          </div>
+        </div>  <!-- sub block -->
       </div>  <!-- setting block -->
 
       <div class="button-area">
         <button @click="confirmDataset">Confirm</button>
+        <button class="button-cancel"
+          @click="$emit('cancel')">Cancel</button>
       </div>
 
     </div>  <!-- column -->
 
-    <div class="column">
+    <div class="column" v-if="!is_confirm">
+      <div class="setting-block">
+        <div class="setting-type">
+          Target Valiables
+        </div>
 
+        <div class="variable-item" v-for="(label, index) in dummy_labels">
+          <input type="checkbox" :id="index" :value="index" v-model="target_column_ids">
+          <label :for="index">{{label}}</label>
+        </div>
+      </div>
+    </div> <!-- column before confirm -->
+
+    <div class="column" v-if="is_confirm">
       <div class="setting-block">
         <div class="setting-type">
           Detail
@@ -83,10 +111,10 @@
       <div class="button-area">
         <button @click="saveDataset">Save</button>
         <button class="button-cancel"
-          @click="$emit('cancel')">Cancel</button>
+          @click="is_confirm = false">Back</button>
       </div>
 
-    </div> <!-- column -->
+    </div> <!-- column after confirm -->
   </div>
 </template>
 
@@ -99,10 +127,14 @@ export default {
   name: 'ModalDataset',
   data: function () {
     return {
+      'is_confirm': false,
       'name': '',
       'description': '',
       'train_ratio': 0.8,
-      'target_column_id': 0
+      'train_ratio_list': [0.7, 0.8, 0.9],
+      'target_column_id': 0,
+      'target_column_ids': [],
+      'dummy_labels': ['label0', 'label1', 'label2', 'label3', 'label4']
     }
   },
   computed: {

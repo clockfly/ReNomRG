@@ -20,7 +20,7 @@ $fs-small: 0.8rem;
 // modal
 $modal-opacity: 0.5;
 $modal-content-width: 70%;
-$modal-content-height: 70%;
+$modal-content-height: 80%;
 $modal-content-padding: 32px;
 $modal-tab-width: 200px;
 $modal-tab-height: 40px;
@@ -95,7 +95,7 @@ textarea {
 /**
 * input
 */
-input {
+input[type=text] {
   width: $input-base-width;
   border: 1px solid $light-gray;
   color: $gray;
