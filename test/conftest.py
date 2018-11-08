@@ -24,7 +24,7 @@ class SaneTestApp(TestApp):
         errors = res.errors
         if errors:
             print(res.errors, file=sys.stderr)
-        
+
 bottle.debug(True)
 
 @pytest.fixture(scope="session", autouse=True)
@@ -53,4 +53,3 @@ def app():
     app = renom_rg.server.server.get_app()
     app.catchall = False  # raise exception on error
     return SaneTestApp(app)
-

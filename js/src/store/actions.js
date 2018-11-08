@@ -95,6 +95,7 @@ export default {
       return
     }
 
+    console.log(22222222, result.data)
     const model_id = result.data.model_id
     await context.dispatch('runModel', {'model_id': model_id})
     if (result.data.error_msg) {

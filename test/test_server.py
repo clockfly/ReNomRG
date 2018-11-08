@@ -41,23 +41,23 @@ def test_create_dataset(app):
         'name': 'test_create_dataset_1',
         'description': 'description',
         'target_column_id': 10,
-        'labels': json.dumps([1,2,3,4]),
+        'labels': json.dumps([1, 2, 3, 4]),
         'train_ratio': 0.1,
         'train_index': json.dumps([5, 6]),
         'valid_index': json.dumps([7, 8]),
-        })
+    })
 
     assert resp.status_int == 200
     q = db.session().query(db.DatasetDef)
-    ds = q.filter(db.DatasetDef.name=='test_create_dataset_1').one()
+    ds = q.filter(db.DatasetDef.name == 'test_create_dataset_1').one()
     assert ds
 
 def _add_dataset():
     name = str(random.random())
     ds = db.DatasetDef(name=name, description='description',
-                       target_column_id=1, labels=pickle.dumps([1,2,3]),
-                       train_ratio=0.1, train_index=pickle.dumps([2,3,4]),
-                       valid_index=pickle.dumps([3,4,5]))
+                       target_column_id=1, labels=pickle.dumps([1, 2, 3]),
+                       train_ratio=0.1, train_index=pickle.dumps([2, 3, 4]),
+                       valid_index=pickle.dumps([3, 4, 5]))
 
     session = db.session()
     session.add(ds)
@@ -69,7 +69,7 @@ def test_delete_dataset(app):
     resp = app.delete('/api/renom_rg/datasets/%d' % ds.id)
 
     assert resp.status_int == 200
-    assert db.session().query(db.DatasetDef).filter(db.DatasetDef.id==ds.id).count() == 0
+    assert db.session().query(db.DatasetDef).filter(db.DatasetDef.id == ds.id).count() == 0
 
     resp = app.delete('/api/renom_rg/datasets/%d' % ds.id)
     assert resp.status_int == 404
@@ -92,14 +92,14 @@ def test_get_datasets(app):
     assert resp.status_int == 200
 
     ret = resp.json['datasets']
-    assert set(ds['dataset_id'] for ds in ret)  >= {ds1.id, ds2.id}
+    assert set(ds['dataset_id'] for ds in ret) >= {ds1.id, ds2.id}
 
 
 def _add_model():
     ds = _add_dataset()
     model = db.Model(dataset_id=ds.id, algorithm=1,
-        algorithm_params=pickle.dumps(None), batch_size=10,
-        epoch=10)
+                     algorithm_params=pickle.dumps(None), batch_size=10,
+                     epoch=10)
 
     session = db.session()
     session.add(model)
@@ -111,13 +111,13 @@ def test_create_model(app):
     resp = app.post('/api/renom_rg/models', {
         'dataset_id': ds.id,
         'algorithm': 1,
-        'algorithm_params': json.dumps({'a':1}),
+        'algorithm_params': json.dumps({'a': 1}),
         'batch_size': 10,
         'epoch': 10,
-        })
+    })
 
     assert resp.status_int == 200
-    model = db.session().query(db.Model).filter(db.Model.dataset_id==ds.id).one()
+    model = db.session().query(db.Model).filter(db.Model.dataset_id == ds.id).one()
     assert model
 
 
@@ -126,7 +126,7 @@ def test_delete_model(app):
     resp = app.delete('/api/renom_rg/models/%d' % model.id)
 
     assert resp.status_int == 200
-    assert db.session().query(db.Model).filter(db.Model.id==model.id).count() == 0
+    assert db.session().query(db.Model).filter(db.Model.id == model.id).count() == 0
 
     resp = app.delete('/api/renom_rg/models/%d' % model.id)
     assert resp.status_int == 404
@@ -138,8 +138,7 @@ def test_get_model(app):
 
     assert resp.status_int == 200
 
-    ret = resp.json['model']
-    assert ret['id'] == model.id
+    assert resp.json['model_id'] == model.id
 
 
 def test_get_models(app):
@@ -150,7 +149,7 @@ def test_get_models(app):
     assert resp.status_int == 200
 
     ret = resp.json['models']
-    assert set(model['id'] for model in ret)  >= {model1.id, model2.id}
+    assert set(model['model_id'] for model in ret) >= {model1.id, model2.id}
 
 
 def test_model_deploy(app):
@@ -169,7 +168,7 @@ def test_model_deploy(app):
     assert resp.status_int == 200
 
     ret = resp.json['model']
-    assert ret['id'] == model2.id
+    assert ret['model_id'] == model2.id
     assert ret['deployed'] == 1
 
     session = db.session()
@@ -181,7 +180,8 @@ def test_model_deploy(app):
     assert resp.status_int == 404
 
 
-def test_train_model(app):
+@patch('renom_rg.server.server.train_task.train')
+def test_train_model(train, app):
     model = _add_model()
     resp = app.get('/api/renom_rg/models/%s/train' % model.id)
 
@@ -203,4 +203,4 @@ def test_gpupool(set_cuda_active, use_device, release_mem_pool):
 
     with ThreadPoolExecutor() as e:
         all = set(e.map(gpupool.run, (f for _ in range(10))))
-        assert all == {0,1,2}
+        assert all == {0, 1, 2}

@@ -6,6 +6,7 @@ import logging
 import argparse
 import os
 import json
+import enum
 import pkg_resources
 import mimetypes
 import posixpath
@@ -127,14 +128,14 @@ def _dataset_to_dict(ds):
 def get_datasets():
     q = db.session().query(db.DatasetDef).all()
     ret = [_dataset_to_dict(ds) for ds in q]
-    return create_response({'datasets':ret})
+    return create_response({'datasets': ret})
 
 
 @route('/api/renom_rg/datasets/<dataset_id:int>', method='GET')
 def get_dataset(dataset_id):
     ds = db.session().query(db.DatasetDef).get(dataset_id)
     if ds:
-        return create_response({'dataset':_dataset_to_dict(ds)})
+        return create_response({'dataset': _dataset_to_dict(ds)})
     else:
         return create_response({}, 404, err='not found')
 
@@ -181,7 +182,7 @@ def create_dataset():
     session.add(dataset)
     session.commit()
 
-    return create_response({'dataset':_dataset_to_dict(dataset)})
+    return create_response({'dataset': _dataset_to_dict(dataset)})
 
 
 @route('/api/renom_rg/datasets/<dataset_id:int>', method='DELETE')
@@ -198,7 +199,7 @@ def delete_dataset(dataset_id):
 
 def _model_to_dict(model):
     ret = {
-        'id': model.id,
+        'model_id': model.id,
         'dataset_id': model.dataset_id,
         'state': model.state,
         'algorithm': model.algorithm,
@@ -225,14 +226,14 @@ def _model_to_dict(model):
 def get_models():
     q = db.session().query(db.Model).all()
     ret = [_model_to_dict(model) for model in q]
-    return create_response({'models':ret})
+    return create_response({'models': ret})
 
 
 @route("/api/renom_rg/models/<model_id:int>", method="GET")
 def get_model(model_id):
     model = db.session().query(db.Model).get(model_id)
     if model:
-        return create_response({'model':_model_to_dict(model)})
+        return create_response(_model_to_dict(model))
     else:
         return create_response({}, 404, err='not found')
 
@@ -246,20 +247,20 @@ def create_model():
     epoch = int(request.params.epoch)
 
     model = db.Model(dataset_id=dataset_id, algorithm=algorithm,
-        algorithm_params=pickle.dumps(algorithm_params), batch_size=batch_size,
-        epoch=epoch)
+                     algorithm_params=pickle.dumps(algorithm_params), batch_size=batch_size,
+                     epoch=epoch)
 
     session = db.session()
     session.add(model)
     session.commit()
 
-    return create_response({'model':_model_to_dict(model)})
+    return create_response(_model_to_dict(model))
 
 
 @route("/api/renom_rg/models/<model_id:int>", method="DELETE")
 def delete_model(model_id):
-    q = db.session().query(db.Model).filter(db.Model.id==model_id)
-    n = q.delete() 
+    q = db.session().query(db.Model).filter(db.Model.id == model_id)
+    n = q.delete()
     if n:
         return create_response({})
     else:
@@ -278,7 +279,7 @@ def deploy_model(model_id):
         session.add(model)
         session.commit()
 
-        return create_response({'model':_model_to_dict(model)})
+        return create_response({'model': _model_to_dict(model)})
     else:
         return create_response({}, 404, err='not found')
 
@@ -295,7 +296,7 @@ def undeploy_model(model_id):
         session.add(model)
         session.commit()
 
-        return create_response({'model':_model_to_dict(model)})
+        return create_response({'model': _model_to_dict(model)})
     else:
         return create_response({}, 404, err='not found')
 
@@ -307,34 +308,23 @@ def submit_task(executor, f, *args, **kwargs):
         return executor.submit(f, *args, **kwargs)
 
 
-class TaskStatus:
-    tasks = weakref.WeakValueDictionary()  # Mapping of {model.id: TaskStatus()}
-
-    @classmethod
-    def add_task(cls, model):
-        ret = TaskStatus()
-        cls.tasks[model.id] = ret
-        return ret
-
-    canceled = False
-
-
 executor = Executor()
 
 @route("/api/renom_rg/models/<model_id:int>/train", method="GET")
 def train_model(model_id):
     model = db.session().query(db.Model).get(model_id)
     if not model:
-        return create_response({}, 404, err='not found')
+        return create_response({}, 404, err='model not found')
 
-    taskstatus = TaskStatus.add_task(model)
-    f = submit_task(executor, train_task.train, taskstatus, model)
+    taskstate = train_task.TaskState.add_task(model)
+    f = submit_task(executor, train_task.train, taskstate, model.id)
     try:
-        ret = f.result()
-        return create_response(ret)
+        f.result()
+        return create_response({'result': 'ok'})
 
     except Exception as e:
-        return create_response({"error_msg": e.error_msg})
+        traceback.print_exc()
+        return create_response({"error_msg": str(e)})
 
     finally:
         if renom.cuda.has_cuda():
@@ -362,9 +352,9 @@ def _create_dirs():
 
 
 def plugin(func):
-    def wrapper(*args,**kwargs):
+    def wrapper(*args, **kwargs):
         try:
-            ret = func(*args,**kwargs)
+            ret = func(*args, **kwargs)
             db.session().commit()
             return ret
 
