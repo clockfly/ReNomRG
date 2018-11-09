@@ -19,7 +19,10 @@ export default {
   async loadModels (context, payload) {
     await context.dispatch('loadModelList')
     await context.dispatch('selectModel', { 'model_id': context.state.selected_model_id })
-    await context.dispatch('loadDeployedModel', { 'model_id': context.state.deployed_model_id })
+
+    if (context.state.deployed_model_id) {
+      await context.dispatch('loadDeployedModel', { 'model_id': context.state.deployed_model_id })
+    }
   },
 
   async loadModelList (context, payload) {
@@ -45,9 +48,8 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-
         context.commit('setSelectedModelId', payload)
-        context.commit('setSelectedModel', {'model': response.data.model})
+        context.commit('setSelectedModel', {'model': response.data})
       })
   },
 
@@ -59,9 +61,8 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-
         context.commit('setDeployededModel', {
-          'model': response.data.model
+          'model': response.data
         })
       })
   },
@@ -155,7 +156,7 @@ export default {
     fd.append('name', payload.name)
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
-    fd.append('target_column_id', payload.target_column_id)
+    fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
 
     const url = '/api/renom_rg/datasets/confirm'
     return axios.post(url, fd)
@@ -164,12 +165,7 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-        context.commit('setTrainCount', {'train_count': response.data.train_count})
-        context.commit('setValidCount', {'valid_count': response.data.valid_count})
-        context.commit('setTargetTrain', {'target_train': response.data.target_train})
-        context.commit('setTargetValid', {'target_valid': response.data.target_valid})
-        context.commit('setTrainIndex', {'train_index': response.data.train_index})
-        context.commit('setValidIndex', {'valid_index': response.data.valid_index})
+        context.commit('setConfirmDataset', { 'data': response.data })
       })
   },
 
@@ -178,7 +174,7 @@ export default {
     fd.append('name', payload.name)
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
-    fd.append('target_column_id', payload.target_column_id)
+    fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
     fd.append('labels', JSON.stringify(context.state.labels))
     fd.append('train_index', JSON.stringify(context.state.train_index))
     fd.append('valid_index', JSON.stringify(context.state.valid_index))

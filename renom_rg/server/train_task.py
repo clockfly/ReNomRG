@@ -47,10 +47,26 @@ class TaskState:
         self.nth_batch = -1
 
 
-def split_target(data, target_column_id):
-    X = data[:, np.arange(data.shape[1]) != target_column_id]
-    y = data[:, target_column_id].reshape(-1, 1)
+def split_target(data, ids):
+    indexes = np.ones(data.shape[1], dtype=bool)
+    indexes[ids] = False
+    X = data[:, indexes]
+    y = data[:, ids]
     return X, y
+
+
+def calc_confidence_area(data):
+    confidence_data_list = []
+    for d in data:
+        hist, bins = np.histogram(d, bins=10)
+        confidence_data = []
+        for i in range(10):
+            data_in_bin = d[np.logical_and(bins[i] < d, d < bins[i + 1])]
+            mean = np.mean(data_in_bin)
+            std = np.std(data_in_bin)
+            confidence_data.append([mean - std * 2, mean - std, mean, mean + std, mean + std * 2])
+        confidence_data_list.append(confidence_data)
+    return confidence_data_list
 
 
 def train(taskstate, model_id):
@@ -75,14 +91,23 @@ def _train(session, taskstate, model_id):
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
-    X, y = split_target(np.array(data), modeldef.dataset.target_column_id)
+    X, y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
     X_train = X[pickle.loads(modeldef.dataset.train_index)]
     X_valid = X[pickle.loads(modeldef.dataset.valid_index)]
     y_train = y[pickle.loads(modeldef.dataset.train_index)]
     y_valid = y[pickle.loads(modeldef.dataset.valid_index)]
 
+    train_true = y_train
     valid_true = y_valid
+
+    # sampling train data to plot
+    perm = np.random.permutation(train_true.shape[0])
+    sampling_index = perm[:valid_true.shape[0]]
+
+    # calc histogram data from y_train
+    confidence_data_list = calc_confidence_area(train_true)
+    print(confidence_data_list)
 
     # Algorithm and model preparation.
     # Pretrained weights are must be prepared.
@@ -98,12 +123,16 @@ def _train(session, taskstate, model_id):
     else:
         raise ValueError("{} is not supported algorithm id.".format(modeldef.algorithm))
 
-    model = GCNet(feature_graph, neighbors=algorithm_params["num_neighbors"])
+    model = GCNet(feature_graph, num_target=y_train.shape[1],
+                  fc_unit=algorithm_params["fc_unit"],
+                  neighbors=algorithm_params["num_neighbors"],
+                  channels=algorithm_params["channels"])
 
     filename = '{}.h5'.format(int(time.time()))
     optimizer = Adam()
 
     taskstate.state = RunningState.TRAINING
+    train_predicted_list = []
     for e in range(modeldef.epoch):
         taskstate.nth_epoch = e
         N = X_train.shape[0]
@@ -125,7 +154,9 @@ def _train(session, taskstate, model_id):
             # Loss function
             model.set_models(inference=False)
             with model.train():
-                l = rm.mse(model(train_batch_x), train_batch_y)
+                train_predicted = model(train_batch_x)
+                train_predicted_list.extend(train_predicted)
+                l = rm.mse(train_predicted, train_batch_y)
                 last_batch_loss = l
 
             # Back propagation
@@ -152,6 +183,14 @@ def _train(session, taskstate, model_id):
         modeldef.valid_loss_list = pickle.dumps(valid_loss_list)
         modeldef.valid_predicted = pickle.dumps(valid_predicted.reshape(-1,).tolist())
         modeldef.valid_true = pickle.dumps(valid_true.reshape(-1,).tolist())
+
+        sampled_train_predicted = train_predicted_list[sampling_index]
+        sampled_train_true = train_true[sampling_index]
+        print(sampled_train_predicted.shape)
+        print(sampled_train_true.shape)
+
+        modeldef.sampled_train_predicted = pickle.dumps(sampled_train_predicted)
+        modeldef.sampled_train_true = pickle.dumps(sampled_train_true)
 
         session.add(modeldef)
         session.commit()

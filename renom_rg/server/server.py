@@ -80,9 +80,11 @@ def create_error_body(e):
     return {"error_msg": str(e)}
 
 
-def split_target(data, target_column_id):
-    X = data.iloc[:, np.arange(data.shape[1]) != target_column_id]
-    y = data.iloc[:, target_column_id]
+def split_target(data, ids):
+    indexes = np.ones(data.shape[1], dtype=bool)
+    indexes[ids] = False
+    X = data[:, indexes]
+    y = data[:, ids]
     return X, y
 
 
@@ -114,7 +116,7 @@ def _dataset_to_dict(ds):
         "dataset_id": ds.id,
         "name": ds.name,
         "description": ds.description,
-        "target_column_id": ds.target_column_id,
+        "target_column_ids": pickle.loads(ds.target_column_ids),
         "labels": pickle.loads(ds.labels),
         "train_ratio": ds.train_ratio,
         "train_index": pickle.loads(ds.train_index),
@@ -142,19 +144,20 @@ def get_dataset(dataset_id):
 
 @route('/api/renom_rg/datasets/confirm', method='POST')
 def confirm_dataset():
-    target_column_id = int(request.params.target_column_id)
+    target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
-    X, y = split_target(data, target_column_id)
+    print(data.shape)
+    X, y = split_target(np.array(data), target_column_ids)
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
     body = {
         "train_count": y_train.shape[0],
         "valid_count": y_valid.shape[0],
-        "target_train": y_train.values.tolist(),
-        "target_valid": y_valid.values.tolist(),
+        "target_train": y_train.values.T.tolist(),
+        "target_valid": y_valid.values.T.tolist(),
         "train_index": np.array(y_train.index).tolist(),
         "valid_index": np.array(y_valid.index).tolist()
     }
@@ -166,14 +169,14 @@ def confirm_dataset():
 def create_dataset():
     name = request.params.name
     description = request.params.description
-    target_column_id = int(request.params.target_column_id)
+    target_column_ids = json.loads(request.params.target_column_ids)
     labels = json.loads(request.params.labels)
     train_ratio = float(request.params.train_ratio)
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
 
     dataset = db.DatasetDef(name=name, description=description,
-                            target_column_id=target_column_id,
+                            target_column_ids=pickle.dumps(target_column_ids),
                             labels=pickle.dumps(labels),
                             train_ratio=train_ratio,
                             train_index=pickle.dumps(train_index),

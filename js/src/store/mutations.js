@@ -127,23 +127,13 @@ export default {
   /**
   * mdoal
   */
-  setTrainCount (state, payload) {
-    state.train_count = payload.train_count
-  },
-  setValidCount (state, payload) {
-    state.valid_count = payload.valid_count
-  },
-  setTargetTrain (state, payload) {
-    state.target_train = payload.target_train
-  },
-  setTargetValid (state, payload) {
-    state.target_valid = payload.target_valid
-  },
-  setTrainIndex (state, payload) {
-    state.train_index = payload.train_index
-  },
-  setValidIndex (state, payload) {
-    state.valid_index = payload.valid_index
+  setConfirmDataset (state, payload) {
+    state.train_count = payload.data.train_count
+    state.valid_count = payload.data.valid_count
+    state.target_train = payload.data.target_train
+    state.target_valid = payload.data.target_valid
+    state.train_index = payload.data.train_index
+    state.valid_index = payload.data.valid_index
   },
 
   setDatasetList (state, payload) {

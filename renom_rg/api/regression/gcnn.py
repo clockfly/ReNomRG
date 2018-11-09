@@ -15,12 +15,14 @@ class GraphCNN(rm.Conv2d):
 
 
 class GCNet(rm.Model):
-    def __init__(self, feature_graph, fc_unit=100, neighbors=5, channels=(10, 20)):
+    def __init__(self, feature_graph, num_target=1, fc_unit=(100, 50), neighbors=5, channels=(10, 20, 20)):
         super(GCNet, self).__init__()
         self.gc1 = GraphCNN(channel=channels[0], neighbors=neighbors, feature_graph=feature_graph)
         self.gc2 = GraphCNN(channel=channels[1], neighbors=neighbors, feature_graph=feature_graph)
-        self.fc1 = rm.Dense(fc_unit)
-        self.fc2 = rm.Dense(1)
+        self.gc3 = GraphCNN(channel=channels[2], neighbors=neighbors, feature_graph=feature_graph)
+        self.fc1 = rm.Dense(fc_unit[0])
+        self.fc2 = rm.Dense(fc_unit[1])
+        self.fc3 = rm.Dense(num_target)
         self.dropout = rm.Dropout(dropout_ratio=0.01)
 
     def forward(self, x):
@@ -28,7 +30,10 @@ class GCNet(rm.Model):
         h = self.dropout(h)
         h = rm.relu(self.gc2(h))
         h = self.dropout(h)
+        h = rm.relu(self.gc3(h))
+        h = self.dropout(h)
         h = rm.flatten(h.reshape(h.shape[0], -1, h.shape[1]))
         h = self.dropout(rm.relu(self.fc1(h)))
-        h = self.fc2(h)
+        h = self.dropout(rm.relu(self.fc2(h)))
+        h = self.fc3(h)
         return h

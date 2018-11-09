@@ -96,7 +96,9 @@ export default {
       'dataset_index': 0,
       'algorithm': 0,
       'algorithm_params': {
-        'num_neighbors': 5
+        'num_neighbors': 5,
+        'fc_unit': [100, 50],
+        'channels': [10, 20, 20]
       },
       'batch_size': 16,
       'epoch': 10

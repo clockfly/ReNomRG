@@ -10,7 +10,8 @@
     <div class="panel list-area">
       <div class="panel-title">Model List</div>
 
-      <div class="model-list-item model-list-item-deployed" @click="selectModel(deployed_model)">
+      <div class="model-list-item model-list-item-deployed" v-if="deployed_model"
+        @click="selectModel(deployed_model)">
         <div :class="'algorithm-color '+$store.state.algorithms[deployed_model.algorithm].toLowerCase()"></div>
 
         <div class="label-value">

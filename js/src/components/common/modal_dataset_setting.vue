@@ -34,22 +34,10 @@
         </div>  <!-- sub block -->
 
         <div class="sub-block">
-          <div class="label">Target Valiable</div>
-          <div class="input-value">
-            <select v-model="target_column_id">
-              <option v-for="(o, index) in $store.state.labels"
-                :value="index" :key="index">
-                {{ o }}
-              </option>
-            </select>
-          </div>
-        </div>  <!-- sub block -->
-
-        <div class="sub-block">
           <div class="label">Target Valiables</div>
           <div class="input-value">
             <div class="target-variable-name" v-for="id in target_column_ids" :key="id">
-              {{ dummy_labels[id] }}
+              {{ $store.state.labels[id] }}
             </div>
           </div>
         </div>  <!-- sub block -->
@@ -69,7 +57,7 @@
           Target Valiables
         </div>
 
-        <div class="variable-item" v-for="(label, index) in dummy_labels">
+        <div class="variable-item" v-for="(label, index) in $store.state.labels">
           <input type="checkbox" :id="index" :value="index" v-model="target_column_ids">
           <label :for="index">{{label}}</label>
         </div>
@@ -132,9 +120,7 @@ export default {
       'description': '',
       'train_ratio': 0.8,
       'train_ratio_list': [0.7, 0.8, 0.9],
-      'target_column_id': 0,
-      'target_column_ids': [],
-      'dummy_labels': ['label0', 'label1', 'label2', 'label3', 'label4']
+      'target_column_ids': []
     }
   },
   computed: {
@@ -144,7 +130,11 @@ export default {
   },
   watch: {
     targetTrain: function () {
-      this.drawHistogram()
+      const id = '#train-test-histogram'
+      removeSvg(id)
+      for (let i in this.$store.state.target_train) {
+        this.drawHistogram(id, this.$store.state.target_train[i], this.$store.state.target_valid[i])
+      }
     }
   },
   methods: {
@@ -153,13 +143,11 @@ export default {
         'name': this.name,
         'description': this.description,
         'train_ratio': this.train_ratio,
-        'target_column_id': this.target_column_id
+        'target_column_ids': this.target_column_ids
       }
     },
-    drawHistogram: function () {
+    drawHistogram: function (id, train, valid) {
       if (this.$store.state.train_index.length === 0) return
-      const id = '#train-test-histogram'
-      removeSvg(id)
 
       // const parent_area = d3.select(id)
       // const width = parent_area._groups[0][0].clientWidth
@@ -168,8 +156,8 @@ export default {
       const height = 150
       const margin = { 'left': 20, 'top': 20, 'right': 20, 'bottom': 20 }
 
-      const target_train = this.$store.state.target_train
-      const target_valid = this.$store.state.target_valid
+      const target_train = train
+      const target_valid = valid
       const train_max = max(target_train)
       const train_min = min(target_train)
       const valid_max = max(target_valid)
@@ -239,6 +227,7 @@ export default {
     },
     confirmDataset: function () {
       this.$store.dispatch('confirmDataset', this.params())
+      this.is_confirm = true
     },
     getHistgram: function (scale, ticks) {
       return d3.histogram()
