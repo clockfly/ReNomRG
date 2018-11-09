@@ -14,7 +14,9 @@ if sys.version_info < (3, 4):
 DIR = str(pathlib.Path(__file__).resolve().parent)
 
 requires = [
-    "bottle"
+    "bottle",
+    "sqlalchemy",
+    "alembic",
 ]
 
 

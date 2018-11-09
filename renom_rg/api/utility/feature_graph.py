@@ -12,7 +12,7 @@ def cdist(A, B):
 
 def get_corr_graph(X, neighbors):
     corr_mat = np.array(normalize(np.abs(np.corrcoef(X.transpose())),
-                        norm='l1', axis=1), dtype='float64')
+                                  norm='l1', axis=1), dtype='float64')
     feature_graph = np.argsort(corr_mat, 1)[:, -neighbors:]
     return feature_graph
 

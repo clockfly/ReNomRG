@@ -1,2 +1,4 @@
 from .server import server
-server.main()
+
+if __name__ == '__main__':
+    server.main()
