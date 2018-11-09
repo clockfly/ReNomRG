@@ -136,7 +136,8 @@ export default {
     .model-list-scrollable-area {
       overflow-y: scroll;
       width: 100%;
-      height: calc(100% - #{$panel-title-height} - #{$model-list-item-height} - 8px);
+      height: calc(100% - #{$panel-title-height} - #{$model-list-item-height} - 16px);
+      margin-top: 8px;
     }
   }
 
