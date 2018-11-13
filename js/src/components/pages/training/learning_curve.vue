@@ -25,24 +25,15 @@
 
 <script>
 import * as d3 from 'd3'
+import { mapGetters } from 'vuex'
 import { train_color, valid_color } from '@/const'
 import { max, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'LerningCurve',
-  computed: {
-    trainList: function () {
-      return this.$store.state.train_loss_list
-    },
-    validList: function () {
-      return this.$store.state.valid_loss_list
-    }
-  },
+  computed: mapGetters(['selectedModel']),
   watch: {
-    trainList: function () {
-      this.drawCurve()
-    },
-    validList: function () {
+    selectedModel: function () {
       this.drawCurve()
     }
   },
@@ -51,22 +42,27 @@ export default {
   },
   methods: {
     drawCurve: function () {
+      if (!this.selectedModel) return
+
       const id = '#curve-canvas'
       removeSvg(id)
+
+      const train_list = this.selectedModel.train_loss_list
+      const valid_list = this.selectedModel.valid_loss_list
 
       const parent_area = d3.select(id)
       const width = parent_area._groups[0][0].clientWidth
       const height = parent_area._groups[0][0].clientHeight
       const margin = { 'left': 60, 'top': 40, 'right': 60, 'bottom': 40 }
-      const train_max = max(this.trainList)
-      const valid_max = max(this.validList)
+      const train_max = max(train_list)
+      const valid_max = max(valid_list)
 
       const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
 
-      const x_scale = getScale([0, this.trainList.length], [margin.left, width - margin.right])
+      const x_scale = getScale([0, train_list.length], [margin.left, width - margin.right])
       const y_scale = getScale([0, max([train_max, valid_max])], [height - margin.bottom, margin.top])
 
       // draw x axis
@@ -93,7 +89,7 @@ export default {
 
       // draw line chart
       svg.append('path')
-        .datum(this.trainList)
+        .datum(train_list)
         .attr('fill', 'none')
         .attr('stroke', train_color)
         .attr('stroke-width', 1.5)
@@ -105,7 +101,7 @@ export default {
 
       // draw line chart
       svg.append('path')
-        .datum(this.validList)
+        .datum(valid_list)
         .attr('fill', 'none')
         .attr('stroke', valid_color)
         .attr('stroke-width', 1.5)

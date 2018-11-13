@@ -1,25 +1,24 @@
 import axios from 'axios'
 
 export default {
-  loadLabels (context, payload) {
+  async loadLabels (context, payload) {
     const url = '/api/renom_rg/datasets/labels'
-    axios.get(url)
+    return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-
         context.commit('setLabels', {
           'labels': response.data.labels
         })
       })
   },
-
   async loadModels (context, payload) {
     await context.dispatch('loadModelList')
-    await context.dispatch('selectModel', { 'model_id': context.state.selected_model_id })
-
+    if (context.state.selected_model_id) {
+      await context.dispatch('selectModel', { 'model_id': context.state.selected_model_id })
+    }
     if (context.state.deployed_model_id) {
       await context.dispatch('loadDeployedModel', { 'model_id': context.state.deployed_model_id })
     }
@@ -33,7 +32,6 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-
         context.commit('setModelList', {
           'model_list': response.data.models
         })
@@ -95,8 +93,6 @@ export default {
       context.commit('setErrorMsg', {'error_msg': result.data.error_msg})
       return
     }
-
-    console.log(22222222, result.data)
     const model_id = result.data.model_id
     await context.dispatch('runModel', {'model_id': model_id})
     if (result.data.error_msg) {

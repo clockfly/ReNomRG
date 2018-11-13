@@ -55,18 +55,30 @@ def split_target(data, ids):
     return X, y
 
 
-def calc_confidence_area(data):
-    confidence_data_list = []
-    for d in data:
-        hist, bins = np.histogram(d, bins=10)
-        confidence_data = []
-        for i in range(10):
-            data_in_bin = d[np.logical_and(bins[i] < d, d < bins[i + 1])]
-            mean = np.mean(data_in_bin)
-            std = np.std(data_in_bin)
-            confidence_data.append([mean - std * 2, mean - std, mean, mean + std, mean + std * 2])
-        confidence_data_list.append(confidence_data)
-    return confidence_data_list
+def calc_confidence_area(true_data, pred_data):
+    num_bin = 10
+    confidence_area = []
+    for j, d in enumerate(true_data):
+        hist, bins = np.histogram(d, bins=num_bin)
+        confidence_data = None
+        for i in range(num_bin):
+            true_data_index = np.logical_and(bins[i] < d, d < bins[i + 1])
+            pred_data_in_bin = pred_data[j][true_data_index]
+
+            m = np.mean(pred_data_in_bin)
+            sd = np.sqrt(np.sum((pred_data_in_bin - m)**2) / len(pred_data_in_bin))
+            c = np.array([m - sd * 2, m - sd, m, m + sd, m + sd * 2]).reshape(1, -1)
+
+            if confidence_data is None:
+                # append histogram x_min data
+                confidence_data = np.concatenate([c, c], axis=0)
+            else:
+                confidence_data = np.concatenate([confidence_data, c], axis=0)
+
+        # append histogram x_max data
+        confidence_data = np.concatenate([confidence_data, c], axis=0)
+        confidence_area.append(confidence_data)
+    return np.array(confidence_area)
 
 
 def train(taskstate, model_id):
@@ -101,14 +113,6 @@ def _train(session, taskstate, model_id):
     train_true = y_train
     valid_true = y_valid
 
-    # sampling train data to plot
-    perm = np.random.permutation(train_true.shape[0])
-    sampling_index = perm[:valid_true.shape[0]]
-
-    # calc histogram data from y_train
-    confidence_data_list = calc_confidence_area(train_true)
-    print(confidence_data_list)
-
     # Algorithm and model preparation.
     # Pretrained weights are must be prepared.
     # This have to be done in thread.
@@ -132,12 +136,14 @@ def _train(session, taskstate, model_id):
     optimizer = Adam()
 
     taskstate.state = RunningState.TRAINING
-    train_predicted_list = []
+    plot_train_size = 100
     for e in range(modeldef.epoch):
         taskstate.nth_epoch = e
         N = X_train.shape[0]
         perm = np.random.permutation(N)
         loss = 0
+        train_true_list = None
+        train_predicted_list = None
 
         total_batch = N // modeldef.batch_size
 
@@ -155,9 +161,18 @@ def _train(session, taskstate, model_id):
             model.set_models(inference=False)
             with model.train():
                 train_predicted = model(train_batch_x)
-                train_predicted_list.extend(train_predicted)
                 l = rm.mse(train_predicted, train_batch_y)
                 last_batch_loss = l
+
+                if train_predicted_list is None:
+                    train_predicted_list = train_predicted
+                else:
+                    train_predicted_list = np.concatenate([train_predicted_list, train_predicted])
+
+                if train_true_list is None:
+                    train_true_list = train_batch_y
+                else:
+                    train_true_list = np.concatenate([train_true_list, train_batch_y])
 
             # Back propagation
             grad = l.grad()
@@ -181,16 +196,18 @@ def _train(session, taskstate, model_id):
 
         modeldef.train_loss_list = pickle.dumps(train_loss_list)
         modeldef.valid_loss_list = pickle.dumps(valid_loss_list)
-        modeldef.valid_predicted = pickle.dumps(valid_predicted.reshape(-1,).tolist())
-        modeldef.valid_true = pickle.dumps(valid_true.reshape(-1,).tolist())
+        modeldef.valid_predicted = pickle.dumps(valid_predicted.T.tolist())
+        modeldef.valid_true = pickle.dumps(valid_true.T.tolist())
 
-        sampled_train_predicted = train_predicted_list[sampling_index]
-        sampled_train_true = train_true[sampling_index]
-        print(sampled_train_predicted.shape)
-        print(sampled_train_true.shape)
+        sampled_train_pred = train_predicted_list[:plot_train_size]
+        sampled_train_true = train_true_list[:plot_train_size]
 
-        modeldef.sampled_train_predicted = pickle.dumps(sampled_train_predicted)
-        modeldef.sampled_train_true = pickle.dumps(sampled_train_true)
+        modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
+        modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())
+
+        # calc train data confidence area
+        confidence_data_list = calc_confidence_area(train_true_list.T, train_predicted_list.T)
+        modeldef.confidence_data = pickle.dumps(confidence_data_list.tolist())
 
         session.add(modeldef)
         session.commit()

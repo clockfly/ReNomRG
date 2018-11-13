@@ -42,19 +42,20 @@ export default {
       state.model_list.push(m)
 
       // count models per algorithm
-      if (m['state'] === 0) {
-        state.model_counts_per_algorith['Reserved'] += 1
-      } else if (m['state'] === 1) {
-        state.model_counts_per_algorith['Running'] += 1
-      } else {
-        if (m['algorithm'] === 0) {
-          state.model_counts_per_algorith['C-GCNN'] += 1
-        } else if (m['algorithm'] === 1) {
-          state.model_counts_per_algorith['Kernel-GCNN'] += 1
-        } else if (m['algorithm'] === 0) {
-          state.model_counts_per_algorith['DBSCAN-GCNN'] += 1
-        }
+      // if (m['state'] === 0) {
+      //   state.model_counts_per_algorith['Reserved'] += 1
+      // } else if (m['state'] === 1) {
+      //   state.model_counts_per_algorith['Running'] += 1
+      // } else {
+
+      if (m['algorithm'] === 0) {
+        state.model_counts_per_algorith['C-GCNN'] += 1
+      } else if (m['algorithm'] === 1) {
+        state.model_counts_per_algorith['Kernel-GCNN'] += 1
+      } else if (m['algorithm'] === 0) {
+        state.model_counts_per_algorith['DBSCAN-GCNN'] += 1
       }
+      // }
 
       // set deployed model
       if (m['deployed'] === 1) {
@@ -63,7 +64,7 @@ export default {
     }
 
     // default select last model
-    if (!state.selected_model_id) {
+    if (payload.model_list.length > 0 && !state.selected_model_id) {
       state.selected_model_id = payload.model_list[0].model_id
     }
   },
@@ -142,13 +143,5 @@ export default {
       state.dataset_name_list.push(d['name'])
     }
     state.dataset_list = payload.datasets
-  },
-
-  /**
-  * dataset page
-  */
-  setSelectedDataset (state, payload) {
-    state.selected_dataset_id = payload.dataset.dataset_id
-    state.selected_dataset = payload.dataset
   }
 }

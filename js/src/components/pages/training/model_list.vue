@@ -10,33 +10,35 @@
     <div class="panel list-area">
       <div class="panel-title">Model List</div>
 
-      <div class="model-list-item model-list-item-deployed" v-if="deployed_model"
-        @click="selectModel(deployed_model)">
-        <div :class="'algorithm-color '+$store.state.algorithms[deployed_model.algorithm].toLowerCase()"></div>
+      <div class="model-list-item model-list-item-deployed"
+        v-if="deployedModel"
+        v-bind:class="{ active: deployedModel.model_id === $store.state.selected_model_id }"
+        @click="selectModel(deployedModel)">
+        <div :class="'algorithm-color '+$store.state.algorithms[deployedModel.algorithm].toLowerCase()"></div>
 
         <div class="label-value">
           <div class="label">Model ID</div>
-          <div class="value">{{deployed_model.model_id}}</div>
+          <div class="value">{{deployedModel.model_id}}</div>
         </div>
 
         <div class="label-value">
           <div class="label">Algorithm</div>
-          <div class="value">{{$store.state.algorithms[deployed_model.algorithm]}}</div>
+          <div class="value">{{$store.state.algorithms[deployedModel.algorithm]}}</div>
         </div>
 
         <div class="label-value">
           <div class="label">RMSE</div>
-          <div class="value">{{round(deployed_model.best_epoch_rmse)}}</div>
+          <div class="value">{{round(deployedModel.best_epoch_rmse)}}</div>
         </div>
 
         <div class="label-value">
           <div class="label">Max Absolute Error</div>
-          <div class="value">{{round(deployed_model.best_epoch_max_abs_error)}}</div>
+          <div class="value">{{round(deployedModel.best_epoch_max_abs_error)}}</div>
         </div>
 
         <div class="label-value">
           <div class="label">Validation Loss</div>
-          <div class="value">{{round(deployed_model.best_epoch_valid_loss)}}</div>
+          <div class="value">{{round(deployedModel.best_epoch_valid_loss)}}</div>
         </div>
 
         <div class="deployed">
@@ -48,9 +50,8 @@
         <div class="model-list-item"
           v-bind:class="{ active: model.model_id === $store.state.selected_model_id }"
           v-for="(model,index) in $store.state.model_list"
-          v-if="model.model_id !== $store.state.deployed_model_id"
+          v-if="model.deployed === 0"
           @click="selectModel(model)">
-
           <div :class="'algorithm-color '+$store.state.algorithms[model.algorithm].toLowerCase()"></div>
 
           <div class="label-value">
@@ -88,12 +89,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { round } from '@/utils'
 
 export default {
   name: 'ModelList',
-  computed: mapState(['deployed_model']),
+  computed: mapGetters(['deployedModel']),
   methods: {
     round: function (v) {
       return round(v, 1000)
@@ -190,6 +191,7 @@ export default {
   }
   .model-list-item-deployed {
     width: calc(100% - 10px);
+    border: solid 2px $blue;
   }
 }
 </style>

@@ -83,8 +83,8 @@ def create_error_body(e):
 def split_target(data, ids):
     indexes = np.ones(data.shape[1], dtype=bool)
     indexes[ids] = False
-    X = data[:, indexes]
-    y = data[:, ids]
+    X = data.loc[:, indexes]
+    y = data.loc[:, ~indexes]
     return X, y
 
 
@@ -150,14 +150,14 @@ def confirm_dataset():
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
     print(data.shape)
-    X, y = split_target(np.array(data), target_column_ids)
+    X, y = split_target(data, target_column_ids)
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
     body = {
         "train_count": y_train.shape[0],
         "valid_count": y_valid.shape[0],
-        "target_train": y_train.values.T.tolist(),
-        "target_valid": y_valid.values.T.tolist(),
+        "target_train": y_train.T.values.tolist(),
+        "target_valid": y_valid.T.values.tolist(),
         "train_index": np.array(y_train.index).tolist(),
         "valid_index": np.array(y_valid.index).tolist()
     }
@@ -218,6 +218,9 @@ def _model_to_dict(model):
         'best_epoch_r2': model.best_epoch_r2,
         'valid_predicted': pickle.loads(model.valid_predicted),
         'valid_true': pickle.loads(model.valid_true),
+        'sampled_train_pred': pickle.loads(model.sampled_train_pred),
+        'sampled_train_true': pickle.loads(model.sampled_train_true),
+        'confidence_data': pickle.loads(model.confidence_data),
         'weight': model.weight,
         'deployed': model.deployed,
         'created': model.created.isoformat(),

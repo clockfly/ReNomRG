@@ -5,15 +5,35 @@
         Prediction Sample
       </div>
 
-      <div class="panel-content plots-area">
-        <div id="deployed-plot" class="column">
-          <div class="x-axis-name">True</div>
-          <div class="y-axis-name">Prediction</div>
+      <div class="panel-content prediction-result-content">
+        <div class="column" v-if="deployedModel">
+          <div class="label-value">
+            <div class="model-type">Deploy Model</div>
+            <div class="label">Model ID</div>
+            <div class="value">{{deployedModel.model_id}}</div>
+          </div>
+          <div v-for="(d, index) in deployedModel.valid_true">
+            <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+            <div :id="'deployed-plot'+index" class="plot-area">
+              <div class="x-axis-name">True</div>
+              <div class="y-axis-name">Prediction</div>
+            </div>
+          </div>
         </div>
 
-        <div id="selected-plot" class="column">
-          <div class="x-axis-name">True</div>
-          <div class="y-axis-name">Prediction</div>
+        <div class="column" v-if="selectedModel">
+          <div class="label-value">
+            <div class="model-type">Select Model</div>
+            <div class="label">Model ID</div>
+            <div class="value">{{selectedModel.model_id}}</div>
+          </div>
+          <div v-for="(d, index) in selectedModel.valid_true">
+            <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+            <div :id="'selected-plot'+index" class="plot-area">
+              <div class="x-axis-name">True</div>
+              <div class="y-axis-name">Prediction</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -22,24 +42,18 @@
 
 <script>
 import * as d3 from 'd3'
-import { valid_color } from '@/const'
+import { mapGetters } from 'vuex'
+import { train_color, valid_color } from '@/const'
 import { max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'PreictionResult',
-  computed: {
-    selectedModel: function () {
-      return this.$store.state.selected_model
-    },
-    deployedModelPred: function () {
-      return this.$store.state.deployed_model_y_pred
-    }
-  },
+  computed: mapGetters(['deployedModel', 'selectedModel', 'selectedDataset']),
   watch: {
     selectedModel: function () {
       this.drawSelected()
     },
-    deployedModelPred: function () {
+    deployedModel: function () {
       this.drawDeployed()
     }
   },
@@ -48,22 +62,22 @@ export default {
     this.drawDeployed()
   },
   methods: {
-    drawTruePredPlot: function (id, y_valid, y_pred) {
+    drawTruePredPlot: function (id, train_true, train_pred, valid_true, valid_pred, confidence_data) {
+      if (!train_true || !train_pred || !valid_true || !valid_pred) return
       // define svg element
-      const parent_area = d3.select(id)
-      const width = parent_area._groups[0][0].clientWidth
-      const height = parent_area._groups[0][0].clientHeight
-      const margin = { 'left': 60, 'top': 100, 'right': 140, 'bottom': 60, 'hist_inner': 20, 'hist_outer': 40 }
-      const valid_max = max(y_valid)
-      const valid_min = min(y_valid)
-
+      const width = 400
+      const height = 420
+      const margin = { 'left': 60, 'top': 80, 'right': 80, 'bottom': 60, 'hist_inner': 20, 'hist_outer': 20 }
+      const plot_max = max([max(train_true), max(valid_true)])
+      const plot_min = min([min(train_true), min(valid_true)])
+      const chunk = (plot_max - plot_min) / 10
       const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
 
-      const x_scale = getScale([valid_min, valid_max], [margin.left, width - margin.right])
-      const y_scale = getScale([valid_min, valid_max], [height - margin.bottom, margin.top])
+      const x_scale = getScale([plot_min, plot_max], [margin.left, width - margin.right])
+      const y_scale = getScale([plot_min, plot_max], [height - margin.bottom, margin.top])
 
       // draw x axis
       const x_axis_define = d3.axisBottom(x_scale)
@@ -87,11 +101,22 @@ export default {
         .call(y_axis_define)
       styleAxis(y_axis)
 
-      // draw scatter plot
-      const dataset = this.shapeDataset(y_valid, y_pred)
+      // draw train scatter plot
+      const train_dataset = this.shapeDataset(train_true, train_pred)
       svg.append('g')
         .selectAll('circle')
-        .data(dataset)
+        .data(train_dataset)
+        .enter()
+        .append('circle')
+        .attr('cx', function (d) { return x_scale(d[0]) })
+        .attr('cy', function (d) { return y_scale(d[1]) })
+        .attr('fill', train_color)
+        .attr('r', 3)
+      // draw valid scatter plot
+      const valid_dataset = this.shapeDataset(valid_true, valid_pred)
+      svg.append('g')
+        .selectAll('circle')
+        .data(valid_dataset)
         .enter()
         .append('circle')
         .attr('cx', function (d) { return x_scale(d[0]) })
@@ -101,32 +126,53 @@ export default {
 
       // draw diagonal line
       svg.append('line')
-        .attr('x1', x_scale(valid_min))
-        .attr('x2', x_scale(valid_max))
-        .attr('y1', y_scale(valid_min))
-        .attr('y2', y_scale(valid_max))
+        .attr('x1', x_scale(plot_min))
+        .attr('x2', x_scale(plot_max))
+        .attr('y1', y_scale(plot_min))
+        .attr('y2', y_scale(plot_max))
         .attr('stroke-width', 1)
         .attr('stroke', 'gray')
         .attr('opacity', 0.3)
 
-      // draw sd area dummy
-      const dummy_array = [...Array(46).keys()].map(function (i) { return i + 5 })
+      // draw sd area
       svg.append('path')
-        .datum(dummy_array)
-        .attr('fill', 'green')
-        .attr('opacity', 0.05)
+        .datum(confidence_data)
+        .attr('fill', train_color)
+        .attr('opacity', 0.1)
         .attr('d', d3.area()
-          .x(function (d) { return x_scale(d) })
-          .y1(function (d) { return y_scale(max([valid_min, d - 5])) })
-          .y0(function (d) { return y_scale(min([valid_max, d + 5])) })
+          .x(function (d, index) {
+            if (index === 0) return x_scale(plot_min)
+            if (index === confidence_data.length - 1) return x_scale(plot_max)
+            return x_scale(plot_min + (chunk * (index - 1)) + (chunk * 0.5))
+          })
+          .y1(function (d, index) { return y_scale(min([plot_max, d[4]])) })
+          .y0(function (d, index) { return y_scale(max([plot_min, d[0]])) })
+          .curve(d3.curveCardinal)
+        )
+      svg.append('path')
+        .datum(confidence_data)
+        .attr('fill', train_color)
+        .attr('opacity', 0.3)
+        .attr('d', d3.area()
+          .x(function (d, index) {
+            if (index === 0) return x_scale(plot_min)
+            if (index === confidence_data.length - 1) return x_scale(plot_max)
+            return x_scale(plot_min + (chunk * (index - 1)) + (chunk * 0.5))
+          })
+          .y1(function (d, index) { return y_scale(min([plot_max, d[3]])) })
+          .y0(function (d, index) { return y_scale(max([plot_min, d[1]])) })
           .curve(d3.curveCardinal)
         )
 
-      // draw histogram true
+      // draw histogram train true
+
+      // draw histogram train valid
+
+      // draw histogram valid true
       const true_histogram = this.getHistgram(x_scale, 10)
-      const true_valid_bins = true_histogram(y_valid)
+      const true_valid_bins = true_histogram(valid_true)
       const true_hist_max = this.getHistgramSizeMax(true_valid_bins)
-      const histy_scale = getScale([valid_max, valid_max + true_hist_max], [margin.top - margin.hist_inner, margin.hist_outer])
+      const histy_scale = getScale([plot_max, plot_max + true_hist_max], [margin.top - margin.hist_inner, margin.hist_outer])
 
       svg.append('path')
         .datum(true_valid_bins)
@@ -136,16 +182,16 @@ export default {
         .attr('stroke-width', 2)
         .attr('d', d3.area()
           .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
-          .y1(function (d) { return histy_scale(valid_max + d.length) })
-          .y0(function (d) { return histy_scale(valid_max) })
+          .y1(function (d) { return histy_scale(plot_max + d.length) })
+          .y0(function (d) { return histy_scale(plot_max) })
           .curve(d3.curveCardinal)
         )
 
-      // draw histogram prediction
+      // draw histogram valid prediction
       const pred_histogram = this.getHistgram(y_scale, 10)
-      const pred_valid_bins = pred_histogram(y_pred)
+      const pred_valid_bins = pred_histogram(valid_pred)
       const pred_hist_max = this.getHistgramSizeMax(pred_valid_bins)
-      const histx_scale = getScale([valid_max, valid_max + pred_hist_max], [width - margin.right + margin.hist_inner, width - margin.hist_outer])
+      const histx_scale = getScale([plot_max, plot_max + pred_hist_max], [width - margin.right + margin.hist_inner, width - margin.hist_outer])
 
       svg.append('path')
         .datum(pred_valid_bins)
@@ -154,27 +200,38 @@ export default {
         .attr('stroke', valid_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x1(function (d) { return histx_scale(valid_max + d.length) })
-          .x0(function (d) { return histx_scale(valid_max) })
+          .x1(function (d) { return histx_scale(plot_max + d.length) })
+          .x0(function (d) { return histx_scale(plot_max) })
           .y(function (d, index) { return y_scale((d.x0 + d.x1) / 2) })
           .curve(d3.curveCardinal)
         )
     },
     drawDeployed: function () {
-      if (this.$store.state.deployed_model_y_pred.length === 0) return
-      const id = '#deployed-plot'
-      removeSvg(id)
-      const y_valid = this.$store.state.deployed_model_y_valid
-      const y_pred = this.$store.state.deployed_model_y_pred
-      this.drawTruePredPlot(id, y_valid, y_pred)
+      if (!this.deployedModel) return
+      for (let i in this.deployedModel.valid_true) {
+        const id = '#deployed-plot' + i
+        removeSvg(id)
+        const train_true = this.deployedModel.sampled_train_true[i]
+        const train_pred = this.deployedModel.sampled_train_pred[i]
+        const valid_true = this.deployedModel.valid_true[i]
+        const valid_pred = this.deployedModel.valid_predicted[i]
+        const confidence_data = this.deployedModel.confidence_data[i]
+        this.drawTruePredPlot(id, train_true, train_pred, valid_true, valid_pred, confidence_data)
+      }
     },
     drawSelected: function () {
-      if (!this.$store.state.selected_model) return
-      const id = '#selected-plot'
-      removeSvg(id)
-      const y_valid = this.$store.state.selected_y_valid
-      const y_pred = this.$store.state.selected_y_pred
-      this.drawTruePredPlot(id, y_valid, y_pred)
+      if (!this.selectedModel) return
+
+      for (let i in this.selectedModel.valid_true) {
+        const id = '#selected-plot' + i
+        removeSvg(id)
+        const train_true = this.selectedModel.sampled_train_true[i]
+        const train_pred = this.selectedModel.sampled_train_pred[i]
+        const y_valid = this.selectedModel.valid_true[i]
+        const y_pred = this.selectedModel.valid_predicted[i]
+        const confidence_data = this.selectedModel.confidence_data[i]
+        this.drawTruePredPlot(id, train_true, train_pred, y_valid, y_pred, confidence_data)
+      }
     },
     getHistgram: function (scale, ticks) {
       return d3.histogram()
@@ -199,29 +256,54 @@ export default {
 
 <style lang="scss" scoped>
 #prediction-result {
+  $model-id-height: 32px;
+
   width: 100%;
-  height: $prediction-sample-height;
+  min-height: $prediction-sample-height;
 
-  .plots-area {
+  .prediction-result-content {
     @include prefix("display", "flex");
-    .column {
+    width: 100%;
+    min-height: calc(#{$prediction-sample-height} - #{$panel-title-height} - 8px);
+    padding-top: 32px;
+  }
+  .target-label, .model-type, .label {
+    color: $gray;
+  }
+  .target-label {
+    height: $model-id-height;
+    line-height: $model-id-height;
+  }
+  .label-value {
+    @include prefix("display", "flex");
+    height: $model-id-height;
+    line-height: $model-id-height;
+    .model-type {
+      margin-right: 24px;
+    }
+    .label {
+      margin-right: 8px;
+    }
+  }
+  .column {
+    width: 50%;
+    padding: 0 $panel-content-padding;
+    .plot-area {
       position: relative;
-      width: 50%;
-
-      .x-axis-name, .y-axis-name {
-        position: absolute;
-        font-size: $fs-small;
-        color: $light-gray;
-      }
-      .x-axis-name {
-        bottom: 24px;
-        left: 50%;
-        @include prefix("transform", "translateX(-50%)");
-      }
-      .y-axis-name {
-        top: 56px;
-        left: 16px;
-      }
+      padding: 0 $panel-content-padding;
+    }
+    .x-axis-name, .y-axis-name {
+      position: absolute;
+      font-size: $fs-small;
+      color: $light-gray;
+    }
+    .x-axis-name {
+      bottom: 48px;
+      right: 64px;
+    }
+    .y-axis-name {
+      top: 48px;
+      left: 16px;
     }
   }
 }

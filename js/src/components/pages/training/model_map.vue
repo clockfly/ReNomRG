@@ -16,18 +16,15 @@
 
 <script>
 import * as d3 from 'd3'
+import { mapState } from 'vuex'
 import { algorithm_colors } from '@/const'
 import { max, min, round, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'ModelMap',
-  computed: {
-    modelList: function () {
-      return this.$store.state.model_list
-    }
-  },
+  computed: mapState(['model_list']),
   watch: {
-    modelList: function () {
+    model_list: function () {
       this.drawMap()
     }
   },

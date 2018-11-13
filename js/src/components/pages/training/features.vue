@@ -6,11 +6,13 @@
       </div>
 
       <div class="panel-content features-content">
-        <div class="target-feature-list">
+        <div class="target-feature-list" v-if="selectedDataset">
           <div class="feature-type">Target Features</div>
 
-          <div class="feature-item">
-            {{ $store.state.labels[$store.state.labels.length - 1] }}
+          <div class="feature-item"
+            v-for="(l,index) in selectedDataset.labels"
+            v-if="selectedDataset.target_column_ids.indexOf(index) !== -1">
+            {{ l }}
           </div>
         </div>
 
@@ -18,7 +20,9 @@
           <div class="feature-type">Explanatory Features</div>
 
           <div class="feature-list">
-            <div class="feature-item" v-for="(l,index) in $store.state.labels">
+            <div class="feature-item"
+              v-for="(l,index) in selectedDataset.labels"
+              v-if="selectedDataset.target_column_ids.indexOf(index) === -1">
               {{ l }}
             </div>
           </div>
@@ -29,8 +33,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'Features'
+  name: 'Features',
+  computed: mapGetters(['selectedDataset'])
 }
 </script>
 
@@ -47,7 +54,9 @@ export default {
     overflow-y: scroll;
 
     .target-feature-list {
-      width: 20%;
+      width: 18%;
+      margin-right: 2%;
+      border-right: 1px solid $gray;
       .feature-item {
         width: 100%;
       }
@@ -72,7 +81,7 @@ export default {
       height: $feature-item-height;
       margin-bottom: 8px;
       padding-left: 8px;
-      border-left: 1px solid "#ccc";
+      border-left: 1px solid $gray;
       font-size: $fs-small;
       line-height: $feature-item-height;
       white-space: nowrap;

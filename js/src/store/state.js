@@ -9,6 +9,11 @@ export default {
   // show add model modal
   add_model_modal_shown_flag: false,
 
+  model_list: [],
+  dataset_list: [],
+
+  selected_model_id: undefined,
+
   /**
   * dashboard
   */
@@ -24,63 +29,16 @@ export default {
   // running models
   running_models: [],
 
-  /**
-  * Model list
-  */
-  model_list: [],
-
   // sort key
   sort_key: 0,
-  // prediction model
-  deployed_model_id: undefined,
-  deployed_model: undefined,
 
   /**
-  * Model Detail
-  */
-  selected_model_id: undefined,
-  selected_model: undefined,
-
-  /**
-  * learning curve
-  */
-  valid_loss_list: [],
-  train_loss_list: [],
-
-  /**
-  * prediction sample
-  */
-  selected_y_valid: [],
-  selected_y_pred: [],
-  deployed_model_y_valid: [],
-  deployed_model_y_pred: [],
-
-  /**
-  * features
-  */
-  // data
-  labels: [],
-  target_column_ids: [],
-
-  /**
-  * modal params setting
-  */
-  dataset_name_list: [],
-  dataset_list: [],
-
-  /**
-  * modal dataaset setting
+  * modal dataset setting
   */
   train_count: 0,
   valid_count: 0,
   target_train: [],
   target_valid: [],
   train_index: [],
-  valid_index: [],
-
-  /**
-  * dataset page
-  */
-  selected_dataset_id: undefined,
-  selected_dataset: undefined
+  valid_index: []
 }
