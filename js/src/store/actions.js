@@ -166,8 +166,7 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-        console.log(response.data)
-        // context.commit('setDeployedModel', {'model': response.data.model})
+        context.commit('setPredResult', {'data': response.data})
       })
   }
 }

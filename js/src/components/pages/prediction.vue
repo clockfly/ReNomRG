@@ -14,42 +14,42 @@
         </div>
 
         <div class="panel-content model-detail-content">
-          <div v-if="deployed_model_id">
+          <div v-if="deployedModel">
             <div class="label-value">
               <div class="label">Selected Model ID</div>
-              <div class="value">{{deployed_model_id}}</div>
+              <div class="value">{{deployedModel.model_id}}</div>
             </div>
             <div class="label-value">
               <div class="label">Dataset</div>
-              <div class="value">{{deployed_model.dataset_id}}</div>
+              <div class="value">{{deployedModel.dataset_id}}</div>
             </div>
             <div class="label-value">
               <div class="label">Algorithm</div>
-              <div class="value">{{algorithms[deployed_model.algorithm]}}</div>
+              <div class="value">{{algorithms[deployedModel.algorithm]}}</div>
             </div>
             <div class="label-value">
               <div class="label">Total Epoch</div>
-              <div class="value">{{deployed_model.epoch}}</div>
+              <div class="value">{{deployedModel.epoch}}</div>
             </div>
             <div class="label-value">
               <div class="label">Batch Size</div>
-              <div class="value">{{deployed_model.batch_size}}</div>
+              <div class="value">{{deployedModel.batch_size}}</div>
             </div>
             <div class="label-value">
               <div class="label">Validation Loss</div>
-              <div class="value">{{round(deployed_model.best_epoch_valid_loss)}}</div>
+              <div class="value">{{round(deployedModel.best_epoch_valid_loss)}}</div>
             </div>
             <div class="label-value">
               <div class="label">RMSE</div>
-              <div class="value">{{round(deployed_model.best_epoch_rmse)}}</div>
+              <div class="value">{{round(deployedModel.best_epoch_rmse)}}</div>
             </div>
             <div class="label-value">
               <div class="label">Max Absolute Error</div>
-              <div class="value">{{round(deployed_model.best_epoch_max_abs_error)}}</div>
+              <div class="value">{{round(deployedModel.best_epoch_max_abs_error)}}</div>
             </div>
             <div class="label-value">
               <div class="label">R2 Score</div>
-              <div class="value">{{round(deployed_model.best_epoch_r2)}}</div>
+              <div class="value">{{round(deployedModel.best_epoch_r2)}}</div>
             </div>
 
             <div class="label-value">
@@ -58,11 +58,11 @@
 
             <div class="label-value">
               <div class="label">Number of Neighbors</div>
-              <div class="value">{{deployed_model.algorithm_params.num_neighbors}}</div>
+              <div class="value">{{deployedModel.algorithm_params.num_neighbors}}</div>
             </div>
           </div>
 
-          <div v-if="!deployed_model_id">Model is not Deployed.</div>
+          <div v-if="!deployedModel">Model is not Deployed.</div>
         </div>
       </div>
     </div> <!-- model detail -->
@@ -73,7 +73,63 @@
           Prediction Results
         </div>
         <div class="panel-content">
-          results
+          <div class="prediction-plot-area" v-if="deployedDataset">
+            <div id="sorted-y-plot" class="column">
+              <div class="plot-name">Sorted Y Plot</div>
+            </div>
+            <div id="xy-plot" class="column">
+              <div class="plot-name">XY Plot</div>
+            </div>
+          </div>
+
+          <div class="prediction-table-area" v-if="deployedDataset">
+            <div class="pred-y-area">
+
+              <div class="table-header">
+                <div class="table-row">
+                  <div class="table-item"
+                    v-if="deployedDataset.target_column_ids.indexOf(i) !== -1"
+                    v-for="(l, i) in deployedDataset.labels">
+                    {{l}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-content scrollable-y">
+                <div class="table-row" v-for="(data, index) in pred_y" :key="index">
+                  <div class="table-item"
+                    v-for="(l, i) in Array(data.length)">
+                    {{ round(data[i]) }}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="pred-x-area">
+              <div class="table-header">
+                <div class="table-row">
+                  <div class="table-item"
+                    v-if="deployedDataset.target_column_ids.indexOf(i) === -1"
+                    v-for="(l, i) in deployedDataset.labels"
+                    @click="plot_x_index = i">
+                    {{l}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-content scrollable">
+                <div class="table-row" v-for="(data, index) in pred_x" :key="index">
+                  <div class="table-item"
+                    v-for="(l, i) in Array(data.length)"
+                    @click="plot_x_index = i">
+                    {{round(data[i])}}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div> <!-- prediction results -->
@@ -82,12 +138,41 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { round } from '@/utils'
+import * as d3 from 'd3'
+import { mapState, mapGetters } from 'vuex'
+import { train_color } from '@/const'
+import { round, max, min, getScale, removeSvg, styleAxis } from '@/utils'
+
+const width = 240
+const height = 160
+const margin = { 'left': 20, 'top': 0, 'right': 0, 'bottom': 20 }
 
 export default {
   name: 'PredictionPage',
-  computed: mapState(['algorithms', 'deployed_model_id', 'deployed_model', 'dataset_name_list']),
+  data: function () {
+    return {
+      'plot_x_index': 0,
+      'plot_y_index': 0
+    }
+  },
+  computed: {
+    ...mapState(['algorithms', 'model_list', 'dataset_list', 'pred_x', 'pred_y']),
+    ...mapGetters(['deployedModel', 'deployedDataset'])
+  },
+  watch: {
+    plot_x_index: function () {
+      this.drawSortedYPlot()
+      this.drawXYPlot()
+    },
+    plot_y_index: function () {
+      this.drawSortedYPlot()
+      this.drawXYPlot()
+    },
+    pred_y: function () {
+      this.drawSortedYPlot()
+      this.drawXYPlot()
+    }
+  },
   created: function () {
     this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadModels')
@@ -97,7 +182,122 @@ export default {
       return round(v, 1000)
     },
     runPrediction: function () {
-      this.$store.dispatch('runPrediction', { 'model_id': this.deployed_model_id })
+      this.$store.dispatch('runPrediction', { 'model_id': this.deployedModel.model_id })
+    },
+    shapeX: function () {
+      let data = []
+      for (let d of this.pred_x) {
+        data.push(d[this.plot_x_index])
+      }
+      return data
+    },
+    shapeY: function () {
+      let data = []
+      for (let d of this.pred_y) {
+        data.push(d[this.plot_y_index])
+      }
+      return data
+    },
+    shapeSortedY: function () {
+      let sorted_y = this.shapeY()
+      return sorted_y.sort((a, b) => a - b)
+    },
+    drawXYPlot: function () {
+      if (!this.pred_y) return
+
+      const id = '#xy-plot'
+      removeSvg(id)
+      const pred_x = this.shapeX()
+      const pred_y = this.shapeY()
+
+      const svg = d3.select(id)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+
+      const x_scale = getScale([min(pred_x), max(pred_x)], [margin.left, width - margin.right])
+      const y_scale = getScale([min(pred_y), max(pred_y)], [height - margin.bottom, margin.top])
+
+      // draw x axis
+      const x_axis_define = d3.axisBottom(x_scale)
+        .tickSizeInner(-(height - margin.top - margin.bottom))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const x_axis = svg.append('g')
+        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
+        .call(x_axis_define)
+      styleAxis(x_axis)
+
+      // draw y axis
+      const y_axis_define = d3.axisLeft(y_scale)
+        .tickSizeInner(-(width - margin.left - margin.right))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const y_axis = svg.append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
+        .call(y_axis_define)
+      styleAxis(y_axis)
+
+      svg.append('g')
+        .selectAll('circle')
+        .data(pred_y)
+        .enter()
+        .append('circle')
+        .attr('cx', function (d, i) { return x_scale(pred_x[i]) })
+        .attr('cy', function (d) { return y_scale(d) })
+        .attr('fill', train_color)
+        .attr('r', 3)
+    },
+    drawSortedYPlot: function () {
+      if (!this.pred_y) return
+
+      const id = '#sorted-y-plot'
+      removeSvg(id)
+      const pred_y = this.shapeSortedY()
+      const plot_max = max(pred_y)
+      const plot_min = min(pred_y)
+
+      const svg = d3.select(id)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+
+      const x_scale = getScale([0, pred_y.length - 1], [margin.left, width - margin.right])
+      const y_scale = getScale([plot_min, plot_max], [height - margin.bottom, margin.top])
+
+      // draw x axis
+      const x_axis_define = d3.axisBottom(x_scale)
+        .tickSizeInner(-(height - margin.top - margin.bottom))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const x_axis = svg.append('g')
+        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
+        .call(x_axis_define)
+      styleAxis(x_axis)
+
+      // draw y axis
+      const y_axis_define = d3.axisLeft(y_scale)
+        .tickSizeInner(-(width - margin.left - margin.right))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const y_axis = svg.append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
+        .call(y_axis_define)
+      styleAxis(y_axis)
+
+      svg.append('g')
+        .selectAll('circle')
+        .data(pred_y)
+        .enter()
+        .append('circle')
+        .attr('cx', function (d, i) { return x_scale(i) })
+        .attr('cy', function (d) { return y_scale(d) })
+        .attr('fill', train_color)
+        .attr('r', 3)
     }
   }
 }
@@ -105,6 +305,9 @@ export default {
 
 <style lang="scss" scoped>
 #page {
+  $table-width: 90%;
+  $table-item-height: 32px;
+
   @include prefix('display', 'flex');
   width: 100%;
   height: calc(100vh - #{$footer-height} - #{$header-height});
@@ -136,6 +339,45 @@ export default {
   }
   .prediction-results {
     width: 80%;
+    .column {
+      width: 50%;
+      height: 100%;
+    }
+    .prediction-plot-area, .prediction-table-area {
+      @include prefix('display', 'flex');
+      padding: 16px;
+    }
+    .prediction-plot-area {
+      height: 40%;
+    }
+    .plot-name {
+      color: $gray;
+    }
+    .prediction-table-area {
+      overflow: scroll;
+      height: 60%;
+      width: 100%;
+      .pred-y-area {
+        height: 100%;
+        border-right: 1px solid $light-gray;
+      }
+      .table-content {
+        width: 100%;
+        height: calc(100% - #{$table-item-height});
+      }
+      .table-row {
+        @include prefix('display', 'flex');
+        border-bottom: 1px solid $light-gray;
+      }
+      .table-item {
+        width: 100px;
+        height: $table-item-height;
+        line-height: $table-item-height;
+        text-align: center;
+        font-size: $fs-small;
+        color: $gray;
+      }
+    }
   }
 }
 </style>

@@ -35,6 +35,7 @@ from renom_rg.server import wsgi_server
 from . import *
 from . import db
 from . import train_task
+from . import pred_task
 
 logger = logging.getLogger(__name__)
 
@@ -346,13 +347,29 @@ def train_model(model_id):
 
 @route("/api/renom_rg/models/<model_id:int>/predict", method="GET")
 def predict_model(model_id):
+    model = db.session().query(db.Model).get(model_id)
+    if not model:
+        return create_response({}, 404, err='model not found')
+
+    with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
+        data = np.array(pickle.load(f))
+
+    f = submit_task(executor, pred_task.prediction, model.id, data)
     try:
-        # run prediction thread
-        body = {}
+        result = f.result()
+        body = {
+            'pred_x': data.tolist(),
+            'pred_y': result.tolist()
+        }
+        return create_response(body)
+
     except Exception as e:
-        body = create_error_body(e)
-    r = create_response(body)
-    return r
+        traceback.print_exc()
+        return create_response({"error_msg": str(e)})
+
+    finally:
+        if renom.cuda.has_cuda():
+            release_mem_pool()
 
 
 def _create_dirs():

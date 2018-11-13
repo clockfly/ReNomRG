@@ -101,5 +101,13 @@ export default {
 
   setDatasetList (state, payload) {
     state.dataset_list = payload.datasets
+  },
+
+  /**
+  * prediction
+  */
+  setPredResult (state, payload) {
+    state.pred_x = payload.data.pred_x
+    state.pred_y = payload.data.pred_y
   }
 }

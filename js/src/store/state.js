@@ -40,5 +40,11 @@ export default {
   target_train: [],
   target_valid: [],
   train_index: [],
-  valid_index: []
+  valid_index: [],
+
+  /**
+  * prediction
+  */
+  pred_x: undefined,
+  pred_y: undefined
 }
