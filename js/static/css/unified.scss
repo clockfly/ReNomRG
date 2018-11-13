@@ -3,6 +3,7 @@
 $full-screen-width: 100vw;
 $full-screen-height: 100vh;
 $max-width: 1280px;
+$scroll-bar-width: 10px;
 
 // colors
 $background-gray: #f3f3f1;
@@ -20,7 +21,7 @@ $fs-small: 0.8rem;
 // modal
 $modal-opacity: 0.5;
 $modal-content-width: 70%;
-$modal-content-height: 70%;
+$modal-content-height: 80%;
 $modal-content-padding: 32px;
 $modal-tab-width: 200px;
 $modal-tab-height: 40px;
@@ -29,6 +30,11 @@ $modal-tab-height: 40px;
 * header
 */
 $header-height: 40px;
+
+/**
+* footer
+*/
+$footer-height: 100px;
 
 // page list area
 $list-width: 20%;
@@ -95,7 +101,7 @@ textarea {
 /**
 * input
 */
-input {
+input[type=text] {
   width: $input-base-width;
   border: 1px solid $light-gray;
   color: $gray;

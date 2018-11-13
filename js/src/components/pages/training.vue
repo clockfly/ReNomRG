@@ -57,8 +57,8 @@ export default {
     PredictionSample
   },
   created: function () {
-    this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadLabels')
+    this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadModels')
   }
 }
@@ -72,13 +72,9 @@ export default {
     @include prefix('display', 'flex');
     position: relative;
     width: 100%;
-    height: $content-height;
 
     .content {
       width: $content-width;
-      height: 100%;
-      height: 100%;
-
       .content-columns {
         @include prefix('display', 'flex');
         width: 100%;

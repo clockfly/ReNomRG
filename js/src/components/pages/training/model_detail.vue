@@ -3,10 +3,10 @@
     <div class="panel">
       <div class="panel-title panel-with-button">
         Model Detail
-        <div class="deploy-button" v-if="model && model.deployed === 0" @click="deploy">
+        <div class="deploy-button" v-if="selectedModel && selectedModel.deployed === 0" @click="deploy">
           > Deploy Model
         </div>
-        <div class="deploy-button" v-if="model && model.deployed === 1" @click="undeploy">
+        <div class="deploy-button" v-if="selectedModel && selectedModel.deployed === 1" @click="undeploy">
           > Undeploy Model
         </div>
       </div>
@@ -15,55 +15,55 @@
         <div class="column">
           <div class="label-value model-id">
             <div class="label">Model ID</div>
-            <div class="value" v-if="model">{{model.model_id}}</div>
+            <div class="value" v-if="selectedModel">{{selectedModel.model_id}}</div>
           </div>
         </div>
 
-        <div class="column" v-if="model">
+        <div class="column" v-if="selectedModel">
           <div class="label-value">
             <div class="label">Algorithm</div>
-            <div class="value">{{$store.state.algorithms[model.algorithm]}}</div>
+            <div class="value">{{$store.state.algorithms[selectedModel.algorithm]}}</div>
           </div>
 
           <div class="label-value">
             <div class="label">Total Epoch</div>
-            <div class="value">{{model.epoch}}</div>
+            <div class="value">{{selectedModel.epoch}}</div>
           </div>
 
           <div class="label-value">
             <div class="label">Batch Size</div>
-            <div class="value">{{model.batch_size}}</div>
+            <div class="value">{{selectedModel.batch_size}}</div>
           </div>
 
           <div class="label-value">
             <div class="label">Validation Loss</div>
-            <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
+            <div class="value">{{round(selectedModel.best_epoch_valid_loss)}}</div>
           </div>
 
           <div class="label-value">
             <div class="label">RMSE</div>
-            <div class="value">{{round(model.best_epoch_rmse)}}</div>
+            <div class="value">{{round(selectedModel.best_epoch_rmse)}}</div>
           </div>
 
           <div class="label-value">
             <div class="label">Max Absolute Error</div>
-            <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
+            <div class="value">{{round(selectedModel.best_epoch_max_abs_error)}}</div>
           </div>
 
           <div class="label-value">
             <div class="label">R2 Score</div>
-            <div class="value">{{round(model.best_epoch_r2)}}</div>
+            <div class="value">{{round(selectedModel.best_epoch_r2)}}</div>
           </div>
         </div>
 
-        <div class="column" v-if="model">
+        <div class="column" v-if="selectedModel">
           <div class="label-value">
             <div class="label">Graph Comvolution Params</div>
           </div>
 
           <div class="label-value">
             <div class="label">Number of Neighbors</div>
-            <div class="value">{{model.algorithm_params.num_neighbors}}</div>
+            <div class="value">{{selectedModel.algorithm_params.num_neighbors}}</div>
           </div>
         </div>
 
@@ -73,25 +73,21 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { round } from '@/utils'
 
 export default {
   name: 'ModelParams',
-  computed: {
-    model: function () {
-      return this.$store.state.selected_model
-    }
-  },
+  computed: mapGetters(['selectedModel']),
   methods: {
     round: function (v) {
       return round(v, 1000)
     },
     deploy: function () {
-      this.$store.dispatch('deployAndUpdate', { 'model_id': this.model.model_id })
-      this.$store.commit('updateDeployModel')
+      this.$store.dispatch('deployAndUpdate', { 'model_id': this.selectedModel.model_id })
     },
     undeploy: function () {
-      this.$store.dispatch('undeployAndUpdate', { 'model_id': this.model.model_id })
+      this.$store.dispatch('undeployAndUpdate', { 'model_id': this.selectedModel.model_id })
     }
   }
 }

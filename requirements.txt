@@ -31,7 +31,7 @@ python-dateutil==2.7.5
 python-editor==1.0.3
 pytz==2018.7
 PyWavelets==1.0.1
--e git+git@gitlab.com:atsuoishimoto/renom.git@2e0c03d8c4805458b74fa6816d477d1c85fa0c79#egg=renom
+-e git+https://github.com/ReNom-dev-team/ReNom.git#egg=renom-2.6.2
 -e git+git@gitlab.com:grid-devs/ReNomRG.git@209cf3c9aa4c66a1052d797c06f7c473fdd8e1ab#egg=renom_rg
 scikit-image==0.14.1
 scikit-learn==0.20.0

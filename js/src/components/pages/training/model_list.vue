@@ -10,12 +10,48 @@
     <div class="panel list-area">
       <div class="panel-title">Model List</div>
 
+      <div class="model-list-item model-list-item-deployed"
+        v-if="deployedModel"
+        v-bind:class="{ active: deployedModel.model_id === $store.state.selected_model_id }"
+        @click="selectModel(deployedModel)">
+        <div :class="'algorithm-color '+$store.state.algorithms[deployedModel.algorithm].toLowerCase()"></div>
+
+        <div class="label-value">
+          <div class="label">Model ID</div>
+          <div class="value">{{deployedModel.model_id}}</div>
+        </div>
+
+        <div class="label-value">
+          <div class="label">Algorithm</div>
+          <div class="value">{{$store.state.algorithms[deployedModel.algorithm]}}</div>
+        </div>
+
+        <div class="label-value">
+          <div class="label">RMSE</div>
+          <div class="value">{{round(deployedModel.best_epoch_rmse)}}</div>
+        </div>
+
+        <div class="label-value">
+          <div class="label">Max Absolute Error</div>
+          <div class="value">{{round(deployedModel.best_epoch_max_abs_error)}}</div>
+        </div>
+
+        <div class="label-value">
+          <div class="label">Validation Loss</div>
+          <div class="value">{{round(deployedModel.best_epoch_valid_loss)}}</div>
+        </div>
+
+        <div class="deployed">
+          deployed
+        </div>
+      </div>
+
       <div class="model-list-scrollable-area">
         <div class="model-list-item"
           v-bind:class="{ active: model.model_id === $store.state.selected_model_id }"
           v-for="(model,index) in $store.state.model_list"
+          v-if="model.deployed === 0"
           @click="selectModel(model)">
-
           <div :class="'algorithm-color '+$store.state.algorithms[model.algorithm].toLowerCase()"></div>
 
           <div class="label-value">
@@ -43,11 +79,8 @@
             <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
           </div>
 
-          <div v-if="model.deployed === 0" class="delete-button" @click="deleteModel(model)">
+          <div class="delete-button" @click="deleteModel(model)">
             <i class="fa fa-times" aria-hidden="true"></i>
-          </div>
-          <div v-if="model.deployed === 1" class="deployed">
-            deployed
           </div>
         </div>
       </div>
@@ -56,17 +89,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { round } from '@/utils'
 
 export default {
   name: 'ModelList',
+  computed: mapGetters(['deployedModel']),
   methods: {
     round: function (v) {
       return round(v, 1000)
     },
     selectModel: function (m) {
       this.$store.commit('setSelectedModelId', {'model_id': m['model_id']})
-      this.$store.dispatch('selectModel', {'model_id': m['model_id']})
     },
     showModal: function () {
       this.$store.commit('setAddModelModalShowFlag', {'flag': true})
@@ -95,12 +129,16 @@ export default {
   }
 
   .list-area {
+    position: sticky;
+    top: $header-height;
+    bottom: $footer-height;
     width: 100%;
-    height: calc(100% - 100px);
+    height: calc(100vh - #{$header-height});
     .model-list-scrollable-area {
-      overflow: scroll;
+      overflow-y: scroll;
       width: 100%;
-      height: 100%;
+      height: calc(100% - #{$panel-title-height} - #{$model-list-item-height} - 16px);
+      margin-top: 8px;
     }
   }
 
@@ -149,6 +187,10 @@ export default {
   }
   .active {
     border: solid 1px $blue;
+  }
+  .model-list-item-deployed {
+    width: calc(100% - 10px);
+    border: solid 2px $blue;
   }
 }
 </style>

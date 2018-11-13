@@ -1,25 +1,21 @@
 import axios from 'axios'
 
 export default {
-  loadLabels (context, payload) {
+  async loadLabels (context, payload) {
     const url = '/api/renom_rg/datasets/labels'
-    axios.get(url)
+    return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-
         context.commit('setLabels', {
           'labels': response.data.labels
         })
       })
   },
-
   async loadModels (context, payload) {
     await context.dispatch('loadModelList')
-    await context.dispatch('selectModel', { 'model_id': context.state.selected_model_id })
-    await context.dispatch('loadDeployedModel', { 'model_id': context.state.deployed_model_id })
   },
 
   async loadModelList (context, payload) {
@@ -30,38 +26,8 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-
         context.commit('setModelList', {
           'model_list': response.data.models
-        })
-      })
-  },
-
-  async selectModel (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id
-    axios.get(url)
-      .then(function (response) {
-        if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
-          return
-        }
-
-        context.commit('setSelectedModelId', payload)
-        context.commit('setSelectedModel', {'model': response.data.model})
-      })
-  },
-
-  async loadDeployedModel (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id
-    return axios.get(url)
-      .then(function (response) {
-        if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
-          return
-        }
-
-        context.commit('setDeployededModel', {
-          'model': response.data.model
         })
       })
   },
@@ -94,8 +60,6 @@ export default {
       context.commit('setErrorMsg', {'error_msg': result.data.error_msg})
       return
     }
-
-    console.log(22222222, result.data)
     const model_id = result.data.model_id
     await context.dispatch('runModel', {'model_id': model_id})
     if (result.data.error_msg) {
@@ -155,7 +119,7 @@ export default {
     fd.append('name', payload.name)
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
-    fd.append('target_column_id', payload.target_column_id)
+    fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
 
     const url = '/api/renom_rg/datasets/confirm'
     return axios.post(url, fd)
@@ -164,12 +128,7 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-        context.commit('setTrainCount', {'train_count': response.data.train_count})
-        context.commit('setValidCount', {'valid_count': response.data.valid_count})
-        context.commit('setTargetTrain', {'target_train': response.data.target_train})
-        context.commit('setTargetValid', {'target_valid': response.data.target_valid})
-        context.commit('setTrainIndex', {'train_index': response.data.train_index})
-        context.commit('setValidIndex', {'valid_index': response.data.valid_index})
+        context.commit('setConfirmDataset', { 'data': response.data })
       })
   },
 
@@ -178,10 +137,12 @@ export default {
     fd.append('name', payload.name)
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
-    fd.append('target_column_id', payload.target_column_id)
+    fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
     fd.append('labels', JSON.stringify(context.state.labels))
     fd.append('train_index', JSON.stringify(context.state.train_index))
     fd.append('valid_index', JSON.stringify(context.state.valid_index))
+    fd.append('target_train', JSON.stringify(context.state.target_train))
+    fd.append('target_valid', JSON.stringify(context.state.target_valid))
 
     const url = '/api/renom_rg/datasets'
     return axios.post(url, fd)
@@ -189,20 +150,6 @@ export default {
         if (response.data.error_msg) {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
         }
-      })
-  },
-
-  loadSelectedDataset (context, payload) {
-    const url = '/api/renom_rg/datasets/' + payload.dataset_id
-    axios.get(url)
-      .then(function (response) {
-        if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
-          return
-        }
-        context.commit('setSelectedDataset', {
-          'dataset': response.data.dataset
-        })
       })
   },
 
@@ -219,8 +166,7 @@ export default {
           context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
           return
         }
-        console.log(response.data)
-        // context.commit('setDeployedModel', {'model': response.data.model})
+        context.commit('setPredResult', {'data': response.data})
       })
   }
 }

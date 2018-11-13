@@ -24,31 +24,46 @@
         <div class="sub-block">
           <div class="label">Ratio of training data</div>
           <div class="input-value">
-            <input type="text" v-model="train_ratio">
+            <select v-model="train_ratio">
+              <option v-for="(ratio, index) in train_ratio_list"
+                :value="ratio" :key="ratio">
+                {{ ratio }}
+              </option>
+            </select>
           </div>
         </div>  <!-- sub block -->
 
         <div class="sub-block">
-          <div class="label">Target Valiable</div>
+          <div class="label">Target Valiables</div>
           <div class="input-value">
-            <select v-model="target_column_id">
-              <option v-for="(o, index) in $store.state.labels"
-                :value="index" :key="index">
-                {{ o }}
-              </option>
-            </select>
+            <div class="target-variable-name" v-for="id in target_column_ids" :key="id">
+              {{ $store.state.labels[id] }}
+            </div>
           </div>
         </div>  <!-- sub block -->
       </div>  <!-- setting block -->
 
       <div class="button-area">
         <button @click="confirmDataset">Confirm</button>
+        <button class="button-cancel"
+          @click="$emit('cancel')">Cancel</button>
       </div>
 
     </div>  <!-- column -->
 
-    <div class="column">
+    <div class="column" v-if="!is_confirm">
+      <div class="variable-scroll-area">
+        <div class="setting-type">
+          Target Valiables
+        </div>
+        <div class="variable-item" v-for="(label, index) in $store.state.labels">
+          <input type="checkbox" :id="index" :value="index" v-model="target_column_ids">
+          <label :for="index">{{label}}</label>
+        </div>
+      </div>
+    </div> <!-- column before confirm -->
 
+    <div class="column" v-if="is_confirm">
       <div class="setting-block">
         <div class="setting-type">
           Detail
@@ -83,10 +98,10 @@
       <div class="button-area">
         <button @click="saveDataset">Save</button>
         <button class="button-cancel"
-          @click="$emit('cancel')">Cancel</button>
+          @click="is_confirm = false">Back</button>
       </div>
 
-    </div> <!-- column -->
+    </div> <!-- column after confirm -->
   </div>
 </template>
 
@@ -99,10 +114,12 @@ export default {
   name: 'ModalDataset',
   data: function () {
     return {
+      'is_confirm': false,
       'name': '',
       'description': '',
       'train_ratio': 0.8,
-      'target_column_id': 0
+      'train_ratio_list': [0.7, 0.8, 0.9],
+      'target_column_ids': []
     }
   },
   computed: {
@@ -112,7 +129,11 @@ export default {
   },
   watch: {
     targetTrain: function () {
-      this.drawHistogram()
+      const id = '#train-test-histogram'
+      removeSvg(id)
+      for (let i in this.$store.state.target_train) {
+        this.drawHistogram(id, this.$store.state.target_train[i], this.$store.state.target_valid[i])
+      }
     }
   },
   methods: {
@@ -121,13 +142,11 @@ export default {
         'name': this.name,
         'description': this.description,
         'train_ratio': this.train_ratio,
-        'target_column_id': this.target_column_id
+        'target_column_ids': this.target_column_ids
       }
     },
-    drawHistogram: function () {
+    drawHistogram: function (id, train, valid) {
       if (this.$store.state.train_index.length === 0) return
-      const id = '#train-test-histogram'
-      removeSvg(id)
 
       // const parent_area = d3.select(id)
       // const width = parent_area._groups[0][0].clientWidth
@@ -136,8 +155,8 @@ export default {
       const height = 150
       const margin = { 'left': 20, 'top': 20, 'right': 20, 'bottom': 20 }
 
-      const target_train = this.$store.state.target_train
-      const target_valid = this.$store.state.target_valid
+      const target_train = train
+      const target_valid = valid
       const train_max = max(target_train)
       const train_min = min(target_train)
       const valid_max = max(target_valid)
@@ -207,6 +226,7 @@ export default {
     },
     confirmDataset: function () {
       this.$store.dispatch('confirmDataset', this.params())
+      this.is_confirm = true
     },
     getHistgram: function (scale, ticks) {
       return d3.histogram()
@@ -234,10 +254,15 @@ export default {
   .column {
     position: relative;
     width: 50%;
+    height: 100%;
 
     .setting-block {
       margin-top: 24px;
       margin-left: 24px;
+    }
+    .setting-type {
+      height: 32px;
+      line-height: 32px;
     }
     .sub-block {
       @include prefix("display", "flex");
@@ -265,6 +290,19 @@ export default {
       position: absolute;
       bottom: 0px;
       right: 0px;
+    }
+    .variable-scroll-area {
+      overflow-y: scroll;
+      height: 90%;
+      padding: 24px;
+      .variable-item {
+        height: 32px;
+        padding-left: 32px;
+        line-height: 32px;
+        label {
+          color: $gray;
+        }
+      }
     }
   }
 

@@ -2,7 +2,7 @@
 <footer>
   <div class="footer-content">
     <img class="logo-img" src="/static/img/renomlogo.png">
-    <div class="version">ReNom RG beta</div>
+    <!-- <div class="version">ReNom RG beta</div> -->
   </div>
   <div class="copyright-bar">
     <div class="copyright">©︎2018 GRID INC. ALL rights reserved.</div>
@@ -20,6 +20,7 @@ export default {
 footer {
   position: relative;
   width: $full-screen-width;
+  height: $footer-height;
   background: $dark-blue;
   z-index: 1;
 
@@ -31,16 +32,19 @@ footer {
       margin: 24px 8px 8px 8px;
     }
     .version {
-      line-height: 32px;
+      line-height: 24px;
       color: $white;
     }
   }
   .copyright-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
     background: #02294C;
     .copyright {
       max-width: $max-width;
       margin: 0 auto;
-      line-height: 32px;
+      line-height: 24px;
       color: $white;
     }
   }
