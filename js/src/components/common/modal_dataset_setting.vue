@@ -52,11 +52,10 @@
     </div>  <!-- column -->
 
     <div class="column" v-if="!is_confirm">
-      <div class="setting-block">
+      <div class="variable-scroll-area">
         <div class="setting-type">
           Target Valiables
         </div>
-
         <div class="variable-item" v-for="(label, index) in $store.state.labels">
           <input type="checkbox" :id="index" :value="index" v-model="target_column_ids">
           <label :for="index">{{label}}</label>
@@ -255,10 +254,15 @@ export default {
   .column {
     position: relative;
     width: 50%;
+    height: 100%;
 
     .setting-block {
       margin-top: 24px;
       margin-left: 24px;
+    }
+    .setting-type {
+      height: 32px;
+      line-height: 32px;
     }
     .sub-block {
       @include prefix("display", "flex");
@@ -286,6 +290,19 @@ export default {
       position: absolute;
       bottom: 0px;
       right: 0px;
+    }
+    .variable-scroll-area {
+      overflow-y: scroll;
+      height: 90%;
+      padding: 24px;
+      .variable-item {
+        height: 32px;
+        padding-left: 32px;
+        line-height: 32px;
+        label {
+          color: $gray;
+        }
+      }
     }
   }
 

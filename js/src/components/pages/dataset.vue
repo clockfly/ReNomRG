@@ -13,14 +13,16 @@
           <div class="content-left">
             <div class="table-header">
               <div class="table-row">
-                <div class="table-item">Dataset Name</div>
-                <div class="table-item">Train Data</div>
-                <div class="table-item">Validation Date</div>
+                <div class="table-item">Name</div>
+                <div class="table-item">Train Ratio</div>
+                <div class="table-item">Train</div>
+                <div class="table-item">Validation</div>
               </div>
             </div>
             <div class="table-content">
               <div class="table-row" v-for="(dataset, index) in $store.state.dataset_list" :key="index" @click="selected_dataset_index = index">
                 <div class="table-item">{{ dataset.name }}</div>
+                <div class="table-item">{{ dataset.train_ratio }}</div>
                 <div class="table-item">{{ dataset.train_index.length }}</div>
                 <div class="table-item">{{ dataset.valid_index.length }}</div>
               </div>
@@ -64,7 +66,14 @@
 
               <div class="column">
                 <div class="label">Histogram</div>
-                <div id="train-test-histogram"></div>
+                <div class="histogram-area">
+                  <div :id="'train-test-histogram'+index" class="histogram-plot"
+                    v-for="(data, index) in selectedDataset.target_train">
+                    <div class="target-name">
+                      {{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div> <!-- content-right dataset detail -->
@@ -101,7 +110,9 @@ export default {
   },
   watch: {
     selectedDataset: function () {
-      this.drawHistograms()
+      this.$nextTick(function () {
+        this.drawHistograms()
+      })
     }
   },
   created: function () {
@@ -114,9 +125,9 @@ export default {
   methods: {
     drawHistograms: function () {
       if (!this.selectedDataset) return
-      const id = '#train-test-histogram'
-      removeSvg(id)
       for (let i in this.selectedDataset.target_train) {
+        const id = '#train-test-histogram' + i
+        removeSvg(id)
         this.drawHistogram(id, this.selectedDataset.target_train[i], this.selectedDataset.target_valid[i])
       }
     },
@@ -202,9 +213,6 @@ export default {
     },
     getHistgramSizeMax: function (hist) {
       return max(hist.map(function (d) { return d.length }))
-    },
-    removeHistogram: function (id) {
-      d3.select(id).selectAll('svg').remove()
     }
   }
 }
@@ -313,6 +321,14 @@ export default {
         .bar-item {
           height: 8px;
         }
+      }
+      .target-name {
+        height: $table-item-height;
+        line-height: $table-item-height;
+        color: $gray;
+      }
+      .histogram-plot {
+        width: 50%;
       }
     }
   }
