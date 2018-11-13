@@ -121,6 +121,8 @@ def _dataset_to_dict(ds):
         "train_ratio": ds.train_ratio,
         "train_index": pickle.loads(ds.train_index),
         "valid_index": pickle.loads(ds.valid_index),
+        "target_train": pickle.loads(ds.target_train),
+        "target_valid": pickle.loads(ds.target_valid),
         "created": ds.created.isoformat()
     }
     return ret
@@ -174,13 +176,17 @@ def create_dataset():
     train_ratio = float(request.params.train_ratio)
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
+    target_train = json.loads(request.params.target_train)
+    target_valid = json.loads(request.params.target_valid)
 
     dataset = db.DatasetDef(name=name, description=description,
                             target_column_ids=pickle.dumps(target_column_ids),
                             labels=pickle.dumps(labels),
                             train_ratio=train_ratio,
                             train_index=pickle.dumps(train_index),
-                            valid_index=pickle.dumps(valid_index))
+                            valid_index=pickle.dumps(valid_index),
+                            target_train=pickle.dumps(target_train),
+                            target_valid=pickle.dumps(target_valid))
     session = db.session()
     session.add(dataset)
     session.commit()

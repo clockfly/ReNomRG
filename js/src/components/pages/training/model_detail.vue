@@ -85,7 +85,6 @@ export default {
     },
     deploy: function () {
       this.$store.dispatch('deployAndUpdate', { 'model_id': this.selectedModel.model_id })
-      this.$store.commit('updateDeployModel')
     },
     undeploy: function () {
       this.$store.dispatch('undeployAndUpdate', { 'model_id': this.selectedModel.model_id })

@@ -101,7 +101,6 @@ export default {
     },
     selectModel: function (m) {
       this.$store.commit('setSelectedModelId', {'model_id': m['model_id']})
-      this.$store.dispatch('selectModel', {'model_id': m['model_id']})
     },
     showModal: function () {
       this.$store.commit('setAddModelModalShowFlag', {'flag': true})

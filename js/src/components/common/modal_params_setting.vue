@@ -11,9 +11,9 @@
           <div class="label">Dataset Name</div>
           <div class="input-value">
             <select v-model="dataset_index">
-              <option v-for="(name, index) in $store.state.dataset_name_list"
+              <option v-for="(dataset, index) in $store.state.dataset_list"
                 :value="index" :key="index">
-                {{ name }}
+                {{ dataset.name }}
               </option>
             </select>
             <div class="to-setting-dataset" @click="$emit('todataset')">

@@ -25,6 +25,8 @@ class DatasetDef(Base):
     train_ratio = Column(FLOAT)
     train_index = Column(BLOB)
     valid_index = Column(BLOB)
+    target_train = Column(BLOB)
+    target_valid = Column(BLOB)
     created = Column(DateTime, default=datetime.datetime.utcnow)
     updated = Column(DateTime, default=datetime.datetime.utcnow,
                      onupdate=datetime.datetime.utcnow)

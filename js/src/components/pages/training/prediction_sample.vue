@@ -42,19 +42,27 @@
 
 <script>
 import * as d3 from 'd3'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { train_color, valid_color } from '@/const'
 import { max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'PreictionResult',
-  computed: mapGetters(['deployedModel', 'selectedModel', 'selectedDataset']),
+  computed: {
+    ...mapState(['dataset_list']),
+    ...mapGetters(['deployedModel', 'selectedModel', 'selectedDataset'])
+  },
   watch: {
     selectedModel: function () {
-      this.drawSelected()
+      // wait dom rendering
+      this.$nextTick(function () {
+        this.drawSelected()
+      })
     },
     deployedModel: function () {
-      this.drawDeployed()
+      this.$nextTick(function () {
+        this.drawDeployed()
+      })
     }
   },
   mounted: function () {
@@ -165,17 +173,28 @@ export default {
         )
 
       // draw histogram train true
-
-      // draw histogram train valid
-
-      // draw histogram valid true
       const true_histogram = this.getHistgram(x_scale, 10)
-      const true_valid_bins = true_histogram(valid_true)
-      const true_hist_max = this.getHistgramSizeMax(true_valid_bins)
+      const train_true_bins = true_histogram(train_true)
+      const true_hist_max = this.getHistgramSizeMax(train_true_bins)
       const histy_scale = getScale([plot_max, plot_max + true_hist_max], [margin.top - margin.hist_inner, margin.hist_outer])
 
       svg.append('path')
-        .datum(true_valid_bins)
+        .datum(train_true_bins)
+        .attr('fill', train_color)
+        .attr('opacity', 0.2)
+        .attr('stroke', train_color)
+        .attr('stroke-width', 2)
+        .attr('d', d3.area()
+          .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
+          .y1(function (d) { return histy_scale(plot_max + d.length) })
+          .y0(function (d) { return histy_scale(plot_max) })
+          .curve(d3.curveCardinal)
+        )
+
+      // draw histogram valid true
+      const valid_true_bins = true_histogram(valid_true)
+      svg.append('path')
+        .datum(valid_true_bins)
         .attr('fill', valid_color)
         .attr('opacity', 0.2)
         .attr('stroke', valid_color)
@@ -187,14 +206,28 @@ export default {
           .curve(d3.curveCardinal)
         )
 
-      // draw histogram valid prediction
+      // draw histogram train prediction
       const pred_histogram = this.getHistgram(y_scale, 10)
-      const pred_valid_bins = pred_histogram(valid_pred)
-      const pred_hist_max = this.getHistgramSizeMax(pred_valid_bins)
+      const train_pred_bins = pred_histogram(train_pred)
+      const pred_hist_max = this.getHistgramSizeMax(train_pred_bins)
       const histx_scale = getScale([plot_max, plot_max + pred_hist_max], [width - margin.right + margin.hist_inner, width - margin.hist_outer])
-
       svg.append('path')
-        .datum(pred_valid_bins)
+        .datum(train_pred_bins)
+        .attr('fill', train_color)
+        .attr('opacity', 0.2)
+        .attr('stroke', train_color)
+        .attr('stroke-width', 2)
+        .attr('d', d3.area()
+          .x1(function (d) { return histx_scale(plot_max + d.length) })
+          .x0(function (d) { return histx_scale(plot_max) })
+          .y(function (d, index) { return y_scale((d.x0 + d.x1) / 2) })
+          .curve(d3.curveCardinal)
+        )
+
+      // draw histogram valid prediction
+      const valid_pred_bins = pred_histogram(valid_pred)
+      svg.append('path')
+        .datum(valid_pred_bins)
         .attr('fill', valid_color)
         .attr('opacity', 0.2)
         .attr('stroke', valid_color)
@@ -221,16 +254,15 @@ export default {
     },
     drawSelected: function () {
       if (!this.selectedModel) return
-
       for (let i in this.selectedModel.valid_true) {
         const id = '#selected-plot' + i
         removeSvg(id)
         const train_true = this.selectedModel.sampled_train_true[i]
         const train_pred = this.selectedModel.sampled_train_pred[i]
-        const y_valid = this.selectedModel.valid_true[i]
-        const y_pred = this.selectedModel.valid_predicted[i]
+        const valid_true = this.selectedModel.valid_true[i]
+        const valid_pred = this.selectedModel.valid_predicted[i]
         const confidence_data = this.selectedModel.confidence_data[i]
-        this.drawTruePredPlot(id, train_true, train_pred, y_valid, y_pred, confidence_data)
+        this.drawTruePredPlot(id, train_true, train_pred, valid_true, valid_pred, confidence_data)
       }
     },
     getHistgram: function (scale, ticks) {

@@ -199,8 +199,10 @@ def _train(session, taskstate, model_id):
         modeldef.valid_predicted = pickle.dumps(valid_predicted.T.tolist())
         modeldef.valid_true = pickle.dumps(valid_true.T.tolist())
 
-        sampled_train_pred = train_predicted_list[:plot_train_size]
-        sampled_train_true = train_true_list[:plot_train_size]
+        # sampled_train_pred = train_predicted_list[:plot_train_size]
+        # sampled_train_true = train_true_list[:plot_train_size]
+        sampled_train_pred = train_predicted_list
+        sampled_train_true = train_true_list
 
         modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
         modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())

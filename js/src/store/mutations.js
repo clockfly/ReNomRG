@@ -52,7 +52,7 @@ export default {
         state.model_counts_per_algorith['C-GCNN'] += 1
       } else if (m['algorithm'] === 1) {
         state.model_counts_per_algorith['Kernel-GCNN'] += 1
-      } else if (m['algorithm'] === 0) {
+      } else if (m['algorithm'] === 2) {
         state.model_counts_per_algorith['DBSCAN-GCNN'] += 1
       }
       // }
@@ -74,50 +74,12 @@ export default {
     state.sort_key = payload.sort_key
   },
 
-  // set deployed model
-  setDeployedModelId (state, payload) {
-    state.deployed_model_id = payload.deployed_model_id
-  },
-
   /**
   * Model Detail
   */
   // set selected model_id
   setSelectedModelId (state, payload) {
     state.selected_model_id = payload.model_id
-  },
-
-  // set selected model
-  setSelectedModel (state, payload) {
-    state.selected_model = payload.model
-    state.valid_loss_list = payload.model.valid_loss_list
-    state.train_loss_list = payload.model.train_loss_list
-    state.selected_y_valid = payload.model.valid_true
-    state.selected_y_pred = payload.model.valid_predicted
-  },
-
-  updateDeployModel (state, payload) {
-    state.deployed_model_id = state.selected_model_id
-    state.deployed_model_y_valid = state.selected_y_valid
-    state.deployed_model_y_pred = state.selected_y_pred
-  },
-
-  setDeployededModel (state, payload) {
-    state.deployed_model_id = payload.model.model_id
-    state.deployed_model_y_valid = payload.model.valid_true
-    state.deployed_model_y_pred = payload.model.valid_predicted
-    state.deployed_model = payload.model
-  },
-
-  /**
-  * prediction sample
-  */
-  // set validation true data
-  setDeployedYValid (state, payload) {
-    state.deployed_y_valid = payload.deployed_y_valid
-  },
-  setDeployedYPred (state, payload) {
-    state.deployed_y_pred = payload.deployed_y_pred
   },
 
   // set labels
@@ -138,10 +100,6 @@ export default {
   },
 
   setDatasetList (state, payload) {
-    state.dataset_name_list = []
-    for (let d of payload.datasets) {
-      state.dataset_name_list.push(d['name'])
-    }
     state.dataset_list = payload.datasets
   }
 }
