@@ -106,8 +106,7 @@ export default {
       this.$store.commit('setAddModelModalShowFlag', {'flag': true})
     },
     deleteModel: function (m) {
-      alert('削除　未実装')
-      // this.$store.dispatch('deleteModel', {'model_id': m['model_id']})
+      this.$store.dispatch('deleteAndUpdate', {'model_id': m['model_id']})
     }
   }
 }
