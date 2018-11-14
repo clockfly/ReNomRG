@@ -116,6 +116,7 @@ export default {
     },
     runModel: function () {
       this.$store.dispatch('addModel', this.params())
+      this.$emit('run')
       this.hideModal()
     },
     hideModal: function () {

@@ -30,11 +30,14 @@
       </div>
     </div>
 
-    <ModalAdd v-if="$store.state.add_model_modal_shown_flag"></ModalAdd>
+    <ModalAdd v-if="$store.state.add_model_modal_shown_flag"
+      @run="watchStart">
+    </ModalAdd>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import ModalAdd from '@/components/common/modal_add_model'
 import Dashboard from '@/components/pages/training/dashboard.vue'
 import Features from '@/components/pages/training/features'
@@ -56,10 +59,27 @@ export default {
     ModelMap,
     PredictionSample
   },
+  computed: mapState(['running_models']),
   created: function () {
     this.$store.dispatch('loadLabels')
     this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadModels')
+  },
+  watch: {
+    running_models: function () {
+      if (this.running_models.length === 0) this.watchClear()
+    }
+  },
+  methods: {
+    watchStart: function () {
+      const self = this
+      this.interval = setInterval(function () {
+        self.$store.dispatch('loadRunningModels')
+      }, 1000)
+    },
+    watchClear: function () {
+      clearInterval(this.interval)
+    }
   }
 }
 </script>

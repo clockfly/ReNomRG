@@ -45,6 +45,10 @@ class TaskState:
         self.canceled = False
         self.nth_epoch = -1
         self.nth_batch = -1
+        self.train_loss = -1
+        self.total_epoch = -1
+        self.total_batch = -1
+        self.algorithm = -1
 
 
 def split_target(data, ids):
@@ -93,7 +97,6 @@ def _train(session, taskstate, model_id):
     taskstate.state = RUN_STATE_STARTING
 
     total_batch = 0
-    # last_batch_loss = 0
     best_loss = None
     train_loss_list = []
     valid_loss_list = []
@@ -115,6 +118,7 @@ def _train(session, taskstate, model_id):
     # Pretrained weights are must be prepared.
     # This have to be done in thread.
 
+    taskstate.algorithm = modeldef.algorithm
     algorithm_params = pickle.loads(modeldef.algorithm_params)
     if modeldef.algorithm == C_GCNN:
         feature_graph = get_corr_graph(X_train, algorithm_params["num_neighbors"])
@@ -139,6 +143,7 @@ def _train(session, taskstate, model_id):
     optimizer = Adam()
 
     taskstate.state = RunningState.TRAINING
+    taskstate.total_epoch = modeldef.epoch
     for e in range(modeldef.epoch):
         taskstate.nth_epoch = e
         N = X_train.shape[0]
@@ -148,7 +153,7 @@ def _train(session, taskstate, model_id):
         train_predicted_list = None
 
         total_batch = N // modeldef.batch_size
-
+        taskstate.total_batch = total_batch
         for j in range(total_batch):
             if taskstate.canceled:
                 return
@@ -164,7 +169,7 @@ def _train(session, taskstate, model_id):
             with model.train():
                 train_predicted = model(train_batch_x)
                 l = rm.mse(train_predicted, train_batch_y)
-                # last_batch_loss = l
+                taskstate.train_loss = l.tolist()
 
                 if train_predicted_list is None:
                     train_predicted_list = train_predicted
@@ -231,3 +236,13 @@ def _train(session, taskstate, model_id):
             session.commit()
 
             best_loss = valid_loss
+
+
+class TrainThread(object):
+    def __init__(self):
+        pass
+
+    def train(self, taskstate, model_id):
+        self.model_id = model_id
+        self.taskstate = taskstate
+        train(taskstate, model_id)

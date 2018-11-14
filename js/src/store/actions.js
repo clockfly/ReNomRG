@@ -70,6 +70,17 @@ export default {
     await context.dispatch('loadModelList')
   },
 
+  loadRunningModels (context, payload) {
+    const url = '/api/renom_rg/models/running'
+    axios.get(url)
+      .then(function (response) {
+        if (response.data.error_msg) {
+          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+        }
+        context.commit('setRunningModels', {'running_models': response.data.running_models})
+      })
+  },
+
   async deleteModel (context, payload) {
     const url = '/api/renom_rg/models/' + payload.model_id
     return axios.delete(url)
