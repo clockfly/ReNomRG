@@ -103,6 +103,10 @@ export default {
     state.dataset_list = payload.datasets
   },
 
+  setRunningModels (state, payload) {
+    state.running_models = payload.running_models
+  },
+
   /**
   * prediction
   */

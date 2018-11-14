@@ -270,6 +270,27 @@ def create_model():
     return create_response(_model_to_dict(model))
 
 
+def _taskstate_to_dict(th):
+    ret = {
+        "model_id": th.model_id,
+        "algorithm": th.taskstate.algorithm,
+        # "error_msgs": th.taskstate.error_msgs,
+        # "state": th.taskstate.state,
+        "nth_epoch": th.taskstate.nth_epoch,
+        "nth_batch": th.taskstate.nth_batch,
+        "train_loss": th.taskstate.train_loss,
+        "total_epoch": th.taskstate.total_epoch,
+        "total_batch": th.taskstate.total_batch
+    }
+    return ret
+
+
+@route("/api/renom_rg/models/running", method="GET")
+def get_running_models():
+    ret = [_taskstate_to_dict(th) for th in train_thread_pool.values()]
+    return create_response({'running_models': ret})
+
+
 @route("/api/renom_rg/models/<model_id:int>", method="DELETE")
 def delete_model(model_id):
     q = db.session().query(db.Model).filter(db.Model.id == model_id)
@@ -329,8 +350,10 @@ def train_model(model_id):
     if not model:
         return create_response({}, 404, err='model not found')
 
+    th = train_task.TrainThread()
     taskstate = train_task.TaskState.add_task(model)
-    f = submit_task(executor, train_task.train, taskstate, model.id)
+    train_thread_pool[model.id] = th
+    f = submit_task(executor, th.train, taskstate, model.id)
     try:
         f.result()
         return create_response({'result': 'ok'})
@@ -340,6 +363,7 @@ def train_model(model_id):
         return create_response({"error_msg": str(e)})
 
     finally:
+        del train_thread_pool[model.id]
         if renom.cuda.has_cuda():
             release_mem_pool()
 
@@ -427,10 +451,16 @@ def _init_gpu():
         gpupool = GPUPool(num)
 
 
+def _init_train_thread_pool():
+    global train_thread_pool
+    train_thread_pool = {}
+
+
 def main():
     _create_dirs()
     db.initdb()
     _init_gpu()
+    _init_train_thread_pool()
 
     # Parser settings.
     parser = argparse.ArgumentParser(description='ReNomRG')

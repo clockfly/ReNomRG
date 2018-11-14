@@ -30,7 +30,38 @@
         </div>
 
         <!-- running models -->
-        <div class="running-models"></div>
+        <div class="running-models">
+          <div class="label">Running Models</div>
+
+          <div class="running-model" v-for="(model, index) in $store.state.running_models">
+            <div class="running-info">
+              <div class="running-info-item">
+                <div class="running-info-label">Model ID</div>
+                <div class="running-info-value">{{model.model_id}}</div>
+              </div>
+              <div class="running-info-item">
+                <div class="running-info-label">Epoch</div>
+                <div class="running-info-value">{{model.nth_epoch}} / {{model.total_epoch}}</div>
+              </div>
+              <div class="running-info-item">
+                <div class="running-info-label">Batch</div>
+                <div class="running-info-value">{{model.nth_batch}} / {{model.total_batch}}</div>
+              </div>
+              <div class="running-info-item progress-bar">
+                <div class="bar-background"></div>
+                <div :class="'bar-foreground '+$store.state.algorithms[model.algorithm].toLowerCase()"
+                  :style="{ width: model.nth_epoch * 100 / model.total_epoch + '%' }">
+                </div>
+              </div>
+              <div class="running-info-item pause-button">
+                <div class="running-info-label"></div>
+                <div class="running-info-value">
+                  <i class="far fa-pause-circle"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -87,6 +118,36 @@ export default {
       .bar-item {
         height: 16px;
       }
+    }
+  }
+  .running-info {
+    @include prefix("display", "flex");
+    .running-info-item {
+      flex-grow: 1;
+      .running-info-label, .running-info-value {
+        height: 16px;
+        line-height: 16px;
+        font-size: $fs-small;
+      }
+      .running-info-label {
+        color: $light-gray;
+      }
+    }
+    .progress-bar {
+      flex-grow: 4;
+      position: relative;
+      .bar-background {
+        width: 100%;
+        background-color: $light-gray;
+      }
+      .bar-background, .bar-foreground {
+        position: absolute;
+        height: 8px;
+        top: 20px;
+      }
+    }
+    .pause-button {
+      text-align: right;
     }
   }
 }
