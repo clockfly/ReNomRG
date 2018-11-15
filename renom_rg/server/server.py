@@ -1,22 +1,17 @@
 # coding: utf-8
 
 import threading
-import weakref
 import logging
 import argparse
 import os
 import json
-import enum
 import pkg_resources
 import mimetypes
 import posixpath
 import traceback
 import pandas as pd
 import numpy as np
-try:
-    import cPickle as pickle
-except:
-    import pickle
+import pickle
 
 
 from bottle import HTTPResponse, default_app, route, request, error, abort
@@ -30,7 +25,7 @@ import renom as rm
 import renom.cuda
 from renom.cuda import set_cuda_active, release_mem_pool, use_device
 
-from renom_rg.server import MAX_THREAD_NUM, DATASRC_DIR, STATE_RESERVED, STATE_RUNNING, STATE_FINISHED, STATE_DELETED
+from renom_rg.server import DATASRC_DIR
 from renom_rg.server import wsgi_server
 from . import *
 from . import db
@@ -75,10 +70,6 @@ def _get_resource(path, filename):
     if encoding:
         headers['encoding'] = encoding
     return HTTPResponse(body, **headers)
-
-
-def create_error_body(e):
-    return {"error_msg": str(e)}
 
 
 def split_target(data, ids):
@@ -274,8 +265,6 @@ def _taskstate_to_dict(th):
     ret = {
         "model_id": th.model_id,
         "algorithm": th.taskstate.algorithm,
-        # "error_msgs": th.taskstate.error_msgs,
-        # "state": th.taskstate.state,
         "nth_epoch": th.taskstate.nth_epoch,
         "nth_batch": th.taskstate.nth_batch,
         "train_loss": th.taskstate.train_loss,
@@ -322,11 +311,9 @@ def deploy_model(model_id):
 def undeploy_model(model_id):
     session = db.session()
 
-    session.query(db.Model).update({'deployed': 0})
     model = session.query(db.Model).get(model_id)
-
     if model:
-        model.deployed = 1
+        model.deployed = 0
         session.add(model)
         session.commit()
 
@@ -375,8 +362,12 @@ def predict_model(model_id):
     if not model:
         return create_response({}, 404, err='model not found')
 
-    with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
-        data = np.array(pickle.load(f))
+    try:
+        with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
+            data = np.array(pickle.load(f))
+    except Exception as e:
+        traceback.print_exc()
+        return create_response({}, 404, err=str(e))
 
     f = submit_task(executor, pred_task.prediction, model.id, data)
     try:
@@ -389,7 +380,7 @@ def predict_model(model_id):
 
     except Exception as e:
         traceback.print_exc()
-        return create_response({"error_msg": str(e)})
+        return create_response({}, 404, err=str(e))
 
     finally:
         if renom.cuda.has_cuda():

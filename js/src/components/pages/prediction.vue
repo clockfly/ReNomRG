@@ -91,7 +91,8 @@
                 <div class="table-row">
                   <div class="table-item"
                     v-if="deployedDataset.target_column_ids.indexOf(i) !== -1"
-                    v-for="(l, i) in deployedDataset.labels">
+                    v-for="(l, i) in deployedDataset.labels"
+                    @click="plot_y_index = i">
                     {{l}}
                   </div>
                 </div>
@@ -358,6 +359,15 @@ export default {
         text-align: center;
         font-size: $fs-small;
         color: $gray;
+      }
+      .pred-x-area, .pred-y-area {
+        .table-row {
+          .table-header {
+            .table-item:hover {
+              color: $light-gray;
+            }
+          }
+        }
       }
     }
   }

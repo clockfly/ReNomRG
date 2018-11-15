@@ -6,32 +6,36 @@
       </div>
 
       <div class="panel-content prediction-result-content">
-        <div class="column" v-if="deployedModel">
+        <div class="column">
           <div class="label-value">
             <div class="model-type">Deploy Model</div>
             <div class="label">Model ID</div>
-            <div class="value">{{deployedModel.model_id}}</div>
+            <div class="value" v-if="deployedModel">{{deployedModel.model_id}}</div>
           </div>
-          <div v-for="(d, index) in deployedModel.valid_true">
-            <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
-            <div :id="'deployed-plot'+index" class="plot-area">
-              <div class="x-axis-name">True</div>
-              <div class="y-axis-name">Prediction</div>
+          <div v-if="deployedModel">
+            <div v-for="(d, index) in deployedModel.valid_true">
+              <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+              <div :id="'deployed-plot'+index" class="plot-area">
+                <div class="x-axis-name">True</div>
+                <div class="y-axis-name">Prediction</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="column" v-if="selectedModel">
+        <div class="column">
           <div class="label-value">
             <div class="model-type">Select Model</div>
             <div class="label">Model ID</div>
-            <div class="value">{{selectedModel.model_id}}</div>
+            <div class="value" v-if="selectedModel">{{selectedModel.model_id}}</div>
           </div>
-          <div v-for="(d, index) in selectedModel.valid_true">
-            <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
-            <div :id="'selected-plot'+index" class="plot-area">
-              <div class="x-axis-name">True</div>
-              <div class="y-axis-name">Prediction</div>
+          <div v-if="selectedModel">
+            <div v-for="(d, index) in selectedModel.valid_true">
+              <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+              <div :id="'selected-plot'+index" class="plot-area">
+                <div class="x-axis-name">True</div>
+                <div class="y-axis-name">Prediction</div>
+              </div>
             </div>
           </div>
         </div>

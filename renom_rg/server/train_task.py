@@ -3,9 +3,7 @@ import weakref
 import os
 import time
 import numpy as np
-import traceback
 from sklearn.metrics import r2_score
-from threading import Event, Semaphore
 import pickle
 
 import renom as rm
@@ -13,9 +11,7 @@ from renom.optimizer import Adam
 from renom.cuda import set_cuda_active, release_mem_pool, use_device
 from renom.utility.distributor.distributor import NdarrayDistributor
 
-from renom_rg.server import (STATE_RUNNING, RUN_STATE_TRAINING,
-                             RUN_STATE_VALIDATING, RUN_STATE_STARTING, RUN_STATE_STOPPING, C_GCNN,
-                             Kernel_GCNN, DBSCAN_GCNN, DB_DIR_TRAINED_WEIGHT, DATASRC_DIR)
+from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, DB_DIR_TRAINED_WEIGHT, DATASRC_DIR)
 
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
@@ -94,7 +90,6 @@ def train(taskstate, model_id):
 
 def _train(session, taskstate, model_id):
     modeldef = session.query(db.Model).get(model_id)
-    taskstate.state = RUN_STATE_STARTING
 
     total_batch = 0
     best_loss = None
@@ -113,10 +108,6 @@ def _train(session, taskstate, model_id):
     y_train = y[pickle.loads(modeldef.dataset.train_index)]
     y_valid = y[pickle.loads(modeldef.dataset.valid_index)]
     valid_true = y_valid
-
-    # Algorithm and model preparation.
-    # Pretrained weights are must be prepared.
-    # This have to be done in thread.
 
     taskstate.algorithm = modeldef.algorithm
     algorithm_params = pickle.loads(modeldef.algorithm_params)
@@ -168,8 +159,8 @@ def _train(session, taskstate, model_id):
             model.set_models(inference=False)
             with model.train():
                 train_predicted = model(train_batch_x)
-                l = rm.mse(train_predicted, train_batch_y)
-                taskstate.train_loss = l.tolist()
+                batch_loss = rm.mse(train_predicted, train_batch_y)
+                taskstate.train_loss = batch_loss.tolist()
 
                 if train_predicted_list is None:
                     train_predicted_list = train_predicted
@@ -182,11 +173,11 @@ def _train(session, taskstate, model_id):
                     train_true_list = np.concatenate([train_true_list, train_batch_y])
 
             # Back propagation
-            grad = l.grad()
+            grad = batch_loss.grad()
 
             # Update
             grad.update(optimizer)
-            loss += l.as_ndarray()
+            loss += batch_loss.as_ndarray()
 
         train_loss = loss / (N // modeldef.batch_size)
         train_loss_list.append(train_loss)
@@ -221,7 +212,7 @@ def _train(session, taskstate, model_id):
 
         print("epoch: {}, valid_loss: {}".format(e, valid_loss))
 
-        # calc evaluation
+        # update best loss model info
         if best_loss is None or best_loss > valid_loss:
             model.save(os.path.join(DB_DIR_TRAINED_WEIGHT, filename))
 

@@ -165,5 +165,5 @@ Additional ignored files
 
 */.DS_Store
 storage/*
-data/*
+datasrc/*
 renom_rg/server/.build/*

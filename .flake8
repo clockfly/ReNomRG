@@ -1,6 +1,6 @@
 [flake8]
 max-line-length = 120
-ignore = 
+ignore =
     #E115 expected an indented block (comment)
     E115,
     # E265 block comment should start with '# '
@@ -19,7 +19,7 @@ ignore =
     E702,
     # E731 do not assign a lambda expression, use a def
     E731,
-    # F401 
+    # F401
     F401,
     # F403  unable to detect undefined name
     F403,
