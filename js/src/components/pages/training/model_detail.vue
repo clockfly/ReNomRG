@@ -6,7 +6,7 @@
         <div class="deploy-button" v-if="selectedModel && selectedModel.deployed === 0" @click="deploy">
           > Deploy Model
         </div>
-        <div class="deploy-button" v-if="selectedModel && selectedModel.deployed === 1" @click="undeploy">
+        <div class="deploy-button" v-if="selectedModel && selectedModel.deployed === 1" @click="show_confirm_modal=true">
           > Undeploy Model
         </div>
       </div>
@@ -69,15 +69,37 @@
 
       </div>
     </div>
+
+    <ModalConfirm v-if='show_confirm_modal'
+      @ok='undeploy'
+      @cancel='show_confirm_modal=false'>
+      <div slot='contents'>
+        Would you like to undeploy Model ID: {{selectedModel.model_id}}?
+      </div>
+      <span slot="okbutton">
+        <button class="button-ok" @click="undeploy">
+          Undeploy
+        </button>
+      </span>
+    </ModalConfirm>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { round } from '@/utils'
+import ModalConfirm from '@/components/common/modal_confirm'
 
 export default {
   name: 'ModelParams',
+  components: {
+    ModalConfirm
+  },
+  data: function () {
+    return {
+      'show_confirm_modal': false
+    }
+  },
   computed: mapGetters(['selectedModel']),
   methods: {
     round: function (v) {
