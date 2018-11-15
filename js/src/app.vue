@@ -3,17 +3,19 @@
   <AppHeader></AppHeader>
   <NavigationBar></NavigationBar>
 
-  <div class="container">
+  <div class="paging-area">
     <router-view></router-view>
   </div>
 
   <AppFooter></AppFooter>
+  <ModalError v-if="$store.state.error_msg"></ModalError>
 </div>
 </template>
 
 <script>
 import AppHeader from '@/components/common/app_header.vue'
 import AppFooter from '@/components/common/app_footer.vue'
+import ModalError from '@/components/common/modal_error'
 import NavigationBar from '@/components/common/navigation_bar.vue'
 
 require('@fortawesome/fontawesome')
@@ -26,6 +28,7 @@ export default {
   components: {
     AppHeader,
     AppFooter,
+    ModalError,
     NavigationBar
   },
   created: function () {
@@ -38,16 +41,14 @@ export default {
 
 <style lang="scss" scoped>
 #app {
-  position: relative;
   width: $full-screen-width;
-  padding-top: $header-height;
   background-color: $background-gray;
 
-  .container {
-    width: $full-screen-width;
+  .paging-area {
+    width: 100%;
     max-width: $max-width;
     margin: 0 auto;
-    z-index: 0;
+    padding-top: $header-height;
   }
 }
 </style>

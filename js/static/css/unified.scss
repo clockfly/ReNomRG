@@ -41,9 +41,9 @@ $list-width: 20%;
 // page main content
 $content-width: 80%;
 // main content left
-$content-left-width: 60%;
+$panel-left-width: 60%;
 // main content right
-$content-right-width: 40%;
+$panel-right-width: 40%;
 
 // content height
 $content-height: 1440px;
@@ -120,6 +120,7 @@ select {
 /**
 * button base css
 */
+$button-area-height: calc(40px + 8px * 2);
 button {
   height: 40px;
   width: 80px;

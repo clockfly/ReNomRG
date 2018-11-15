@@ -79,21 +79,44 @@
             <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
           </div>
 
-          <div class="delete-button" @click="deleteModel(model)">
+          <div class="delete-button" @click="delete_model=model">
             <i class="fa fa-times" aria-hidden="true"></i>
           </div>
         </div>
       </div>
     </div>
+
+    <ModalConfirm v-if='delete_model'
+      @ok='deleteModel'
+      @cancel='delete_model=undefined'>
+      <div slot='contents'>
+        Would you like to delete Model ID: {{delete_model.model_id}}?
+      </div>
+      <span slot="okbutton">
+        <button class="button-ok" @click="deleteModel">
+          Delete
+        </button>
+      </span>
+    </ModalConfirm>
+
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { round } from '@/utils'
+import ModalConfirm from '@/components/common/modal_confirm'
 
 export default {
   name: 'ModelList',
+  components: {
+    ModalConfirm
+  },
+  data: function () {
+    return {
+      'delete_model': undefined
+    }
+  },
   computed: mapGetters(['deployedModel']),
   methods: {
     round: function (v) {
@@ -105,8 +128,12 @@ export default {
     showModal: function () {
       this.$store.commit('setAddModelModalShowFlag', {'flag': true})
     },
-    deleteModel: function (m) {
-      this.$store.dispatch('deleteAndUpdate', {'model_id': m['model_id']})
+    deleteModel: function () {
+      if (this.delete_model) {
+        this.$store.commit('setSelectedModelId', {'model_id': undefined})
+        this.$store.dispatch('deleteAndUpdate', {'model_id': this.delete_model['model_id']})
+        this.delete_model = undefined
+      }
     }
   }
 }

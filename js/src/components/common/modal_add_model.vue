@@ -34,12 +34,12 @@ export default {
       'tab': 'params'
     }
   },
+  created: function () {
+    if (this.$store.state.dataset_list.length === 0) this.tab = 'dataset'
+  },
   methods: {
     hideModal: function () {
       this.$store.commit('setAddModelModalShowFlag', {'flag': false})
-    },
-    setTab: function (value) {
-      this.tab = value
     }
   }
 }

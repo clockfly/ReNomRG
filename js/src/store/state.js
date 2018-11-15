@@ -9,8 +9,10 @@ export default {
   // show add model modal
   add_model_modal_shown_flag: false,
 
+  labels: [],
   model_list: [],
   dataset_list: [],
+  running_models: [],
 
   selected_model_id: undefined,
 
@@ -26,10 +28,9 @@ export default {
     'Reserved': 0
   },
 
-  // running models
-  running_models: [],
-
-  // sort key
+  /**
+  * Model List
+  */
   sort_key: 0,
 
   /**

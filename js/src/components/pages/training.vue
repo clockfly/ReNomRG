@@ -1,22 +1,22 @@
 <template>
   <div id="page">
-    <div class="training">
+    <div class="page-content">
 
-      <div class="content">
-        <div class="content-columns">
-          <div class="content-left">
+      <div class="main-content">
+        <div class="panel-columns">
+          <div class="panel-left">
             <Dashboard></Dashboard>
           </div>
-          <div class="content-right">
+          <div class="panel-right">
             <ModelMap></ModelMap>
           </div>
         </div>
 
-        <div class="content-columns">
-          <div class="content-left">
+        <div class="panel-columns">
+          <div class="panel-left">
             <ModelDetail></ModelDetail>
           </div>
-          <div class="content-right">
+          <div class="panel-right">
             <LearningCurve></LearningCurve>
           </div>
         </div>
@@ -25,7 +25,7 @@
         <Features></Features>
       </div>
 
-      <div class="list">
+      <div class="list-area">
         <ModelList></ModelList>
       </div>
     </div>
@@ -39,12 +39,12 @@
 <script>
 import { mapState } from 'vuex'
 import ModalAdd from '@/components/common/modal_add_model'
-import Dashboard from '@/components/pages/training/dashboard.vue'
+import Dashboard from '@/components/pages/training/dashboard'
 import Features from '@/components/pages/training/features'
-import LearningCurve from '@/components/pages/training/learning_curve.vue'
-import ModelDetail from '@/components/pages/training/model_detail.vue'
+import LearningCurve from '@/components/pages/training/learning_curve'
+import ModelDetail from '@/components/pages/training/model_detail'
 import ModelList from '@/components/pages/training/model_list'
-import ModelMap from '@/components/pages/training/model_map.vue'
+import ModelMap from '@/components/pages/training/model_map'
 import PredictionSample from '@/components/pages/training/prediction_sample'
 
 export default {
@@ -88,30 +88,30 @@ export default {
 #page {
   width: 100%;
 
-  .training {
+  .page-content {
     @include prefix('display', 'flex');
     position: relative;
     width: 100%;
 
-    .content {
+    .main-content {
       width: $content-width;
-      .content-columns {
+      .panel-columns {
         @include prefix('display', 'flex');
         width: 100%;
 
-        .content-left {
-          width: $content-left-width;
+        .panel-left {
+          width: $panel-left-width;
         }
-        .content-right {
-          width: $content-right-width;
+        .panel-right {
+          width: $panel-right-width;
         }
       }
     }
-    .list {
+    .list-area {
       position: absolute;
       right: 0px;
       top: 0px;
-      width: #{$list-width};
+      width: $list-width;
       height: 100%;
     }
   }
