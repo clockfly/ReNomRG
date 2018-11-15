@@ -16,7 +16,7 @@ DIR = str(pathlib.Path(__file__).resolve().parent)
 requires = [
     "bottle",
     "sqlalchemy",
-    "alembic",
+    "alembic"
 ]
 
 
