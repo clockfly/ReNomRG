@@ -1,16 +1,17 @@
 <template>
   <div id="page">
-    <div class="dataset-list">
+    <div class="page-content">
+
       <div class="panel">
-        <div class="panel-title panel-with-button">
+        <div class="panel-title panel-title-button">
           Dataset List
           <div class="setting-button" @click="show_modal = true">
             > Setting of Dataset
           </div>
         </div>
 
-        <div class="panel-content dataset-list-content">
-          <div class="content-left">
+        <div class="panel-content dataset-list-and-detail">
+          <div class="column-left">
             <div class="table-header">
               <div class="table-row">
                 <div class="table-item">Name</div>
@@ -29,7 +30,7 @@
             </div>
           </div> <!-- content-left dataset list -->
 
-          <div class="content-right" v-if="selectedDataset">
+          <div class="column-right" v-if="selectedDataset">
             <div class="dataset-name">
               {{selectedDataset.name}}
             </div>
@@ -42,7 +43,7 @@
                 </div> <!-- dataset description area -->
 
                 <div class="train-ratio-area">
-                  <div class="sub-block">
+                  <div class="train-ratio-block">
                     <div class="label">Number of data size</div>
                     <div class="values">
                       <div class="train-number">Train {{selectedDataset.train_index.length}}</div>
@@ -50,7 +51,7 @@
                     </div>
                   </div>
 
-                  <div class="sub-block">
+                  <div class="train-ratio-block">
                     <div class="label">All {{selectedDataset.train_index.length+selectedDataset.valid_index.length}}</div>
                     <div class="values">
                       <div class="train-ratio-bar">
@@ -222,15 +223,16 @@ export default {
 #page {
   $table-width: 90%;
   $table-item-height: 32px;
+
   width: 100%;
   height: calc(100vh - #{$footer-height} - #{$header-height});
 
-  .dataset-list {
+  .page-content {
     width: 100%;
     height: 100%;
   }
 
-  .panel-with-button {
+  .panel-title-button {
     @include prefix("display", "flex");
     .setting-button {
       margin-left: auto;
@@ -240,11 +242,11 @@ export default {
     }
   }
 
-  .dataset-list-content {
+  .dataset-list-and-detail {
     @include prefix('display', 'flex');
     padding: $panel-content-padding;
   }
-  .content-left {
+  .column-left {
     width: 30%;
     height: 100%;
     padding-right: $panel-content-padding;
@@ -277,7 +279,7 @@ export default {
     }
   }
 
-  .content-right {
+  .column-right {
     width: 70%;
     height: 100%;
     padding: 32px;
@@ -302,7 +304,7 @@ export default {
         width: 100%;
         margin-top: 8px;
       }
-      .sub-block {
+      .train-ratio-block {
         @include prefix("display", "flex");
         margin-top: 16px;
         .label, .values {

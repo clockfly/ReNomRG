@@ -1,12 +1,16 @@
 import axios from 'axios'
 
+const commitError = function (context, response) {
+  context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+}
+
 export default {
   async loadLabels (context, payload) {
     const url = '/api/renom_rg/datasets/labels'
     return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
           return
         }
         context.commit('setLabels', {
@@ -23,7 +27,7 @@ export default {
     return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
           return
         }
         context.commit('setModelList', {
@@ -49,21 +53,21 @@ export default {
     return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
         }
       })
   },
 
   async addModel (context, payload) {
-    const result = await context.dispatch('createModel', payload)
-    if (result.data.error_msg) {
-      context.commit('setErrorMsg', {'error_msg': result.data.error_msg})
+    let response = await context.dispatch('createModel', payload)
+    if (response.data.error_msg) {
+      commitError(context, response)
       return
     }
-    const model_id = result.data.model_id
-    await context.dispatch('runModel', {'model_id': model_id})
-    if (result.data.error_msg) {
-      context.commit('setErrorMsg', {'error_msg': result.data.error_msg})
+    const model_id = response.data.model_id
+    response = await context.dispatch('runModel', {'model_id': model_id})
+    if (response.data.error_msg) {
+      commitError(context, response)
       return
     }
 
@@ -75,7 +79,8 @@ export default {
     axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
+          return
         }
         context.commit('setRunningModels', {'running_models': response.data.running_models})
       })
@@ -116,7 +121,7 @@ export default {
     return axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
           return
         }
         context.commit('setDatasetList', {
@@ -136,7 +141,7 @@ export default {
     return axios.post(url, fd)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
           return
         }
         context.commit('setConfirmDataset', { 'data': response.data })
@@ -159,7 +164,7 @@ export default {
     return axios.post(url, fd)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
         }
       })
   },
@@ -174,7 +179,7 @@ export default {
     axios.get(url)
       .then(function (response) {
         if (response.data.error_msg) {
-          context.commit('setErrorMsg', {'error_msg': response.data.error_msg})
+          commitError(context, response)
           return
         }
         context.commit('setPredResult', {'data': response.data})

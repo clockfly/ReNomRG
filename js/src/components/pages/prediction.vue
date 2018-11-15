@@ -1,7 +1,7 @@
 <template>
   <div id="page">
 
-    <div class="model-detail">
+    <div class="model-detail-area">
       <div class="start-button-area">
         <button class="start-button" @click="runPrediction">
           > Prediction Start
@@ -67,13 +67,15 @@
       </div>
     </div> <!-- model detail -->
 
-    <div class="prediction-results">
+    <div class="prediction-results-area">
       <div class="panel">
         <div class="panel-title">
           Prediction Results
         </div>
+
         <div class="panel-content">
           <div class="prediction-plot-area" v-if="deployedDataset">
+
             <div id="sorted-y-plot" class="column">
               <div class="plot-name">Sorted Y Plot</div>
             </div>
@@ -83,8 +85,8 @@
           </div>
 
           <div class="prediction-table-area" v-if="deployedDataset">
-            <div class="pred-y-area">
 
+            <div class="pred-y-area">
               <div class="table-header">
                 <div class="table-row">
                   <div class="table-item"
@@ -202,21 +204,25 @@ export default {
       let sorted_y = this.shapeY()
       return sorted_y.sort((a, b) => a - b)
     },
-    drawXYPlot: function () {
-      if (!this.pred_y) return
-
-      const id = '#xy-plot'
+    shapeDataset: function (x, y) {
+      let dataset = []
+      for (let i in y) {
+        dataset.push([x[i], y[i]])
+      }
+      return dataset
+    },
+    drawPlot: function (id, x, y) {
       removeSvg(id)
-      const pred_x = this.shapeX()
-      const pred_y = this.shapeY()
-
       const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
-
-      const x_scale = getScale([min(pred_x), max(pred_x)], [margin.left, width - margin.right])
-      const y_scale = getScale([min(pred_y), max(pred_y)], [height - margin.bottom, margin.top])
+        .style('position', 'absolute')
+        .style('top', '50%')
+        .style('left', '50%')
+        .style('transform', 'translateY(-50%) translateX(-50%)')
+      const x_scale = getScale([min(x), max(x)], [margin.left, width - margin.right])
+      const y_scale = getScale([min(y), max(y)], [height - margin.bottom, margin.top])
 
       // draw x axis
       const x_axis_define = d3.axisBottom(x_scale)
@@ -240,64 +246,34 @@ export default {
         .call(y_axis_define)
       styleAxis(y_axis)
 
+      const dataset = this.shapeDataset(x, y)
       svg.append('g')
         .selectAll('circle')
-        .data(pred_y)
+        .data(dataset)
         .enter()
         .append('circle')
-        .attr('cx', function (d, i) { return x_scale(pred_x[i]) })
-        .attr('cy', function (d) { return y_scale(d) })
+        .attr('cx', function (d) { return x_scale(d[0]) })
+        .attr('cy', function (d) { return y_scale(d[1]) })
         .attr('fill', train_color)
         .attr('r', 3)
+    },
+    drawXYPlot: function () {
+      if (!this.pred_y) return
+
+      const id = '#xy-plot'
+      const x = this.shapeX()
+      const y = this.shapeY()
+
+      this.drawPlot(id, x, y)
     },
     drawSortedYPlot: function () {
       if (!this.pred_y) return
 
       const id = '#sorted-y-plot'
-      removeSvg(id)
-      const pred_y = this.shapeSortedY()
-      const plot_max = max(pred_y)
-      const plot_min = min(pred_y)
+      const y = this.shapeSortedY()
+      const x = [...Array(y.length).keys()]
 
-      const svg = d3.select(id)
-        .append('svg')
-        .attr('width', width)
-        .attr('height', height)
-
-      const x_scale = getScale([0, pred_y.length - 1], [margin.left, width - margin.right])
-      const y_scale = getScale([plot_min, plot_max], [height - margin.bottom, margin.top])
-
-      // draw x axis
-      const x_axis_define = d3.axisBottom(x_scale)
-        .tickSizeInner(-(height - margin.top - margin.bottom))
-        .tickSizeOuter(0)
-        .ticks(5)
-        .tickPadding(10)
-      const x_axis = svg.append('g')
-        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
-        .call(x_axis_define)
-      styleAxis(x_axis)
-
-      // draw y axis
-      const y_axis_define = d3.axisLeft(y_scale)
-        .tickSizeInner(-(width - margin.left - margin.right))
-        .tickSizeOuter(0)
-        .ticks(5)
-        .tickPadding(10)
-      const y_axis = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
-        .call(y_axis_define)
-      styleAxis(y_axis)
-
-      svg.append('g')
-        .selectAll('circle')
-        .data(pred_y)
-        .enter()
-        .append('circle')
-        .attr('cx', function (d, i) { return x_scale(i) })
-        .attr('cy', function (d) { return y_scale(d) })
-        .attr('fill', train_color)
-        .attr('r', 3)
+      this.drawPlot(id, x, y)
     }
   }
 }
@@ -312,8 +288,10 @@ export default {
   width: 100%;
   height: calc(100vh - #{$footer-height} - #{$header-height});
 
-  .model-detail {
+  .model-detail-area {
     width: 20%;
+    height: 100%;
+
     .start-button-area {
       width: 100%;
       padding: 8px;
@@ -321,34 +299,38 @@ export default {
         width: 100%;
       }
     }
+
     .model-detail-panel {
-      height: calc(100% - 56px);
-    }
-    .model-detail-content {
-      padding: 16px;
-    }
-    .label-value {
-      @include prefix('display', 'flex');
-      margin-bottom: 8px;
-      font-size: $fs-small;
-      .label {
-        margin-right: 8px;
-        color: $gray;
+      height: calc(100% - #{$button-area-height});
+      .model-detail-content {
+        padding: 16px;
+
+        .label-value {
+          @include prefix('display', 'flex');
+          margin-bottom: 8px;
+          font-size: $fs-small;
+          .label {
+            margin-right: 8px;
+            color: $gray;
+          }
+        }
       }
     }
   }
-  .prediction-results {
+
+  .prediction-results-area {
     width: 80%;
-    .column {
-      width: 50%;
-      height: 100%;
-    }
     .prediction-plot-area, .prediction-table-area {
       @include prefix('display', 'flex');
       padding: 16px;
     }
     .prediction-plot-area {
       height: 40%;
+    }
+    #sorted-y-plot, #xy-plot {
+      position: relative;
+      width: 50%;
+      height: 100%;
     }
     .plot-name {
       color: $gray;
