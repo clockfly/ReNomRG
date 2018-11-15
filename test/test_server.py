@@ -40,11 +40,13 @@ def test_create_dataset(app):
     resp = app.post('/api/renom_rg/datasets', {
         'name': 'test_create_dataset_1',
         'description': 'description',
-        'target_column_id': 10,
+        'target_column_ids': json.dumps([1, 2]),
         'labels': json.dumps([1, 2, 3, 4]),
         'train_ratio': 0.1,
         'train_index': json.dumps([5, 6]),
         'valid_index': json.dumps([7, 8]),
+        'target_train': json.dumps([1, 2]),
+        'target_valid': json.dumps([1, 2])
     })
 
     assert resp.status_int == 200
@@ -55,9 +57,10 @@ def test_create_dataset(app):
 def _add_dataset():
     name = str(random.random())
     ds = db.DatasetDef(name=name, description='description',
-                       target_column_id=1, labels=pickle.dumps([1, 2, 3]),
+                       target_column_ids=pickle.dumps([1, 2]), labels=pickle.dumps([1, 2, 3]),
                        train_ratio=0.1, train_index=pickle.dumps([2, 3, 4]),
-                       valid_index=pickle.dumps([3, 4, 5]))
+                       valid_index=pickle.dumps([3, 4, 5]), target_train=pickle.dumps([1, 2]),
+                       target_valid=pickle.dumps([1, 2]))
 
     session = db.session()
     session.add(ds)
@@ -187,6 +190,7 @@ def test_train_model(train, app):
 
     assert resp.status_int == 200
     assert resp.json['result'] == 'ok'
+
 
 @patch('renom_rg.server.server.set_cuda_active')
 @patch('renom_rg.server.server.use_device')

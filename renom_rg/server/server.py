@@ -13,8 +13,7 @@ import pandas as pd
 import numpy as np
 import pickle
 
-
-from bottle import HTTPResponse, default_app, route, request, error, abort
+from bottle import HTTPResponse, default_app, route, request, error, abort, static_file
 from concurrent.futures import ThreadPoolExecutor as Executor
 from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import CancelledError
@@ -25,7 +24,7 @@ import renom as rm
 import renom.cuda
 from renom.cuda import set_cuda_active, release_mem_pool, use_device
 
-from renom_rg.server import DATASRC_DIR
+from renom_rg.server import DATASRC_DIR, DB_DIR_TRAINED_WEIGHT
 from renom_rg.server import wsgi_server
 from . import *
 from . import db
@@ -228,7 +227,7 @@ def _model_to_dict(model):
 
 @route("/api/renom_rg/models", method="GET")
 def get_models():
-    q = db.session().query(db.Model).all()
+    q = db.session().query(db.Model).order_by(db.Model.id.desc()).all()
     ret = [_model_to_dict(model) for model in q]
     return create_response({'models': ret})
 
@@ -387,6 +386,25 @@ def predict_model(model_id):
             release_mem_pool()
 
 
+@route("/api/renom_rg/deployed_model/pull", method="GET")
+def pull_deployed_model():
+    model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
+    if model:
+        file_name = model.weight
+        return static_file(file_name, root=DB_DIR_TRAINED_WEIGHT, download='deployed_model.h5')
+    else:
+        return create_response({}, 404, err='model not found')
+
+
+@route("/api/renom_rg/deployed_model", method="GET")
+def get_deployed_model():
+    model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
+    if model:
+        return create_response(_model_to_dict(model))
+    else:
+        return create_response({}, 404, err='not found')
+
+
 def _create_dirs():
     # Create directories
     for path in [DATASRC_PREDICTION, DB_DIR_TRAINED_WEIGHT]:
@@ -398,6 +416,7 @@ def _create_dirs():
 def plugin(func):
     def wrapper(*args, **kwargs):
         try:
+            _init_train_thread_pool()
             ret = func(*args, **kwargs)
             db.session().commit()
             return ret
