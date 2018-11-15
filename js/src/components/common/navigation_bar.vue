@@ -12,12 +12,12 @@
       </div>
 
       <div class="menu-item" @click="goDataset()">
-        <i class="fa fa-home icon" aria-hidden="true"></i>
+        <i class="fas fa-database icon"></i>
         <div class="menu-name">Dataset</div>
       </div>
 
       <div class="menu-item" @click="goPrediction()">
-        <i class="fa fa-home icon" aria-hidden="true"></i>
+        <i class="fas fa-chart-area icon"></i>
         <div class="menu-name">Prediction</div>
       </div>
     </div>

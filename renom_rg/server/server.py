@@ -77,10 +77,6 @@ def _get_resource(path, filename):
     return HTTPResponse(body, **headers)
 
 
-def create_error_body(e):
-    return {"error_msg": str(e)}
-
-
 def split_target(data, ids):
     indexes = np.ones(data.shape[1], dtype=bool)
     indexes[ids] = False
@@ -375,8 +371,12 @@ def predict_model(model_id):
     if not model:
         return create_response({}, 404, err='model not found')
 
-    with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
-        data = np.array(pickle.load(f))
+    try:
+        with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
+            data = np.array(pickle.load(f))
+    except Exception as e:
+        traceback.print_exc()
+        return create_response({}, 404, err=str(e))
 
     f = submit_task(executor, pred_task.prediction, model.id, data)
     try:
@@ -389,7 +389,7 @@ def predict_model(model_id):
 
     except Exception as e:
         traceback.print_exc()
-        return create_response({"error_msg": str(e)})
+        return create_response({}, 404, err=str(e))
 
     finally:
         if renom.cuda.has_cuda():
