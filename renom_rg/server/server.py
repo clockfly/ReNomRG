@@ -416,7 +416,6 @@ def _create_dirs():
 def plugin(func):
     def wrapper(*args, **kwargs):
         try:
-            _init_train_thread_pool()
             ret = func(*args, **kwargs)
             db.session().commit()
             return ret
