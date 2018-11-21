@@ -17,12 +17,10 @@ from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
 from . import db
 
+
 class RunningState(enum.Enum):
     TRAINING = 0
-    VALIDATING = 1
-    PREDICTING = 2
-    STARTING = 3
-    STOPPING = 4
+    FINISHED = 1
 
 
 class TaskState:
@@ -37,7 +35,7 @@ class TaskState:
 
     def __init__(self):
         self.error_msgs = []
-        self.state = RunningState.STARTING
+        self.state = RunningState.TRAINING
         self.canceled = False
         self.nth_epoch = -1
         self.nth_batch = -1
@@ -133,7 +131,6 @@ def _train(session, taskstate, model_id):
     filename = '{}.h5'.format(int(time.time()))
     optimizer = Adam()
 
-    taskstate.state = RunningState.TRAINING
     taskstate.total_epoch = modeldef.epoch
     for e in range(modeldef.epoch):
         taskstate.nth_epoch = e
@@ -182,9 +179,7 @@ def _train(session, taskstate, model_id):
         train_loss = loss / (N // modeldef.batch_size)
         train_loss_list.append(train_loss)
 
-        # Validation
-        taskstate.running_state = RunningState.VALIDATING
-
+        # validation
         model.set_models(inference=True)
         N = X_valid.shape[0]
 
@@ -227,6 +222,7 @@ def _train(session, taskstate, model_id):
             session.commit()
 
             best_loss = valid_loss
+    taskstate.state = RunningState.FINISHED
 
 
 class TrainThread(object):
