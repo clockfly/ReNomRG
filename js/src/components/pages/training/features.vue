@@ -5,7 +5,7 @@
         Features
       </div>
 
-      <div class="panel-content features-content">
+      <div class="panel-content features-content flex">
         <div class="target-feature-list" v-if="selectedDataset">
           <div class="feature-type">Target Features</div>
 
@@ -19,7 +19,7 @@
         <div class="explanatory-feature-list">
           <div class="feature-type">Explanatory Features</div>
 
-          <div class="feature-list">
+          <div class="feature-list flex">
             <div class="feature-item"
               v-for="(l,index) in selectedDataset.labels"
               v-if="selectedDataset.target_column_ids.indexOf(index) === -1">
@@ -43,20 +43,18 @@ export default {
 
 <style lang="scss" scoped>
 #features {
-  $feature-item-height: 24px;
   width: 100%;
   height: $features-height;
 
   .features-content {
-    @include prefix('display', 'flex');
     width: 100%;
-    padding: $panel-content-padding;
+    padding: $padding-large;
     overflow-y: scroll;
 
     .target-feature-list {
       width: 18%;
       margin-right: 2%;
-      border-right: 1px solid $gray;
+      border-right: $border-width-regular solid $gray;
       .feature-item {
         width: 100%;
       }
@@ -64,7 +62,6 @@ export default {
     .explanatory-feature-list {
       width: 80%;
       .feature-list {
-        @include prefix('display', 'flex');
         flex-wrap: wrap;
         align-items: flex-start;
         .feature-item {
@@ -73,17 +70,19 @@ export default {
       }
     }
     .feature-type {
-      height: $feature-item-height;
-      margin-bottom: 8px;
-      line-height: $feature-item-height;
+      height: $text-height-small;
+      margin-bottom: $margin-small;
+      line-height: $text-height-small;
+      color: $gray;
     }
     .feature-item {
-      height: $feature-item-height;
-      margin-bottom: 8px;
-      padding-left: 8px;
-      border-left: 1px solid $gray;
+      height: $text-height-small;
+      margin-bottom: $margin-small;
+      padding-left: $padding-small;
+      border-left: $border-width-regular solid $gray;
+      line-height: $text-height-small;
       font-size: $fs-small;
-      line-height: $feature-item-height;
+      color: $gray;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

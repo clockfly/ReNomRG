@@ -1,14 +1,14 @@
 <template>
   <div id="model-list">
     <div class="add-button-area">
-      <button class="add-button" @click="showModal">
+      <button class="add-button minus-for-scroll-bar-width" @click="showModal">
         <i class="fa fa-plus icon" aria-hidden="true"></i>
         Add new model
       </button>
     </div>
 
     <div class="panel list-area">
-      <div class="panel-title">Model List</div>
+      <div class="panel-title minus-for-scroll-bar-width">Model List</div>
 
       <div class="model-list-item model-list-item-deployed"
         v-if="deployedModel"
@@ -16,27 +16,27 @@
         @click="selectModel(deployedModel)">
         <div :class="'algorithm-color '+$store.state.algorithms[deployedModel.algorithm].toLowerCase()"></div>
 
-        <div class="label-value">
+        <div class="label-value flex">
           <div class="label">Model ID</div>
           <div class="value">{{deployedModel.model_id}}</div>
         </div>
 
-        <div class="label-value">
+        <div class="label-value flex">
           <div class="label">Algorithm</div>
           <div class="value">{{$store.state.algorithms[deployedModel.algorithm]}}</div>
         </div>
 
-        <div class="label-value">
+        <div class="label-value flex">
           <div class="label">RMSE</div>
           <div class="value">{{round(deployedModel.best_epoch_rmse)}}</div>
         </div>
 
-        <div class="label-value">
+        <div class="label-value flex">
           <div class="label">Max Absolute Error</div>
           <div class="value">{{round(deployedModel.best_epoch_max_abs_error)}}</div>
         </div>
 
-        <div class="label-value">
+        <div class="label-value flex">
           <div class="label">Validation Loss</div>
           <div class="value">{{round(deployedModel.best_epoch_valid_loss)}}</div>
         </div>
@@ -54,27 +54,27 @@
           @click="selectModel(model)">
           <div :class="'algorithm-color '+$store.state.algorithms[model.algorithm].toLowerCase()"></div>
 
-          <div class="label-value">
+          <div class="label-value flex">
             <div class="label">Model ID</div>
             <div class="value">{{model.model_id}}</div>
           </div>
 
-          <div class="label-value">
+          <div class="label-value flex">
             <div class="label">Algorithm</div>
             <div class="value">{{$store.state.algorithms[model.algorithm]}}</div>
           </div>
 
-          <div class="label-value">
+          <div class="label-value flex">
             <div class="label">RMSE</div>
             <div class="value">{{round(model.best_epoch_rmse)}}</div>
           </div>
 
-          <div class="label-value">
+          <div class="label-value flex">
             <div class="label">Max Absolute Error</div>
             <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
           </div>
 
-          <div class="label-value">
+          <div class="label-value flex">
             <div class="label">Validation Loss</div>
             <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
           </div>
@@ -145,10 +145,12 @@ export default {
   height: 100%;
 
   .add-button-area, .list-area {
-    padding: 8px;
+    padding: $padding-small;
+    .minus-for-scroll-bar-width {
+      width: calc(100% - #{$scroll-bar-width});
+    }
   }
   .add-button {
-    width: 100%;
     .icon {
       color: $white;
     }
@@ -160,11 +162,12 @@ export default {
     bottom: $footer-height;
     width: 100%;
     height: calc(100vh - #{$header-height});
+
     .model-list-scrollable-area {
       overflow-y: scroll;
       width: 100%;
       height: calc(100% - #{$panel-title-height} - #{$model-list-item-height} - 16px);
-      margin-top: 8px;
+      margin-top: $margin-small;
     }
   }
 
@@ -172,8 +175,9 @@ export default {
     position: relative;
     width: 100%;
     height: $model-list-item-height;
-    margin-top: 8px;
-    padding: 8px 8px 8px 16px;
+    margin-top: $margin-small;
+    padding: $padding-small;
+    padding-left: $padding-middle;
     background: $white;
 
     .algorithm-color {
@@ -185,19 +189,20 @@ export default {
     }
 
     .label-value {
-      @include prefix('display', 'flex');
-      margin-bottom: 8px;
-      font-size: $fs-small;
+      margin-bottom: $margin-small;
+      .label, .value {
+        font-size: $fs-small;
+      }
       .label {
-        margin-right: 8px;
+        margin-right: $margin-small;
         color: $gray;
       }
     }
 
     .delete-button, .deployed {
       position: absolute;
-      right: 8px;
-      bottom: 8px;
+      right: $margin-small;
+      bottom: $margin-small;
       font-size: $fs-small;
     }
     .delete-button {
@@ -210,13 +215,16 @@ export default {
   .model-list-item:hover {
     background-color: $light-gray;
     cursor:pointer;
+    .delete-button:hover {
+      color: $white;
+    }
   }
   .active {
-    border: solid 1px $blue;
+    border: solid $border-width-regular $blue;
   }
   .model-list-item-deployed {
-    width: calc(100% - 10px);
-    border: solid 2px $blue;
+    width: calc(100% - #{$scroll-bar-width});
+    border: $border-width-bold solid $blue;
   }
 }
 </style>

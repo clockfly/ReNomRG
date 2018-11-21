@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-params-setting">
+  <div class="modal-params-setting flex">
     <div class="column">
 
       <div class="setting-block">
@@ -7,7 +7,7 @@
           Dataset Setting
         </div>
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Dataset Name</div>
           <div class="input-value">
             <select v-model="dataset_index">
@@ -28,7 +28,7 @@
           Algorithm Setting
         </div>
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">CNN Architecture</div>
           <div class="input-value">
             <select v-model="algorithm">
@@ -46,14 +46,14 @@
           Training Loop Setting
         </div>
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Batch Size</div>
           <div class="input-value">
             <input type="text" v-model="batch_size">
           </div>
         </div>  <!-- sub block -->
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Total Epoch</div>
           <div class="input-value">
             <input type="text" v-model="epoch">
@@ -69,7 +69,7 @@
           Graph Comvolution Params
         </div>
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Number of neighbors</div>
           <div class="input-value">
             <input type="text" v-model="algorithm_params['num_neighbors']">
@@ -128,25 +128,34 @@ export default {
 
 <style lang="scss" scoped>
 .modal-params-setting {
-  @include prefix("display", "flex");
   width: 100%;
   height: calc(100% - #{$modal-tab-height});
 
   .column {
     position: relative;
     width: 50%;
+    padding: $padding-large;
+
+    .setting-block {
+      margin-bottom: $margin-large;
+
+      .setting-type {
+        height: $text-height-regular;
+        line-height: $text-height-regular;
+        font-size: $fs-regular;
+      }
+    }
   }
-  .setting-block {
-    margin-top: 24px;
-    margin-left: 24px;
-  }
+
   .sub-block {
-    @include prefix("display", "flex");
-    margin-top: 16px;
-    margin-left: 16px;
+    margin-top: $margin-middle;
+    margin-left: $margin-middle;
 
     .label, .input-value {
       width: 50%;
+      height: $text-height-small;
+      line-height: $text-height-small;
+      font-size: $fs-small;
     }
   }
   .setting-type, .label {

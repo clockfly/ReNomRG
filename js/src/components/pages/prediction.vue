@@ -1,5 +1,5 @@
 <template>
-  <div id="page">
+  <div id="page" class="flex">
 
     <div class="model-detail-area">
       <div class="start-button-area">
@@ -15,39 +15,39 @@
 
         <div class="panel-content model-detail-content">
           <div v-if="deployedModel">
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Selected Model ID</div>
               <div class="value">{{deployedModel.model_id}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Dataset</div>
-              <div class="value">{{deployedModel.dataset_id}}</div>
+              <div class="value">{{deployedDataset.name}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Algorithm</div>
               <div class="value">{{algorithms[deployedModel.algorithm]}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Total Epoch</div>
               <div class="value">{{deployedModel.epoch}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Batch Size</div>
               <div class="value">{{deployedModel.batch_size}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Validation Loss</div>
               <div class="value">{{round(deployedModel.best_epoch_valid_loss)}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">RMSE</div>
               <div class="value">{{round(deployedModel.best_epoch_rmse)}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Max Absolute Error</div>
               <div class="value">{{round(deployedModel.best_epoch_max_abs_error)}}</div>
             </div>
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">R2 Score</div>
               <div class="value">{{round(deployedModel.best_epoch_r2)}}</div>
             </div>
@@ -56,7 +56,7 @@
               <div class="label">Graph Comvolution Params</div>
             </div>
 
-            <div class="label-value">
+            <div class="label-value flex">
               <div class="label">Number of Neighbors</div>
               <div class="value">{{deployedModel.algorithm_params.num_neighbors}}</div>
             </div>
@@ -73,64 +73,86 @@
           Prediction Results
         </div>
 
-        <div class="panel-content">
-          <div class="prediction-plot-area" v-if="deployedDataset">
+        <div class="panel-content plot-area">
 
-            <div id="sorted-y-plot" class="column">
-              <div class="plot-name">Sorted Y Plot</div>
+          <div class="prediction-plot-area flex" v-if="deployedDataset">
+
+            <div id="pred-y-hist" class="column">
+              <div class="plot-name">Predcted Y Histogram</div>
             </div>
             <div id="xy-plot" class="column">
               <div class="plot-name">XY Plot</div>
+              <div class="select-axis flex">
+                <div class="axis-label">Y</div>
+                <div class="axis-selector">
+                  <select class="small" v-model="plot_y_index">
+                    <option :value="i"
+                      v-for="(l, i) in deployedDataset.target_column_ids">
+                      {{deployedDataset.labels[l]}}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="axis-label">X</div>
+                <div class="axis-selector">
+                  <select class="small" v-model="plot_x_index">
+                    <option :value="i"
+                      v-if="deployedDataset.target_column_ids.indexOf(i) === -1"
+                      v-for="(l, i) in deployedDataset.labels">
+                      {{l}}
+                    </option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="prediction-table-area" v-if="deployedDataset">
+          <div class="prediction-table-area flex" v-if="deployedDataset">
 
-            <div class="pred-y-area">
-              <div class="table-header">
-                <div class="table-row">
-                  <div class="table-item"
-                    v-if="deployedDataset.target_column_ids.indexOf(i) !== -1"
-                    v-for="(l, i) in deployedDataset.labels"
-                    @click="plot_y_index = i">
-                    {{l}}
-                  </div>
-                </div>
-              </div>
+            <table>
+              <thead>
+                <tr>
+                  <th v-for="(l, i) in deployedDataset.target_column_ids"
+                    v-bind:class="{ active: l === sort_index }"
+                    @click="sortPredY(i)">
+                    {{deployedDataset.labels[l]}}
+                    <span class="icon" v-if="desc"
+                      v-bind:class="{ active: l === sort_index }">
+                      ▼
+                    </span>
+                    <span class="icon" v-else
+                      v-bind:class="{ active: l === sort_index }">
+                      ▲
+                    </span>
+                  </th>
 
-              <div class="table-content scrollable-y">
-                <div class="table-row" v-for="(data, index) in pred_y" :key="index">
-                  <div class="table-item"
-                    v-for="(l, i) in Array(data.length)">
-                    {{ round(data[i]) }}
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="pred-x-area">
-              <div class="table-header">
-                <div class="table-row">
-                  <div class="table-item"
+                  <th v-for="(l, i) in deployedDataset.labels"
                     v-if="deployedDataset.target_column_ids.indexOf(i) === -1"
-                    v-for="(l, i) in deployedDataset.labels"
-                    @click="plot_x_index = i">
+                    v-bind:class="{ active: i === sort_index }"
+                    @click="sortPredX(i)">
                     {{l}}
-                  </div>
-                </div>
-              </div>
-
-              <div class="table-content scrollable">
-                <div class="table-row" v-for="(data, index) in pred_x" :key="index">
-                  <div class="table-item"
-                    v-for="(l, i) in Array(data.length)"
-                    @click="plot_x_index = i">
-                    {{round(data[i])}}
-                  </div>
-                </div>
-              </div>
-            </div>
+                    <span class="icon" v-if="desc"
+                      v-bind:class="{ active: i === sort_index }">
+                      ▼
+                    </span>
+                    <span class="icon" v-else
+                      v-bind:class="{ active: i === sort_index }">
+                      ▲
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(data, i) in pred_y" :key="i">
+                  <td v-for="(d, j) in data">
+                    {{ round(d) }}
+                  </td>
+                  <td v-for="(d, j) in pred_x[i]">
+                    {{ round(d) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
           </div>
         </div>
@@ -148,35 +170,37 @@ import { round, max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
 const width = 240
 const height = 160
-const margin = { 'left': 20, 'top': 0, 'right': 0, 'bottom': 20 }
+const margin = { 'left': 20, 'top': 10, 'right': 0, 'bottom': 30 }
 
 export default {
   name: 'PredictionPage',
   data: function () {
     return {
       'plot_x_index': 0,
-      'plot_y_index': 0
+      'plot_y_index': 0,
+      'desc': false,
+      'sort_index': -1
     }
   },
   computed: {
-    ...mapState(['algorithms', 'model_list', 'dataset_list', 'pred_x', 'pred_y']),
+    ...mapState(['algorithms', 'pred_x', 'pred_y']),
     ...mapGetters(['deployedModel', 'deployedDataset'])
   },
   watch: {
     plot_x_index: function () {
-      this.drawSortedYPlot()
       this.drawXYPlot()
     },
     plot_y_index: function () {
-      this.drawSortedYPlot()
+      this.drawPredYHist()
       this.drawXYPlot()
     },
     pred_y: function () {
-      this.drawSortedYPlot()
+      this.drawPredYHist()
       this.drawXYPlot()
     }
   },
   created: function () {
+    this.$store.commit('resetPred')
     this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadModels')
   },
@@ -201,16 +225,64 @@ export default {
       }
       return data
     },
-    shapeSortedY: function () {
-      let sorted_y = this.shapeY()
-      return sorted_y.sort((a, b) => a - b)
-    },
     shapeDataset: function (x, y) {
       let dataset = []
       for (let i in y) {
         dataset.push([x[i], y[i]])
       }
       return dataset
+    },
+    drawHist: function (id, x) {
+      removeSvg(id)
+      const svg = d3.select(id)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .style('position', 'absolute')
+        .style('top', '50%')
+        .style('left', '50%')
+        .style('transform', 'translateY(-50%) translateX(-50%)')
+      const x_scale = getScale([min(x), max(x)], [margin.left, width - margin.right])
+      // draw x axis
+      const x_axis_define = d3.axisBottom(x_scale)
+        .tickSizeInner(-(height - margin.top - margin.bottom))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const x_axis = svg.append('g')
+        .attr('transform', 'translate(' + 0 + ',' + (height - margin.bottom) + ')')
+        .call(x_axis_define)
+      styleAxis(x_axis)
+
+      const hist = this.getHistgram(x_scale, 10)
+      const bins = hist(x)
+      const hist_max = this.getHistgramSizeMax(bins)
+      const y_scale = getScale([0, hist_max], [height - margin.bottom, margin.top])
+
+      // draw y axis
+      const y_axis_define = d3.axisLeft(y_scale)
+        .tickSizeInner(-(width - margin.left - margin.right))
+        .tickSizeOuter(0)
+        .ticks(5)
+        .tickPadding(10)
+      const y_axis = svg.append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
+        .call(y_axis_define)
+      styleAxis(y_axis)
+
+      // draw cardinal area chart
+      svg.append('path')
+        .datum(bins)
+        .attr('fill', train_color)
+        .attr('opacity', 0.2)
+        .attr('stroke', train_color)
+        .attr('stroke-width', 2)
+        .attr('d', d3.area()
+          .x(function (d) { return x_scale((d.x0 + d.x1) / 2) })
+          .y1(function (d) { return y_scale(d.length) })
+          .y0(function (d) { return y_scale(0) })
+          .curve(d3.curveCardinal)
+        )
     },
     drawPlot: function (id, x, y) {
       removeSvg(id)
@@ -267,14 +339,42 @@ export default {
 
       this.drawPlot(id, x, y)
     },
-    drawSortedYPlot: function () {
+    drawPredYHist: function () {
       if (!this.pred_y) return
 
-      const id = '#sorted-y-plot'
-      const y = this.shapeSortedY()
-      const x = [...Array(y.length).keys()]
+      const id = '#pred-y-hist'
+      const x = this.shapeY()
 
-      this.drawPlot(id, x, y)
+      this.drawHist(id, x)
+    },
+    getHistgram: function (scale, ticks) {
+      return d3.histogram()
+        .value(function (d) { return d })
+        .domain(scale.domain())
+        .thresholds(scale.ticks(ticks))
+    },
+    getHistgramSizeMax: function (hist) {
+      return max(hist.map(function (d) { return d.length }))
+    },
+    sortPredX: function (value) {
+      if (value === this.plot_x_index) {
+        this.desc = !this.desc
+      } else {
+        this.desc = false
+      }
+      this.plot_x_index = value
+      this.sort_index = value
+      this.$store.commit('sortPredX', {'key': value, 'desc': this.desc})
+    },
+    sortPredY: function (value) {
+      if (value === this.plot_y_index) {
+        this.desc = !this.desc
+      } else {
+        this.desc = false
+      }
+      this.plot_y_index = value
+      this.sort_index = this.deployedDataset.target_column_ids[value]
+      this.$store.commit('sortPredY', {'key': value, 'desc': this.desc})
     }
   }
 }
@@ -285,7 +385,6 @@ export default {
   $table-width: 90%;
   $table-item-height: 32px;
 
-  @include prefix('display', 'flex');
   width: 100%;
   height: calc(100vh - #{$footer-height} - #{$header-height});
 
@@ -295,23 +394,24 @@ export default {
 
     .start-button-area {
       width: 100%;
-      padding: 8px;
+      padding: $padding-small;
       .start-button {
         width: 100%;
       }
     }
 
     .model-detail-panel {
-      height: calc(100% - #{$button-area-height});
+      height: calc(100% - #{$button-height} - #{$padding-small}*2);
       .model-detail-content {
-        padding: 16px;
+        padding: $padding-large;
 
         .label-value {
-          @include prefix('display', 'flex');
-          margin-bottom: 8px;
-          font-size: $fs-small;
+          margin-bottom: $margin-small;
+          .label, .value {
+            font-size: $fs-small;
+          }
           .label {
-            margin-right: 8px;
+            margin-right: $margin-small;
             color: $gray;
           }
         }
@@ -321,55 +421,61 @@ export default {
 
   .prediction-results-area {
     width: 80%;
-    .prediction-plot-area, .prediction-table-area {
-      @include prefix('display', 'flex');
-      padding: 16px;
+    height: 100%;
+
+    .plot-area {
+      padding: $padding-middle;
+    }
+
+    .prediction-plot-area {
+      padding: $padding-small;
     }
     .prediction-plot-area {
+      width: 100%;
       height: 40%;
     }
-    #sorted-y-plot, #xy-plot {
+    .prediction-table-area {
+      overflow: scroll;
+      width: 100%;
+      height: 60%;
+      .icon {
+        font-size: $fs-micro;
+        color: $gray;
+      }
+      .active {
+        color: $blue;
+      }
+    }
+    #xy-plot, #pred-y-hist {
       position: relative;
       width: 50%;
       height: 100%;
     }
-    .plot-name {
-      color: $gray;
-    }
-    .prediction-table-area {
-      overflow: scroll;
-      height: 60%;
-      width: 100%;
-      .pred-y-area {
-        height: 100%;
-        border-right: 1px solid $light-gray;
-      }
-      .table-content {
-        width: 100%;
-        height: calc(100% - #{$table-item-height});
-      }
-      .table-row {
-        @include prefix('display', 'flex');
-        border-bottom: 1px solid $light-gray;
-      }
-      .table-item {
-        width: 100px;
-        height: $table-item-height;
-        line-height: $table-item-height;
-        text-align: center;
+    .select-axis {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      @include prefix("transform", "translateX(-50%)");
+      .axis-label {
+        height: $text-height-micro;
+        margin-right: $margin-small;
+        line-height: $text-height-micro;
         font-size: $fs-small;
         color: $gray;
       }
-      .pred-x-area, .pred-y-area {
-        .table-row {
-          .table-header {
-            .table-item:hover {
-              color: $light-gray;
-            }
-          }
-        }
+      .axis-selector {
+        margin-right: $margin-middle;
       }
     }
+    .plot-name {
+      height: $text-height-small;
+      line-height: $text-height-small;
+      font-size: $fs-small;
+      color: $gray;
+    }
+  }
+  .active {
+    color: $blue;
   }
 }
 </style>

@@ -5,16 +5,19 @@
         Prediction Sample
       </div>
 
-      <div class="panel-content prediction-result-content">
+      <div class="panel-content prediction-result-content flex">
         <div class="column">
-          <div class="label-value">
+          <div class="label-value flex">
             <div class="model-type">Deploy Model</div>
             <div class="label">Model ID</div>
             <div class="value" v-if="deployedModel">{{deployedModel.model_id}}</div>
           </div>
           <div v-if="deployedModel">
             <div v-for="(d, index) in deployedModel.valid_true">
-              <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+              <div class="label-value flex">
+                <div class="label">Target</div>
+                <div class="value">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+              </div>
               <div :id="'deployed-plot'+index" class="plot-area">
                 <div class="x-axis-name">True</div>
                 <div class="y-axis-name">Prediction</div>
@@ -24,14 +27,17 @@
         </div>
 
         <div class="column">
-          <div class="label-value">
+          <div class="label-value flex">
             <div class="model-type">Select Model</div>
             <div class="label">Model ID</div>
             <div class="value" v-if="selectedModel">{{selectedModel.model_id}}</div>
           </div>
           <div v-if="selectedModel">
             <div v-for="(d, index) in selectedModel.valid_true">
-              <div class="target-label">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+              <div class="label-value flex">
+                <div class="label">Target</div>
+                <div class="value">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+              </div>
               <div :id="'selected-plot'+index" class="plot-area">
                 <div class="x-axis-name">True</div>
                 <div class="y-axis-name">Prediction</div>
@@ -298,10 +304,14 @@ export default {
   min-height: $prediction-sample-height;
 
   .prediction-result-content {
-    @include prefix("display", "flex");
     width: 100%;
     min-height: calc(#{$prediction-sample-height} - #{$panel-title-height} - 8px);
-    padding-top: 32px;
+    padding-top: $padding-large;
+  }
+  .target-label, .model-type, .label, .value {
+    height: $text-height-small;
+    line-height: $text-height-small;
+    font-size: $fs-small;
   }
   .target-label, .model-type, .label {
     color: $gray;
@@ -311,22 +321,21 @@ export default {
     line-height: $model-id-height;
   }
   .label-value {
-    @include prefix("display", "flex");
-    height: $model-id-height;
-    line-height: $model-id-height;
+    height: $text-height-regular;
+    line-height: $text-height-regular;
     .model-type {
-      margin-right: 24px;
+      margin-right: $margin-middle;
     }
     .label {
-      margin-right: 8px;
+      margin-right: $margin-small;
     }
   }
   .column {
     width: 50%;
-    padding: 0 $panel-content-padding;
+    padding: 0 $padding-large;
     .plot-area {
       position: relative;
-      padding: 0 $panel-content-padding;
+      padding: 0 $padding-large;
     }
     .x-axis-name, .y-axis-name {
       position: absolute;

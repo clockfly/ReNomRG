@@ -1,11 +1,13 @@
 <template>
 <header>
-  <div class="menu-button" @click="toggleMenu">
-    <i class="fa fa-bars icon" aria-hidden="true"></i>
-  </div>
+  <div class="header-top">
+    <div class="menu-button" @click="toggleMenu">
+      <i class="fa fa-bars icon" aria-hidden="true"></i>
+    </div>
 
-  <div class="title">
-    ReNomRG > {{$store.state.page_name}}
+    <div class="title">
+      ReNomRG > {{$store.state.page_name}}
+    </div>
   </div>
 </header>
 </template>
@@ -13,6 +15,11 @@
 <script>
 export default {
   name: 'AppHeader',
+  data: function () {
+    return {
+      'tab': 'training'
+    }
+  },
   methods: {
     toggleMenu: function () {
       this.$store.commit('setNavigationBarShowFlag', {
@@ -26,7 +33,6 @@ export default {
 
 <style lang="scss" scoped>
 header {
-  @include prefix('display', 'flex');
   position: fixed;
   top: 0px;
   left: 0px;
@@ -34,17 +40,22 @@ header {
   height: $header-height;
   margin: 0;
   padding: 0;
-  background-color: $dark-blue;
   z-index: 3;
 
-  .menu-button, .title, .icon {
+  .header-top {
+    @include prefix('display', 'flex');
     height: $header-height;
-    line-height: $header-height;
-    color: $white;
-  }
-  .menu-button {
-    margin-left: 16px;
-    margin-right: 16px;
+    background-color: $dark-blue;
+    .menu-button, .title, .icon {
+      height: $header-height;
+      line-height: $header-height;
+      color: $white;
+    }
+    .menu-button {
+      margin-left: $margin-middle;
+      margin-right: $margin-middle;
+      cursor:pointer;
+    }
   }
 }
 </style>

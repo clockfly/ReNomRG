@@ -3,7 +3,7 @@
     <div class="modal-background" @click="hideModal"></div>
 
     <div class="modal-content">
-      <div class="modal-tab">
+      <div class="modal-tab flex">
         <div class="tab-item"
           v-bind:class="{ 'tab-active': tab === 'params' }"
           @click="tab = 'params'">Setting of new Model</div>
@@ -68,7 +68,6 @@ export default {
     background-color: $white;
 
     .modal-tab {
-      @include prefix("display", "flex");
       .tab-item {
         flex-grow: 0;
         width: $modal-tab-width;

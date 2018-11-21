@@ -7,13 +7,13 @@
       <div id="curve-canvas" class="panel-content">
         <div class="x-axis-name">Epoch</div>
         <div class="y-axis-name">Loss [-]</div>
-        <div class="bar-legends">
-          <div class="legend">
+        <div class="bar-legends flex">
+          <div class="legend flex">
             <div class="legend-color train"></div>
             <div class="legend-name">Train</div>
           </div>
 
-          <div class="legend">
+          <div class="legend flex">
             <div class="legend-color validation"></div>
             <div class="legend-name">Validation</div>
           </div>
@@ -125,8 +125,8 @@ export default {
 
     .x-axis-name, .y-axis-name, .bar-legends {
       position: absolute;
-      font-size: 0.5rem;
-      color: $gray;
+      font-size: $fs-micro;
+      color: $light-gray;
     }
     .x-axis-name {
       bottom: 12px;
@@ -137,20 +137,22 @@ export default {
       left: 32px;
     }
     .bar-legends {
-      @include prefix("display", "flex");
       top: 16px;
       right: 16px;
 
       .legend {
-        @include prefix("display", "flex");
         justify-content: center;
         align-items: center;
-        margin-right: 16px;
+        margin-right: $margin-middle;
 
         .legend-color {
           width: 8px;
           height: 8px;
           margin-right: 4px;
+        }
+        .legend-name {
+          font-size: $fs-micro;
+          color: $gray;
         }
       }
     }

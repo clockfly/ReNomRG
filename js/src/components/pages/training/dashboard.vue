@@ -7,20 +7,20 @@
 
       <div class="panel-content dashboard-content">
         <!-- ratio bar -->
-        <div class="total-models">
+        <div class="total-models flex">
           <div class="label">Total Models:</div>
           <div class="value">{{model_list.length}}</div>
         </div>
 
         <div class="dashboard-ratio-bar">
-          <div class="bar-legends">
-            <div class="legend" v-for="(a, index) in algorithms">
+          <div class="bar-legends flex">
+            <div class="legend flex" v-for="(a, index) in algorithms">
               <div :class="'legend-color '+a.toLowerCase()"></div>
               <div class="legend-name">{{a}}</div>
             </div>
           </div>
 
-          <div class="horizontal-bar">
+          <div class="horizontal-bar flex">
             <div class="bar-item"
               v-for="(a, index) in algorithms"
               :class="a.toLowerCase()"
@@ -34,7 +34,7 @@
           <div class="label">Running Models</div>
 
           <div class="running-model" v-for="(model, index) in $store.state.running_models">
-            <div class="running-info">
+            <div class="running-info flex">
               <div class="running-info-item">
                 <div class="running-info-label">Model ID</div>
                 <div class="running-info-value">{{model.model_id}}</div>
@@ -78,32 +78,34 @@ export default {
 
 <style lang="scss" scoped>
 #dashboard {
-  $group-margin: 16px;
+  $info-height: 16px;
+  $legend-box-size: 8px;
+
   width: 100%;
   height: $dashboard-height;
 
   .dashboard-content {
-    padding: $panel-content-padding;
+    padding: $padding-large;
   }
   .total-models {
-    @include prefix("display", "flex");
+    height: $text-height-regular;
+    line-height: $text-height-regular;
+    font-size: $fs-regular;
   }
   .dashboard-ratio-bar, .running-models {
     width: 100%;
-    margin-top: $group-margin;
+    margin-top: $margin-middle;
   }
   .dashboard-ratio-bar {
     .bar-legends {
-      @include prefix("display", "flex");
       .legend {
-        @include prefix("display", "flex");
         justify-content: center;
         align-items: center;
-        margin-right: 8px;
+        margin-right: $margin-small;
 
         .legend-color {
-          width: 8px;
-          height: 8px;
+          width: $legend-box-size;
+          height: $legend-box-size;
           margin-right: 4px;
         }
         .legend-name {
@@ -113,20 +115,28 @@ export default {
     }
 
     .horizontal-bar {
-      @include prefix("display", "flex");
-      margin-top: 8px;
+      margin-top: $margin-small;
       .bar-item {
-        height: 16px;
+        height: $info-height;
       }
     }
   }
+  .running-models {
+    .label {
+      height: $text-height-regular;
+      line-height: $text-height-regular;
+      font-size: $fs-regular;
+    }
+    margin-top: $margin-large;
+  }
+  .running-model {
+    margin-top: $margin-small;
+  }
   .running-info {
-    @include prefix("display", "flex");
     .running-info-item {
       flex-grow: 1;
       .running-info-label, .running-info-value {
-        height: 16px;
-        line-height: 16px;
+        height: $info-height;
         font-size: $fs-small;
       }
       .running-info-label {
@@ -143,7 +153,7 @@ export default {
       .bar-background, .bar-foreground {
         position: absolute;
         height: 8px;
-        top: 20px;
+        top: calc(#{$info-height} + 4px);
       }
     }
     .pause-button {
