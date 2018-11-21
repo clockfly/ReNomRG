@@ -63,6 +63,11 @@ export default {
       })
   },
 
+  stopModel (context, payload) {
+    const url = '/api/renom_rg/models/' + payload.model_id + '/stop'
+    axios.get(url).catch(function (error) { commitError(context, error) })
+  },
+
   async deleteModel (context, payload) {
     const url = '/api/renom_rg/models/' + payload.model_id
     return axios.delete(url).catch(function (error) { commitError(context, error) })

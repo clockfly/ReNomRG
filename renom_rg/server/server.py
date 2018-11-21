@@ -354,6 +354,16 @@ def train_model(model_id):
             release_mem_pool()
 
 
+@route("/api/renom_rg/models/<model_id:int>/stop", method="GET")
+def stop_model(model_id):
+    try:
+        for th in train_thread_pool.values():
+            if th.model_id == model_id:
+                th.taskstate.canceled = True
+    except Exception as e:
+        traceback.print_exc()
+        return create_response({"error_msg": str(e)})
+
 
 @route("/api/renom_rg/models/<model_id:int>/predict", method="GET")
 def predict_model(model_id):
@@ -445,7 +455,8 @@ class GPUPool:
         with self.gpu_resource:
             self.active_gpu.id = self.gpus.pop()
             try:
-                set_cuda_active(True)
+                # set_cuda_active(True)
+                set_cuda_active(False)
                 with use_device(self.active_gpu.id):
                     return f(*args, **kwargs)
             finally:

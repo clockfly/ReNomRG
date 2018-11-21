@@ -2,7 +2,7 @@
   <div id="model-list">
     <div class="add-button-area">
       <button class="add-button minus-for-scroll-bar-width" @click="showModal">
-        <i class="fa fa-plus icon" aria-hidden="true"></i>
+        <i class="fa fa-plus icon"></i>
         Add new model
       </button>
     </div>
@@ -80,7 +80,7 @@
           </div>
 
           <div class="delete-button" @click="delete_model=model">
-            <i class="fa fa-times" aria-hidden="true"></i>
+            <i class="fa fa-times icon"></i>
           </div>
         </div>
       </div>
@@ -207,6 +207,12 @@ export default {
     }
     .delete-button {
       color: $light-gray;
+      .icon {
+        font-size: $fs-micro;
+      }
+      .icon:hover {
+        color: $white;
+      }
     }
     .deployed {
       color: $blue;

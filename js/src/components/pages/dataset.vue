@@ -278,8 +278,10 @@ export default {
     }
     .dataset-detail {
       width: 100%;
+      height: calc(100% - #{$text-height-regular});
       .column {
         width: 50%;
+        height: 100%;
         padding: $padding-middle;
       }
       .train-ratio-area {
@@ -310,6 +312,11 @@ export default {
         .bar-item {
           height: 8px;
         }
+      }
+      .histogram-area {
+        width: 100%;
+        height: 100%;
+        flex-wrap: wrap;
       }
       .histogram-plot {
         width: 50%;
