@@ -113,5 +113,33 @@ export default {
   setPredResult (state, payload) {
     state.pred_x = payload.data.pred_x
     state.pred_y = payload.data.pred_y
+  },
+  resetPred (state, payload) {
+    state.pred_x = undefined
+    state.pred_y = undefined
+  },
+  sortPredX (state, payload) {
+    if (!state.pred_x) return
+    let map = state.pred_x.map(function (e, i) { return {index: i, value: e[payload.key]} })
+    // sort index
+    map.sort(function (a, b) {
+      if (payload.desc) return a.value < b.value ? 1 : -1
+      return a.value > b.value ? 1 : -1
+    })
+
+    state.pred_x = map.map(function (e) { return state.pred_x[e.index] })
+    state.pred_y = map.map(function (e) { return state.pred_y[e.index] })
+  },
+  sortPredY (state, payload) {
+    if (!state.pred_y) return
+    let map = state.pred_y.map(function (e, i) { return {index: i, value: e[payload.key]} })
+    // sort index
+    map.sort(function (a, b) {
+      if (payload.desc) return a.value < b.value ? 1 : -1
+      return a.value > b.value ? 1 : -1
+    })
+
+    state.pred_x = map.map(function (e) { return state.pred_x[e.index] })
+    state.pred_y = map.map(function (e) { return state.pred_y[e.index] })
   }
 }

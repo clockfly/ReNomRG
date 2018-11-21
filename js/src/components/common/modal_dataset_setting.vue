@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-dataset">
+  <div class="modal-dataset flex">
     <div class="column">
 
       <div class="setting-block">
@@ -7,21 +7,21 @@
           Dataset Setting
         </div>
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Dataset Name</div>
           <div class="input-value">
             <input type="text" v-model="name">
           </div>
         </div>  <!-- sub block -->
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Description</div>
           <div class="input-value">
             <textarea name="description" rows="3" v-model="description"></textarea>
           </div>
         </div>  <!-- sub block -->
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Ratio of training data</div>
           <div class="input-value">
             <select v-model="train_ratio">
@@ -33,7 +33,7 @@
           </div>
         </div>  <!-- sub block -->
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Target Valiables</div>
           <div class="input-value">
             <div class="target-variable-name" v-for="id in target_column_ids" :key="id">
@@ -70,26 +70,27 @@
         </div>
 
         <div class="sub-block">
-          <div class="label">Number of data size</div>
-          <div class="values">
-            <div class="train-number">Train {{$store.state.train_index.length}}</div>
-            <div class="valid-number">Validation {{$store.state.valid_index.length}}</div>
+          <div class="flex">
+            <div class="label">Number of data size</div>
+            <div class="values flex">
+              <div class="train-number">Train {{$store.state.train_index.length}}</div>
+              <div class="valid-number">Validation {{$store.state.valid_index.length}}</div>
+            </div>
           </div>
-        </div>
-
-        <div class="sub-block">
-          <div class="label">All {{$store.state.train_index.length+$store.state.valid_index.length}}</div>
-          <div class="values">
-            <div class="train-ratio-bar">
-              <div class="bar-item train"
-                v-bind:style="{ 'flex-grow': $store.state.train_index.length }"></div>
-              <div class="bar-item validation"
-                v-bind:style="{ 'flex-grow': $store.state.valid_index.length }"></div>
+          <div class="flex">
+            <div class="label">All {{$store.state.train_index.length+$store.state.valid_index.length}}</div>
+            <div class="values flex">
+              <div class="train-ratio-bar flex">
+                <div class="bar-item train"
+                  v-bind:style="{ 'flex-grow': $store.state.train_index.length }"></div>
+                <div class="bar-item validation"
+                  v-bind:style="{ 'flex-grow': $store.state.valid_index.length }"></div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="sub-block">
+        <div class="sub-block flex">
           <div class="label">Histogram</div>
         </div>
         <div id="train-test-histogram"></div>
@@ -247,7 +248,6 @@ export default {
 
 <style lang="scss" scoped>
 .modal-dataset {
-  @include prefix("display", "flex");
   width: 100%;
   height: calc(100% - #{$modal-tab-height});
 
@@ -255,28 +255,25 @@ export default {
     position: relative;
     width: 50%;
     height: 100%;
+    padding: $padding-large;
 
-    .setting-block {
-      margin-top: 24px;
-      margin-left: 24px;
-    }
     .setting-type {
-      height: 32px;
-      line-height: 32px;
+      height: $text-height-regular;
+      line-height: $text-height-regular;
+      font-size: $fs-regular;
     }
     .sub-block {
-      @include prefix("display", "flex");
-      margin-top: 16px;
-      margin-left: 16px;
+      margin-top: $margin-middle;
+      margin-left: $margin-middle;
 
-      .label, .input-value, .values {
+      .label, .input-value, .values, .target-variable-name, .train-number, .valid-number {
         width: 50%;
+        height: $text-height-small;
+        line-height: $text-height-small;
+        font-size: $fs-small;
+        color: $gray;
       }
       .values {
-        @include prefix("display", "flex");
-        .train-number, .valid-number {
-          color: $gray;
-        }
         .valid-number {
           margin-left: auto;
         }
@@ -294,21 +291,22 @@ export default {
     .variable-scroll-area {
       overflow-y: scroll;
       height: 90%;
-      padding: 24px;
+      padding: 0 $padding-large;
       .variable-item {
-        height: 32px;
-        padding-left: 32px;
-        line-height: 32px;
-        label {
-          color: $gray;
-        }
+        padding-left: $padding-large;
+      }
+      .variable-item, .variable-item label {
+        height: $text-height-regular;
+        line-height: $text-height-regular;
+        font-size: $fs-small;
+        color: $gray;
       }
     }
   }
 
   .train-ratio-bar {
-    @include prefix("display", "flex");
     width: 100%;
+    padding-top: $padding-small;
     .bar-item {
       height: 8px;
     }

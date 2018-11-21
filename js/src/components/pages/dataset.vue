@@ -3,17 +3,17 @@
     <div class="page-content">
 
       <div class="panel">
-        <div class="panel-title panel-title-button">
+        <div class="panel-title panel-title-button-area">
           Dataset List
-          <div class="setting-button" @click="show_modal = true">
+          <div class="panel-title-button" @click="show_modal = true">
             > Setting of Dataset
           </div>
         </div>
 
-        <div class="panel-content dataset-list-and-detail">
+        <div class="panel-content dataset-list-and-detail flex">
           <div class="column-left">
-            <div class="table-header">
-              <div class="table-row">
+            <div class="table-header padding-for-scroll-bar">
+              <div class="table-row flex">
                 <div class="table-item">Name</div>
                 <div class="table-item">Train Ratio</div>
                 <div class="table-item">Train</div>
@@ -21,9 +21,9 @@
               </div>
             </div>
             <div class="table-content">
-              <div class="table-row" v-for="(dataset, index) in $store.state.dataset_list" :key="index" @click="selected_dataset_index = index">
+              <div class="table-row flex" v-for="(dataset, index) in $store.state.dataset_list" :key="index" @click="selected_dataset_index = index">
                 <div class="table-item">{{ dataset.name }}</div>
-                <div class="table-item">{{ dataset.train_ratio }}</div>
+                <div class="table-item">{{ dataset.train_ratio * 100 }}%</div>
                 <div class="table-item">{{ dataset.train_index.length }}</div>
                 <div class="table-item">{{ dataset.valid_index.length }}</div>
               </div>
@@ -34,7 +34,7 @@
             <div class="dataset-name">
               {{selectedDataset.name}}
             </div>
-            <div class="dataset-detail">
+            <div class="dataset-detail flex">
               <div class="column">
 
                 <div class="dataset-description-area">
@@ -43,18 +43,18 @@
                 </div> <!-- dataset description area -->
 
                 <div class="train-ratio-area">
-                  <div class="train-ratio-block">
+                  <div class="train-ratio-block flex">
                     <div class="label">Number of data size</div>
-                    <div class="values">
+                    <div class="values flex">
                       <div class="train-number">Train {{selectedDataset.train_index.length}}</div>
                       <div class="valid-number">Validation {{selectedDataset.valid_index.length}}</div>
                     </div>
                   </div>
 
-                  <div class="train-ratio-block">
+                  <div class="train-ratio-block flex">
                     <div class="label">All {{selectedDataset.train_index.length+selectedDataset.valid_index.length}}</div>
-                    <div class="values">
-                      <div class="train-ratio-bar">
+                    <div class="values flex">
+                      <div class="train-ratio-bar flex">
                         <div class="bar-item train"
                           v-bind:style="{ 'flex-grow': selectedDataset.train_index.length }"></div>
                         <div class="bar-item validation"
@@ -67,7 +67,7 @@
 
               <div class="column">
                 <div class="label">Histogram</div>
-                <div class="histogram-area">
+                <div class="histogram-area flex">
                   <div :id="'train-test-histogram'+index" class="histogram-plot"
                     v-for="(data, index) in selectedDataset.target_train">
                     <div class="target-name">
@@ -232,45 +232,31 @@ export default {
     height: 100%;
   }
 
-  .panel-title-button {
-    @include prefix("display", "flex");
-    .setting-button {
-      margin-left: auto;
-      padding: 0 $panel-content-padding;
-      background: $blue;
-      color: $white;
-    }
-  }
-
   .dataset-list-and-detail {
-    @include prefix('display', 'flex');
-    padding: $panel-content-padding;
+    padding: $padding-large;
   }
   .column-left {
     width: 30%;
     height: 100%;
-    padding-right: $panel-content-padding;
-    border-right: 1px solid $light-gray;
+    padding-right: $padding-large;
+    border-right: $border-width-regular solid $light-gray;
 
-    .table-header {
-      padding-right: 10px; // margin of table-content scrollbar size
-    }
     .table-content {
       width: 100%;
       height: calc(100% - #{$table-item-height});
       overflow-y: scroll;
     }
     .table-row {
-      @include prefix('display', 'flex');
       width: $table-width;
       margin: 0 auto;
-      border-bottom: 1px solid $light-gray;
+      border-bottom: $border-width-regular solid $light-gray;
+      cursor:pointer;
     }
     .table-row:hover .table-item {
       color: $light-gray;
     }
     .table-item {
-      width: 33%;
+      width: 25%;
       height: $table-item-height;
       line-height: $table-item-height;
       text-align: center;
@@ -282,52 +268,48 @@ export default {
   .column-right {
     width: 70%;
     height: 100%;
-    padding: 32px;
+    padding: 0 $padding-large;
 
     .dataset-name {
+      height: $text-height-regular;
+      line-height: $text-height-regular;
+      font-size: $fs-regular;
       color: $blue;
     }
     .dataset-detail {
-      @include prefix('display', 'flex');
       width: 100%;
       .column {
         width: 50%;
-        padding: 16px;
+        padding: $padding-middle;
       }
       .train-ratio-area {
-        margin-top: 32px;
+        margin-top: $margin-large;
       }
-      .label, .train-number, .valid-number {
+      .label, .train-number, .valid-number, .target-name {
+        height: $text-height-small;
+        line-height: $text-height-small;
+        font-size: $fs-small;
         color: $gray;
       }
       .description-text {
         width: 100%;
-        margin-top: 8px;
+        margin-top: $margin-small;
       }
       .train-ratio-block {
-        @include prefix("display", "flex");
-        margin-top: 16px;
         .label, .values {
           width: 50%;
         }
         .values {
-          @include prefix("display", "flex");
           .valid-number {
             margin-left: auto;
           }
         }
       }
       .train-ratio-bar {
-        @include prefix("display", "flex");
         width: 100%;
         .bar-item {
           height: 8px;
         }
-      }
-      .target-name {
-        height: $table-item-height;
-        line-height: $table-item-height;
-        color: $gray;
       }
       .histogram-plot {
         width: 50%;

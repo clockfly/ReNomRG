@@ -6,20 +6,43 @@
 
   <transition name="nav">
     <div id="navigation-bar" v-if="$store.state.navigation_bar_shown_flag">
-      <div class="menu-item" @click="goTraining()">
-        <i class="fa fa-home icon" aria-hidden="true"></i>
-        <div class="menu-name">Training</div>
+
+      <div class="task-name">Regression</div>
+      <div>
+        <div class="menu-item flex" @click="goTraining()">
+          <i class="fa fa-home icon"></i>
+          <div class="menu-name">Training</div>
+        </div>
+
+        <div class="menu-item flex" @click="goDataset()">
+          <i class="fas fa-database icon"></i>
+          <div class="menu-name">Dataset</div>
+        </div>
+
+        <div class="menu-item flex" @click="goPrediction()">
+          <i class="fas fa-chart-area icon"></i>
+          <div class="menu-name">Prediction</div>
+        </div>
       </div>
 
-      <div class="menu-item" @click="goDataset()">
-        <i class="fas fa-database icon"></i>
-        <div class="menu-name">Dataset</div>
-      </div>
+      <!-- <div class="task-name">TimeSeries</div>
+      <div>
+        <div class="menu-item flex" @click="">
+          <i class="fa fa-home icon" aria-hidden="true"></i>
+          <div class="menu-name">Training</div>
+        </div>
 
-      <div class="menu-item" @click="goPrediction()">
-        <i class="fas fa-chart-area icon"></i>
-        <div class="menu-name">Prediction</div>
-      </div>
+        <div class="menu-item flex" @click="">
+          <i class="fas fa-database icon"></i>
+          <div class="menu-name">Dataset</div>
+        </div>
+
+        <div class="menu-item flex" @click="">
+          <i class="fas fa-chart-area icon"></i>
+          <div class="menu-name">Prediction</div>
+        </div>
+      </div> -->
+
     </div>
   </transition>
 </div>
@@ -28,6 +51,11 @@
 <script>
 export default {
   name: 'NavigationBar',
+  data: function () {
+    return {
+      'nav_open': 'regression'
+    }
+  },
   methods: {
     goTraining: function () {
       this.$store.commit('setPageName', {'page_name': 'Training'})
@@ -56,7 +84,7 @@ export default {
   $nav-item-height: 32px;
 
   position: fixed;
-  z-index: 2;
+  z-index: 999;
 
   #mask {
     position: fixed;
@@ -64,7 +92,7 @@ export default {
     left: 0;
     width: $full-screen-width;
     height: $full-screen-height;
-    z-index: 1;
+    z-index: 998;
     background-color: $black;
     opacity: $modal-opacity;
   }
@@ -72,27 +100,32 @@ export default {
   #navigation-bar {
     position: fixed;
     top: $header-height;
-    width: 10%;
+    width: 12%;
     height: $full-screen-height;
-    background-color: $dark-blue;
-    z-index: 2;
+    background-color: $blue;
+    z-index: 999;
 
-    .menu-item {
-      @include prefix('display', 'flex');
+    .task-name, .menu-item {
       height: $nav-item-height;
+      padding: 0 $padding-middle;
       line-height: $nav-item-height;
-
+      color: $white;
+    }
+    .menu-item {
+      cursor:pointer;
+    }
+    .menu-item:hover {
+      background-color: $gray;
+    }
+    .menu-item {
       .icon, .menu-name {
         height: $nav-item-height;
         line-height: $nav-item-height;
         color: $white;
       }
       .icon {
-        margin: 0px 8px;
+        margin: 0px $margin-small 0px $margin-middle;
       }
-    }
-    .menu-item:hover {
-      background-color: $blue;
     }
   }
 
@@ -122,5 +155,6 @@ export default {
   .mask-enter, .mask-leave-to {
     opacity: 0;
   }
+
 }
 </style>

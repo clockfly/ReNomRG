@@ -1,8 +1,10 @@
 <template lang="html">
 <footer>
   <div class="footer-content">
-    <img class="logo-img" src="/static/img/renomlogo.png">
-    <!-- <div class="version">ReNom RG beta</div> -->
+    <div class="logo-and-version">
+      <img class="logo-img" src="/static/img/renomlogo.png">
+      <div class="version">{{version}}</div>
+    </div>
   </div>
   <div class="copyright-bar">
     <div class="copyright">©︎2018 GRID INC. ALL rights reserved.</div>
@@ -12,7 +14,8 @@
 
 <script>
 export default {
-  name: 'AppFooter'
+  name: 'AppFooter',
+  data: function () { return { 'version': 'beta' } }
 }
 </script>
 
@@ -28,24 +31,36 @@ footer {
     max-width: $max-width;
     margin: 0 auto;
 
-    .logo-img {
-      margin: 24px 8px 8px 8px;
-    }
-    .version {
-      line-height: 24px;
-      color: $white;
+    .logo-and-version {
+      @include prefix('display', 'flex');
+      position: relative;
+      .logo-img {
+        height: $logo-height;
+        margin: $margin-middle;
+        margin-left: 0;
+      }
+      .version {
+        height: $copyright-height;
+        line-height: $copyright-height;
+        margin-top: $logo-height;
+        color: $white;
+        font-size: $fs-small;
+      }
     }
   }
   .copyright-bar {
     position: absolute;
     bottom: 0;
     width: 100%;
-    background: #02294C;
+    height: $copyright-height;
+    background: $copyright-blue;
     .copyright {
       max-width: $max-width;
+      height: $copyright-height;
       margin: 0 auto;
-      line-height: 24px;
+      line-height: $copyright-height;
       color: $white;
+      font-size: $fs-micro;
     }
   }
 }

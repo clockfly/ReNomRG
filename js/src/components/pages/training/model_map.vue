@@ -128,8 +128,8 @@ export default {
 
     .x-axis-name, .y-axis-name {
       position: absolute;
-      font-size: 0.8rem;
-      color: $gray;
+      font-size: $fs-small;
+      color: $light-gray;
     }
     .x-axis-name {
       bottom: 24px;

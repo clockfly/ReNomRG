@@ -1,9 +1,27 @@
 @import url('http://fonts.googleapis.com/css?family=Open+Sans');
 
+/**
+* mixins
+*/
+@mixin prefix($name, $argument) {
+  -webkit-#{$name}: #{$argument};
+  -ms-#{$name}: #{$argument};
+  -moz-#{$name}: #{$argument};
+  -o-#{$name}: #{$argument};
+  #{$name}: #{$argument};
+}
+
+@mixin transform-center() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  @include prefix("transform", "translateY(-50%) translateX(-50%)");
+}
+
+// width & height
 $full-screen-width: 100vw;
 $full-screen-height: 100vh;
 $max-width: 1280px;
-$scroll-bar-width: 10px;
 
 // colors
 $background-gray: #f3f3f1;
@@ -13,10 +31,32 @@ $gray: #999999;
 $black: #666666;
 $dark-blue: #063662;
 $blue: #136eab;
+$line-blue: #3F79AE;
+$copyright-blue: #02294C;
 
 // font-size
-$fs-regular: 1rem;
+$fs-regular: 0.9rem;
 $fs-small: 0.8rem;
+$fs-micro: 0.6rem;
+
+// text height
+$text-height-regular: 32px;
+$text-height-small: 24px;
+$text-height-micro: 20px;
+
+// margin
+$margin-small: 8px;
+$margin-middle: 16px;
+$margin-large: 32px;
+
+// padding
+$padding-small: 8px;
+$padding-middle: 16px;
+$padding-large: 32px;
+
+// border witdh
+$border-width-regular: 1px;
+$border-width-bold: 2px;
 
 // modal
 $modal-opacity: 0.5;
@@ -24,17 +64,18 @@ $modal-content-width: 70%;
 $modal-content-height: 80%;
 $modal-content-padding: 32px;
 $modal-tab-width: 200px;
-$modal-tab-height: 40px;
+$modal-tab-height: 32px;
 
 /**
 * header
 */
 $header-height: 40px;
-
 /**
 * footer
 */
-$footer-height: 100px;
+$logo-height: 24px;
+$copyright-height: 20px;
+$footer-height: calc(#{$logo-height} + #{$copyright-height} + #{$margin-middle}*2);
 
 // page list area
 $list-width: 20%;
@@ -84,6 +125,7 @@ $model-list-item-height: 120px;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
+  font-size: $fs-regular;
   color: $black;
 }
 
@@ -94,7 +136,10 @@ $input-base-width: 160px;
 textarea {
   resize: none;
   width: $input-base-width;
-  border: 1px solid $light-gray;
+  height: $text-height-small;
+  padding-left: 4px;
+  border: $border-width-regular solid $light-gray;
+  font-size: $fs-small;
   color: $gray;
 }
 
@@ -103,7 +148,10 @@ textarea {
 */
 input[type=text] {
   width: $input-base-width;
-  border: 1px solid $light-gray;
+  height: $text-height-small;
+  padding-left: 4px;
+  border: $border-width-regular solid $light-gray;
+  font-size: $fs-small;
   color: $gray;
 }
 
@@ -112,32 +160,40 @@ input[type=text] {
 */
 select {
   width: $input-base-width;
+  height: $text-height-small;
   background: $white;
-  border: 1px solid $light-gray;
+  border: $border-width-regular solid $light-gray;
+  font-size: $fs-small;
   color: $gray;
 }
-
+select.small {
+  height: $text-height-micro;
+  background: $white;
+  font-size: $fs-micro;
+}
 /**
 * button base css
 */
-$button-area-height: calc(40px + 8px * 2);
+$button-width: 80px;
+$button-height: 32px;
 button {
-  height: 40px;
-  width: 80px;
+  width: $button-width;
+  height: $button-height;
   border: none;
   background-color: $blue;
-  line-height: 40px;
+  line-height: $button-height;
   font-size: $fs-regular;
   color: $white;
+  cursor:pointer;
 }
 
 /**
 * cancel button base css
 */
 .button-cancel {
-  border: 1px solid $light-gray;
+  border: $border-width-regular solid $light-gray;
   background-color: $white;
-  line-height: 38px;
+  line-height: calc(#{$button-height} - #{$border-width-regular}*2);
   color: $gray;
 }
 
@@ -145,27 +201,94 @@ button {
 * panel content base css
 */
 $panel-title-height: 32px;
-$panel-content-padding: 16px;
 .panel {
   width: 100%;
   height: 100%;
-  padding: 8px;
+  padding: $padding-small;
 
   .panel-title {
     width: 100%;
     height: $panel-title-height;
-    padding-left: $panel-content-padding;
+    padding-left: $padding-middle;
     background-color: $dark-blue;
     color: $white;
     line-height: $panel-title-height;
+    font-size: $fs-regular;
+  }
+
+  .panel-title-button-area {
+    @include prefix("display", "flex");
+    cursor:pointer;
+    .panel-title-button {
+      margin-left: auto;
+      padding: 0 $padding-large;
+      background: $blue;
+      color: $white;
+    }
   }
 
   .panel-content {
     width: 100%;
-    height: calc(100% - #{$panel-title-height} - 8px);
-    margin-top: 8px;
+    height: calc(100% - #{$panel-title-height} - #{$margin-small});
+    margin-top: $margin-small;
     background: $white;
   }
+}
+
+/**
+* padding right for scroll bar
+*/
+$scroll-bar-width: 10px;
+.padding-for-scroll-bar {
+  padding-right: $scroll-bar-width;
+}
+
+/**
+* table
+*/
+.table-wrapper {
+  overflow: scroll;
+}
+table {
+  position: relative;
+}
+tr {
+}
+td, th {
+  height: $text-height-regular;
+  padding: 0 $padding-middle;
+  border-bottom: $border-width-regular solid $light-gray;
+  line-height: $text-height-regular;
+  font-size: $fs-small;
+  color: $gray;
+  text-align: center;
+  white-space: nowrap;
+}
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: $white;
+}
+th:first-of-type {
+  position: sticky;
+  left: 0;
+  border-bottom: $border-width-regular solid $light-gray;
+  text-align: left;
+  background-color: $white;
+  z-index: 3;
+}
+tbody tr td:first-of-type {
+  position: sticky;
+  left: 0;
+  text-align: left;
+  background-color: $white;
+}
+/**
+* flex
+*/
+.flex {
+  @include prefix('display', 'flex');
 }
 
 /**
@@ -192,22 +315,4 @@ $panel-content-padding: 16px;
 }
 .validation {
   background: #ef8200;
-}
-
-/**
-* mixins
-*/
-@mixin prefix($name, $argument) {
-  -webkit-#{$name}: #{$argument};
-  -ms-#{$name}: #{$argument};
-  -moz-#{$name}: #{$argument};
-  -o-#{$name}: #{$argument};
-  #{$name}: #{$argument};
-}
-
-@mixin transform-center() {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  @include prefix("transform", "translateY(-50%) translateX(-50%)");
 }
