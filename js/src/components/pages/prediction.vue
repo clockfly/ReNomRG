@@ -78,7 +78,7 @@
           <div class="prediction-plot-area flex" v-if="deployedDataset">
 
             <div id="pred-y-hist" class="column">
-              <div class="plot-name">Predcted Y Histogram</div>
+              <div class="plot-name">Predicted Y Histogram</div>
             </div>
             <div id="xy-plot" class="column">
               <div class="plot-name">XY Plot</div>

@@ -8,7 +8,7 @@ import pickle
 
 import renom as rm
 from renom.optimizer import Adam
-from renom.cuda import set_cuda_active, release_mem_pool, use_device
+from renom.cuda import release_mem_pool, use_device
 from renom.utility.distributor.distributor import NdarrayDistributor
 
 from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, DB_DIR_TRAINED_WEIGHT, DATASRC_DIR)

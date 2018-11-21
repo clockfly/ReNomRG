@@ -53,10 +53,10 @@
                   :style="{ width: model.nth_epoch * 100 / model.total_epoch + '%' }">
                 </div>
               </div>
-              <div class="running-info-item pause-button">
+              <div class="running-info-item pause-button" @click="stop_model = model">
                 <div class="running-info-label"></div>
                 <div class="running-info-value">
-                  <i class="far fa-pause-circle"></i>
+                  <i class="fas fa-pause icon"></i>
                 </div>
               </div>
             </div>
@@ -64,15 +64,43 @@
         </div>
       </div>
     </div>
+
+    <ModalConfirm v-if='stop_model'
+      @ok='deleteModel'
+      @cancel='stop_model=undefined'>
+      <div slot='contents'>
+        Would you like to stop Model ID: {{stop_model.model_id}}?
+      </div>
+      <span slot="okbutton">
+        <button class="button-ok" @click="stopModel">
+          Stop
+        </button>
+      </span>
+    </ModalConfirm>
+
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import ModalConfirm from '@/components/common/modal_confirm'
 
 export default {
   name: 'Dashboard',
-  computed: mapState(['algorithms', 'model_list', 'model_counts_per_algorith'])
+  components: {
+    ModalConfirm
+  },
+  data: function () {
+    return {
+      'stop_model': undefined
+    }
+  },
+  computed: mapState(['algorithms', 'model_list', 'model_counts_per_algorith']),
+  methods: {
+    stopModel: function (model_id) {
+      this.$store.dispatch('stopModel', { 'model_id': this.stop_model.model_id })
+    }
+  }
 }
 </script>
 
@@ -141,6 +169,15 @@ export default {
       }
       .running-info-label {
         color: $light-gray;
+      }
+      .running-info-value {
+        .icon {
+          font-size: $fs-small;
+          color: $light-gray;
+        }
+        .icon:hover {
+          color: $gray;
+        }
       }
     }
     .progress-bar {
