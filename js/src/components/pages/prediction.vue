@@ -357,22 +357,20 @@ export default {
       return max(hist.map(function (d) { return d.length }))
     },
     sortPredX: function (value) {
-      if (value === this.plot_x_index) {
+      if (value === this.sort_index) {
         this.desc = !this.desc
       } else {
         this.desc = false
       }
-      this.plot_x_index = value
       this.sort_index = value
       this.$store.commit('sortPredX', {'key': value, 'desc': this.desc})
     },
     sortPredY: function (value) {
-      if (value === this.plot_y_index) {
+      if (this.deployedDataset.target_column_ids[value] === this.sort_index) {
         this.desc = !this.desc
       } else {
         this.desc = false
       }
-      this.plot_y_index = value
       this.sort_index = this.deployedDataset.target_column_ids[value]
       this.$store.commit('sortPredY', {'key': value, 'desc': this.desc})
     }
