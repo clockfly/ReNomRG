@@ -101,6 +101,15 @@ def _train(session, taskstate, model_id):
 
     X, y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
+    # standardize
+    # X_mean = np.mean(X, axis=0)
+    # X_std = np.std(X, axis=0)
+    # X = (X - X_mean) / X_std
+    #
+    # y_mean = np.mean(y)
+    # y_std = np.std(y)
+    # y = (y - y_mean) / y_std
+
     X_train = X[pickle.loads(modeldef.dataset.train_index)]
     X_valid = X[pickle.loads(modeldef.dataset.valid_index)]
     y_train = y[pickle.loads(modeldef.dataset.train_index)]
@@ -215,13 +224,31 @@ def _train(session, taskstate, model_id):
             modeldef.best_epoch_valid_loss = valid_loss
             modeldef.best_epoch_rmse = float(np.sqrt(valid_loss))
             modeldef.best_epoch_max_abs_error = float(np.max(np.abs(y_valid - valid_predicted)))
-            modeldef.r2_score = float(r2_score(y_valid, valid_predicted))
+            modeldef.best_epoch_r2 = float(r2_score(y_valid, valid_predicted))
             modeldef.weight = filename
 
             session.add(modeldef)
             session.commit()
 
             best_loss = valid_loss
+
+    # calc importances
+    # NUM_PERM = 100
+    # importances = []
+    # for i in range(X_valid.shape[1]):
+    #     tl = 0
+    #     for k in range(NUM_PERM):
+    #         p = np.random.permutation(X_valid.shape[0])
+    #         X_randomized = np.copy(X_valid.T)
+    #         X_randomized[i] = X_randomized[i, p]
+    #         X_randomized = X_randomized.T
+    #         pred = model(X_randomized.reshape(-1, 1, X_randomized.shape[1], 1))
+    #         tl += float(rm.mse(pred, y_valid))
+    #     importances.append(tl / NUM_PERM - valid_loss)
+    #
+    # print(importances)
+    # print(np.array(importances) / np.sum(np.array(importances)))
+
     taskstate.state = RunningState.FINISHED
 
 
