@@ -260,24 +260,22 @@ def create_model():
     return create_response(_model_to_dict(model))
 
 
-def _taskstate_to_dict(th):
+def _taskstate_to_dict(key, taskstate):
     ret = {
-        "model_id": th.model_id,
-        "algorithm": th.taskstate.algorithm,
-        "nth_epoch": th.taskstate.nth_epoch,
-        "nth_batch": th.taskstate.nth_batch,
-        "train_loss": th.taskstate.train_loss,
-        "total_epoch": th.taskstate.total_epoch,
-        "total_batch": th.taskstate.total_batch
+        "model_id": key,
+        "algorithm": taskstate.algorithm,
+        "nth_epoch": taskstate.nth_epoch,
+        "nth_batch": taskstate.nth_batch,
+        "train_loss": taskstate.train_loss,
+        "total_epoch": taskstate.total_epoch,
+        "total_batch": taskstate.total_batch
     }
     return ret
 
 
 @route("/api/renom_rg/models/running", method="GET")
 def get_running_models():
-    # TODO
-    # TaskState.tasks[model_id]でとれる。
-    ret = [_taskstate_to_dict(th) for th in train_thread_pool.values()]
+    ret = [_taskstate_to_dict(key, train_task.TaskState.tasks[key]) for key in train_task.TaskState.tasks]
     return create_response({'running_models': ret})
 
 
@@ -338,10 +336,8 @@ def train_model(model_id):
     if not model:
         return create_response({}, 404, err='model not found')
 
-    th = train_task.TrainThread()
     taskstate = train_task.TaskState.add_task(model)
-    train_thread_pool[model.id] = th
-    f = submit_task(executor, th.train, taskstate, model.id)
+    f = submit_task(executor, train_task.train, taskstate, model.id)
     try:
         f.result()
         return create_response({'result': 'ok'})
@@ -351,7 +347,6 @@ def train_model(model_id):
         return create_response({"error_msg": str(e)})
 
     finally:
-        del train_thread_pool[model.id]
         if renom.cuda.has_cuda():
             release_mem_pool()
 
@@ -359,9 +354,7 @@ def train_model(model_id):
 @route("/api/renom_rg/models/<model_id:int>/stop", method="GET")
 def stop_model(model_id):
     try:
-        for th in train_thread_pool.values():
-            if th.model_id == model_id:
-                th.taskstate.canceled = True
+        train_task.TaskState.tasks[model_id].canceled = True
     except Exception as e:
         traceback.print_exc()
         return create_response({"error_msg": str(e)})
@@ -473,16 +466,10 @@ def _init_gpu():
         gpupool = GPUPool(num)
 
 
-def _init_train_thread_pool():
-    global train_thread_pool
-    train_thread_pool = {}
-
-
 def main():
     _create_dirs()
     db.initdb()
     _init_gpu()
-    _init_train_thread_pool()
 
     # Parser settings.
     parser = argparse.ArgumentParser(description='ReNomRG')

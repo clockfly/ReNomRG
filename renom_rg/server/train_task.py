@@ -29,11 +29,11 @@ class TaskState:
 
     @classmethod
     def add_task(cls, model):
-        ret = TaskState()
+        ret = TaskState(model.id)
         cls.tasks[model.id] = ret
         return ret
 
-    def __init__(self):
+    def __init__(self, model_id):
         self.error_msgs = []
         self.state = RunningState.TRAINING
         self.canceled = False
@@ -250,13 +250,3 @@ def _train(session, taskstate, model_id):
     # print(np.array(importances) / np.sum(np.array(importances)))
 
     taskstate.state = RunningState.FINISHED
-
-
-class TrainThread(object):
-    def __init__(self):
-        pass
-
-    def train(self, taskstate, model_id):
-        self.model_id = model_id
-        self.taskstate = taskstate
-        train(taskstate, model_id)
