@@ -275,6 +275,8 @@ def _taskstate_to_dict(th):
 
 @route("/api/renom_rg/models/running", method="GET")
 def get_running_models():
+    # TODO
+    # TaskState.tasks[model_id]でとれる。
     ret = [_taskstate_to_dict(th) for th in train_thread_pool.values()]
     return create_response({'running_models': ret})
 

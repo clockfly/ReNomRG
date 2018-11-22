@@ -22,10 +22,10 @@
             </div>
             <div class="table-content">
               <div class="table-row flex" v-for="(dataset, index) in $store.state.dataset_list" :key="index" @click="selected_dataset_index = index">
-                <div class="table-item">{{ dataset.name }}</div>
-                <div class="table-item">{{ dataset.train_ratio * 100 }}%</div>
-                <div class="table-item">{{ dataset.train_index.length }}</div>
-                <div class="table-item">{{ dataset.valid_index.length }}</div>
+                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.name }}</div>
+                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.train_ratio * 100 }}%</div>
+                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.train_index.length }}</div>
+                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.valid_index.length }}</div>
               </div>
             </div>
           </div> <!-- content-left dataset list -->
@@ -222,7 +222,6 @@ export default {
 <style lang="scss" scoped>
 #page {
   $table-width: 90%;
-  $table-item-height: 32px;
 
   width: 100%;
   height: calc(100vh - #{$footer-height} - #{$header-height});
@@ -243,7 +242,7 @@ export default {
 
     .table-content {
       width: 100%;
-      height: calc(100% - #{$table-item-height});
+      height: calc(100% - #{$text-height-regular});
       overflow-y: scroll;
     }
     .table-row {
@@ -257,11 +256,14 @@ export default {
     }
     .table-item {
       width: 25%;
-      height: $table-item-height;
-      line-height: $table-item-height;
+      height: $text-height-regular;
+      line-height: $text-height-regular;
       text-align: center;
       font-size: $fs-small;
       color: $gray;
+    }
+    .active {
+      color: $blue;
     }
   }
 

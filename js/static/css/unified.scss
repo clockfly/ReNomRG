@@ -94,13 +94,15 @@ $model-detail-height: 360px;
 $learning-curve-height: 360px;
 $prediction-sample-height: 480px;
 $features-height: 240px;
-$model-list-item-height: 120px;
+$model-list-item-height: 132px;
 
 /**
 * custom scroll bar
 */
+$scroll-bar-width: 6px;
 ::-webkit-scrollbar{
-  width: 10px;
+  height: $scroll-bar-width;
+  width: $scroll-bar-width;
 }
 ::-webkit-scrollbar-track{
   background: $background-gray;
@@ -109,7 +111,7 @@ $model-list-item-height: 120px;
 }
 
 ::-webkit-scrollbar-thumb{
-  background: #aaa;
+  background: $light-gray;
   border-radius: 6px;
   box-shadow: none;
 }
@@ -130,13 +132,14 @@ $model-list-item-height: 120px;
 }
 
 $input-base-width: 160px;
+$input-width-small: 80px;
 /**
 * textarea resize none
 */
 textarea {
   resize: none;
   width: $input-base-width;
-  height: $text-height-small;
+  height: calc(#{$text-height-small}*3);
   padding-left: 4px;
   border: $border-width-regular solid $light-gray;
   font-size: $fs-small;
@@ -167,6 +170,7 @@ select {
   color: $gray;
 }
 select.small {
+  width: $input-width-small;
   height: $text-height-micro;
   background: $white;
   font-size: $fs-micro;
@@ -186,15 +190,20 @@ button {
   color: $white;
   cursor:pointer;
 }
+button:disabled {
+  border: $border-width-regular solid $light-gray;
+  background-color: $white;
+  line-height: calc(#{$button-height} - #{$border-width-regular}*2);
+  color: $gray;
+  cursor:not-allowed;
+}
 
 /**
 * cancel button base css
 */
 .button-cancel {
-  border: $border-width-regular solid $light-gray;
-  background-color: $white;
-  line-height: calc(#{$button-height} - #{$border-width-regular}*2);
-  color: $gray;
+  background-color: $gray;
+  color: $white;
 }
 
 /**
@@ -224,6 +233,10 @@ $panel-title-height: 32px;
       padding: 0 $padding-large;
       background: $blue;
       color: $white;
+      .icon {
+        margin-right: $margin-small;
+        color: $white;
+      }
     }
   }
 
@@ -233,14 +246,6 @@ $panel-title-height: 32px;
     margin-top: $margin-small;
     background: $white;
   }
-}
-
-/**
-* padding right for scroll bar
-*/
-$scroll-bar-width: 10px;
-.padding-for-scroll-bar {
-  padding-right: $scroll-bar-width;
 }
 
 /**

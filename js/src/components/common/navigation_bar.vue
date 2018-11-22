@@ -6,42 +6,20 @@
 
   <transition name="nav">
     <div id="navigation-bar" v-if="$store.state.navigation_bar_shown_flag">
-
-      <div class="task-name">Regression</div>
-      <div>
-        <div class="menu-item flex" @click="goTraining()">
-          <i class="fa fa-home icon"></i>
-          <div class="menu-name">Training</div>
-        </div>
-
-        <div class="menu-item flex" @click="goDataset()">
-          <i class="fas fa-database icon"></i>
-          <div class="menu-name">Dataset</div>
-        </div>
-
-        <div class="menu-item flex" @click="goPrediction()">
-          <i class="fas fa-chart-area icon"></i>
-          <div class="menu-name">Prediction</div>
-        </div>
+      <div class="menu-item flex" @click="goTraining()">
+        <i class="fa fa-home icon"></i>
+        <div class="menu-name">Training</div>
       </div>
 
-      <!-- <div class="task-name">TimeSeries</div>
-      <div>
-        <div class="menu-item flex" @click="">
-          <i class="fa fa-home icon" aria-hidden="true"></i>
-          <div class="menu-name">Training</div>
-        </div>
+      <div class="menu-item flex" @click="goDataset()">
+        <i class="fas fa-database icon"></i>
+        <div class="menu-name">Dataset</div>
+      </div>
 
-        <div class="menu-item flex" @click="">
-          <i class="fas fa-database icon"></i>
-          <div class="menu-name">Dataset</div>
-        </div>
-
-        <div class="menu-item flex" @click="">
-          <i class="fas fa-chart-area icon"></i>
-          <div class="menu-name">Prediction</div>
-        </div>
-      </div> -->
+      <div class="menu-item flex" @click="goPrediction()">
+        <i class="fas fa-chart-area icon"></i>
+        <div class="menu-name">Prediction</div>
+      </div>
 
     </div>
   </transition>

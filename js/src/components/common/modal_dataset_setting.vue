@@ -16,7 +16,7 @@
 
         <div class="sub-block flex">
           <div class="label">Description</div>
-          <div class="input-value">
+          <div class="input-value description">
             <textarea name="description" rows="3" v-model="description"></textarea>
           </div>
         </div>  <!-- sub block -->
@@ -44,7 +44,10 @@
       </div>  <!-- setting block -->
 
       <div class="button-area">
-        <button @click="confirmDataset">Confirm</button>
+        <button @click="confirmDataset"
+          :disabled="name === '' || target_column_ids.length > 4 || target_column_ids.length === 0">
+          Confirm
+        </button>
         <button class="button-cancel"
           @click="$emit('cancel')">Cancel</button>
       </div>
@@ -152,8 +155,8 @@ export default {
       // const parent_area = d3.select(id)
       // const width = parent_area._groups[0][0].clientWidth
       // const height = parent_area._groups[0][0].clientHeight
-      const width = 150
-      const height = 150
+      const width = 120
+      const height = 120
       const margin = { 'left': 20, 'top': 20, 'right': 20, 'bottom': 20 }
 
       const target_train = train
@@ -272,6 +275,9 @@ export default {
         line-height: $text-height-small;
         font-size: $fs-small;
         color: $gray;
+      }
+      .description {
+        height: calc(#{$text-height-small}*3);
       }
       .values {
         .valid-number {
