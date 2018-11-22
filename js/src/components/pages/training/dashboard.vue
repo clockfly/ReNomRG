@@ -56,7 +56,7 @@
               <div class="running-info-item pause-button" @click="stop_model = model">
                 <div class="running-info-label"></div>
                 <div class="running-info-value">
-                  <i class="fas fa-pause icon"></i>
+                  <i class="far fa-stop-circle icon"></i>
                 </div>
               </div>
             </div>

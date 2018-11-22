@@ -79,13 +79,13 @@ export default {
       }
       .tab-active {
         background: $white;
-        border: 1px solid $gray;
+        border: 1px solid $light-gray;
         border-bottom: none;
         color: $black;
       }
       .tab-rest {
         flex-grow: 1;
-        border-bottom: 1px solid $gray;
+        border-bottom: 1px solid $light-gray;
       }
     }
   }

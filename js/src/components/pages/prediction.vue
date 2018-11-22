@@ -82,7 +82,8 @@
             </div>
             <div id="xy-plot" class="column">
               <div class="plot-name">XY Plot</div>
-              <div class="select-axis flex">
+
+              <div class="axis-y flex">
                 <div class="axis-label">Y</div>
                 <div class="axis-selector">
                   <select class="small" v-model="plot_y_index">
@@ -92,7 +93,9 @@
                     </option>
                   </select>
                 </div>
+              </div>
 
+              <div class="axis-x flex">
                 <div class="axis-label">X</div>
                 <div class="axis-selector">
                   <select class="small" v-model="plot_x_index">
@@ -104,6 +107,7 @@
                   </select>
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -170,7 +174,7 @@ import { round, max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
 const width = 240
 const height = 160
-const margin = { 'left': 20, 'top': 10, 'right': 0, 'bottom': 30 }
+const margin = { 'left': 20, 'top': 10, 'right': 0, 'bottom': 20 }
 
 export default {
   name: 'PredictionPage',
@@ -446,14 +450,11 @@ export default {
     }
     #xy-plot, #pred-y-hist {
       position: relative;
-      width: 50%;
+      width: 48%;
       height: 100%;
     }
-    .select-axis {
+    .axis-x, .axis-y {
       position: absolute;
-      bottom: 0;
-      left: 50%;
-      @include prefix("transform", "translateX(-50%)");
       .axis-label {
         height: $text-height-micro;
         margin-right: $margin-small;
@@ -464,6 +465,14 @@ export default {
       .axis-selector {
         margin-right: $margin-middle;
       }
+    }
+    .axis-x {
+      right: 0;
+      bottom: 20px;
+    }
+    .axis-y {
+      top: 0;
+      left: 20%;
     }
     .plot-name {
       height: $text-height-small;

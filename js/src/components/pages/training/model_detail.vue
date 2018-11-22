@@ -3,17 +3,17 @@
     <div class="panel">
       <div class="panel-title panel-title-button-area">
         Model Detail
-        <div class="panel-title-button" v-if="selectedModel && selectedModel.deployed === 0" @click="deploy">
+        <div class="panel-title-button" v-if="selectedModel && selectedModel.deployed === 0" @click="deploy_model=selectedModel">
           > Deploy Model
         </div>
-        <div class="panel-title-button" v-if="selectedModel && selectedModel.deployed === 1" @click="show_confirm_modal=true">
+        <div class="panel-title-button" v-if="selectedModel && selectedModel.deployed === 1" @click="undeploy_model=selectedModel">
           > Undeploy Model
         </div>
       </div>
 
       <div class="panel-content detail flex">
         <div class="column">
-          <div class="label-value flex">
+          <div class="label-value model-id flex">
             <div class="label">Model ID</div>
             <div class="value" v-if="selectedModel">{{selectedModel.model_id}}</div>
           </div>
@@ -70,11 +70,24 @@
       </div>
     </div>
 
-    <ModalConfirm v-if='show_confirm_modal'
-      @ok='undeploy'
-      @cancel='show_confirm_modal=false'>
+    <ModalConfirm v-if='deploy_model'
+      @ok='deploy'
+      @cancel='deploy_model=undefined'>
       <div slot='contents'>
-        Would you like to undeploy Model ID: {{selectedModel.model_id}}?
+        Would you like to deploy Model ID: {{deploy_model.model_id}}?
+      </div>
+      <span slot="okbutton">
+        <button class="button-ok" @click="deploy">
+          Deploy
+        </button>
+      </span>
+    </ModalConfirm>
+
+    <ModalConfirm v-if='undeploy_model'
+      @ok='undeploy'
+      @cancel='undeploy_model=undefined'>
+      <div slot='contents'>
+        Would you like to undeploy Model ID: {{undeploy_model.model_id}}?
       </div>
       <span slot="okbutton">
         <button class="button-ok" @click="undeploy">
@@ -97,7 +110,8 @@ export default {
   },
   data: function () {
     return {
-      'show_confirm_modal': false
+      'deploy_model': undefined,
+      'undeploy_model': undefined
     }
   },
   computed: mapGetters(['selectedModel']),
@@ -129,8 +143,9 @@ export default {
       height: 100%;
 
       .label-value {
-        margin-bottom: $margin-small;
         .label, .value {
+          height: $text-height-small;
+          line-height: $text-height-small;
           font-size: $fs-small;
         }
         .label {
@@ -139,7 +154,9 @@ export default {
         }
       }
       .model-id {
-        font-size: $fs-regular;
+        .label, .value {
+          font-size: $fs-regular;
+        }
       }
     }
   }

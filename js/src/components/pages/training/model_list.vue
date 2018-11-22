@@ -1,14 +1,12 @@
 <template>
   <div id="model-list">
-    <div class="add-button-area">
-      <button class="add-button minus-for-scroll-bar-width" @click="showModal">
-        <i class="fa fa-plus icon"></i>
-        Add new model
-      </button>
-    </div>
-
     <div class="panel list-area">
-      <div class="panel-title minus-for-scroll-bar-width">Model List</div>
+      <div class="panel-title panel-title-button-area model-list-title">
+        Model List
+        <div class="panel-title-button" @click="showModal">
+          <i class="fa fa-plus icon"></i>New
+        </div>
+      </div>
 
       <div class="model-list-item model-list-item-deployed"
         v-if="deployedModel"
@@ -144,24 +142,16 @@ export default {
   width: 100%;
   height: 100%;
 
-  .add-button-area, .list-area {
-    padding: $padding-small;
-    .minus-for-scroll-bar-width {
-      width: calc(100% - #{$scroll-bar-width});
-    }
-  }
-  .add-button {
-    .icon {
-      color: $white;
-    }
-  }
-
   .list-area {
     position: sticky;
     top: $header-height;
     bottom: $footer-height;
     width: 100%;
     height: calc(100vh - #{$header-height});
+
+    .model-list-title {
+      width: calc(100% - #{$scroll-bar-width});
+    }
 
     .model-list-scrollable-area {
       overflow-y: scroll;
@@ -176,8 +166,7 @@ export default {
     width: 100%;
     height: $model-list-item-height;
     margin-top: $margin-small;
-    padding: $padding-small;
-    padding-left: $padding-middle;
+    padding: $padding-middle;
     background: $white;
 
     .algorithm-color {
@@ -206,8 +195,8 @@ export default {
       font-size: $fs-small;
     }
     .delete-button {
-      color: $light-gray;
       .icon {
+        color: $gray;
         font-size: $fs-micro;
       }
       .icon:hover {
