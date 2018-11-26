@@ -118,19 +118,21 @@ def _train(session, taskstate, model_id):
 
     taskstate.algorithm = modeldef.algorithm
     algorithm_params = pickle.loads(modeldef.algorithm_params)
+    num_neighbors = int(algorithm_params["num_neighbors"])
+
     if modeldef.algorithm == C_GCNN:
-        feature_graph = get_corr_graph(X_train, algorithm_params["num_neighbors"])
+        feature_graph = get_corr_graph(X_train, num_neighbors)
     elif modeldef.algorithm == Kernel_GCNN:
-        feature_graph = get_kernel_graph(X_train, algorithm_params["num_neighbors"], 0.01)
+        feature_graph = get_kernel_graph(X_train, num_neighbors, 0.01)
     elif modeldef.algorithm == DBSCAN_GCNN:
-        feature_graph = get_dbscan_graph(X_train, algorithm_params["num_neighbors"])
+        feature_graph = get_dbscan_graph(X_train, num_neighbors)
     else:
         raise ValueError("{} is not supported algorithm id.".format(modeldef.algorithm))
 
     model = GCNet(feature_graph, num_target=y_train.shape[1],
-                  fc_unit=algorithm_params["fc_unit"],
-                  neighbors=algorithm_params["num_neighbors"],
-                  channels=algorithm_params["channels"])
+                  fc_unit=[int(u) for u in algorithm_params["fc_unit"]],
+                  neighbors=num_neighbors,
+                  channels=[int(u) for u in algorithm_params["channels"]])
 
     # update network params for prediciton
     algorithm_params["feature_graph"] = feature_graph.tolist()
