@@ -88,6 +88,8 @@ export default {
       const margin = { 'left': 60, 'top': 80, 'right': 80, 'bottom': 60, 'hist_inner': 20, 'hist_outer': 20 }
       const plot_max = max([max(train_true), max(valid_true)])
       const plot_min = min([min(train_true), min(valid_true)])
+      const y_max = max([plot_max, max(train_pred), max(valid_pred)])
+      const y_min = min([plot_min, min(train_pred), min(valid_pred)])
       const chunk = (plot_max - plot_min) / 10
       const svg = d3.select(id)
         .append('svg')
@@ -95,7 +97,7 @@ export default {
         .attr('height', height)
 
       const x_scale = getScale([plot_min, plot_max], [margin.left, width - margin.right])
-      const y_scale = getScale([plot_min, plot_max], [height - margin.bottom, margin.top])
+      const y_scale = getScale([y_min, y_max], [height - margin.bottom, margin.top])
 
       // draw x axis
       const x_axis_define = d3.axisBottom(x_scale)
@@ -220,7 +222,7 @@ export default {
       const pred_histogram = this.getHistgram(y_scale, 10)
       const train_pred_bins = pred_histogram(train_pred)
       const pred_hist_max = this.getHistgramSizeMax(train_pred_bins)
-      const histx_scale = getScale([plot_max, plot_max + pred_hist_max], [width - margin.right + margin.hist_inner, width - margin.hist_outer])
+      const histx_scale = getScale([y_max, y_max + pred_hist_max], [width - margin.right + margin.hist_inner, width - margin.hist_outer])
       svg.append('path')
         .datum(train_pred_bins)
         .attr('fill', train_color)
@@ -228,8 +230,8 @@ export default {
         .attr('stroke', train_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x1(function (d) { return histx_scale(plot_max + d.length) })
-          .x0(function (d) { return histx_scale(plot_max) })
+          .x1(function (d) { return histx_scale(y_max + d.length) })
+          .x0(function (d) { return histx_scale(y_max) })
           .y(function (d, index) { return y_scale((d.x0 + d.x1) / 2) })
           .curve(d3.curveCardinal)
         )
@@ -344,7 +346,7 @@ export default {
     }
     .x-axis-name {
       bottom: 48px;
-      right: 64px;
+      right: 48px;
     }
     .y-axis-name {
       top: 48px;
