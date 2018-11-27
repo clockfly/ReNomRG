@@ -1,0 +1,265 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2018, Author
+# This file is distributed under the same license as the api package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: api \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-11-27 11:53+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: ../../rsts/how_to_use.rst:2
+msgid "How to Use"
+msgstr ""
+
+#: ../../rsts/how_to_use_api.rst:2
+msgid "How to Use ReNomIMG API"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:2
+msgid "How to Use ReNomRG GUI tool"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:5
+msgid "Start the Application"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:7
+msgid ""
+"ReNomRG is a single page web application. If your installation have done "
+"successfully, you can run application in any directory with following "
+"commands."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:16
+msgid "For the command ``renom_rg``, you can give following arguments."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:18
+msgid "--host : This specifies server address."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:19
+msgid "--port : This specifies port number of the server."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:21
+msgid "For example, following code runs ReNomRG with port 8888."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:27
+msgid ""
+"If the application server runs, open web browser and type the server "
+"address to the address bar like this."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:32
+msgid "Then the application will be appeared."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:36
+msgid "Place your dataset"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:38
+msgid ""
+"When the server starts, ``datasrc`` directory and ``storage`` directory "
+"will be created in the server running directory."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:41
+msgid "The ``datasrc`` directory has following folder structure."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:51
+msgid ""
+"The data that can be read with ReNomRG v0.0 must be named \"data.pickle\""
+" and \"pred.pickle\"."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:55
+msgid "Format of the data"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:57
+msgid "The format of input file is pickled pandas.DataFrame object."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:61
+msgid "Create Regression Model"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:63
+msgid ""
+"So far, the server and dataset are prepared. Let's build a regression "
+"model. For building a model, you have to specify ``dataset`` and ``hyper "
+"parameters``."
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:67
+msgid "Create Dataset"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:71
+msgid "Hyper parameter setting"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:75
+msgid "Training Model"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui.rst:79
+msgid "Uninstall ReNomRG"
+msgstr ""
+
+#: ../../rsts/installation/installation.rst:2
+msgid "Install ReNomRG"
+msgstr ""
+
+#: ../../rsts/installation/installation.rst:4
+msgid "ReNomRG requires following python modules."
+msgstr ""
+
+#: ../../rsts/installation/installation.rst:8
+msgid "Install from source."
+msgstr ""
+
+#: ../../rsts/installation/installation.rst:10
+msgid "If you install ReNomRG from source, Node.js is required."
+msgstr ""
+
+#: ../../rsts/installation/installation.rst:22
+msgid "This requires ``node.js``."
+msgstr ""
+
+#: ../../rsts/introduction.rst:2
+msgid "Introduction"
+msgstr ""
+
+#: ../../rsts/introduction.rst:4
+msgid ""
+"**ReNomRG is a GUI tool & PythonAPI for building numerical regression "
+"models.**"
+msgstr ""
+
+#: ../../rsts/introduction.rst:7
+msgid "1. Concept"
+msgstr ""
+
+#: ../../rsts/introduction.rst:11
+msgid ""
+"The concept of ReNomRG is **ensure that users can create AI models "
+"according to the purpose by themselves**."
+msgstr ""
+
+#: ../../rsts/introduction.rst:14
+msgid "ReNomRG allows you to build object detection model easily."
+msgstr ""
+
+#: ../../rsts/introduction.rst:17
+msgid "2. What ReNomRG provides you."
+msgstr ""
+
+#: ../../rsts/introduction.rst:19
+msgid "ReNomRG provides gui tool and python api."
+msgstr ""
+
+#: ../../rsts/introduction.rst:22
+msgid "GUI tool"
+msgstr ""
+
+#: ../../rsts/introduction.rst:24
+msgid "ReNomRG GUI tool allows you to build numerical regression models."
+msgstr ""
+
+#: ../../rsts/introduction.rst:27
+msgid "Python API"
+msgstr ""
+
+#: ../../rsts/introduction.rst:28
+msgid ""
+"ReNomRG API is a python api which provides you graph-comvolutional "
+"regression model."
+msgstr ""
+
+#: ../../rsts/renom_rg.rst:2
+msgid "APIs"
+msgstr ""
+
+#: ../../rsts/renom_rg.rst:4
+msgid "ReNomRG also provides python APIs."
+msgstr ""
+
+#: ../../rsts/renom_rg.rst:6
+msgid "These APIs allows you to build graph-comvolutional regression model."
+msgstr ""
+
+#: ../../rsts/renom_rg.rst:9
+msgid "**# Model's for Regression.**"
+msgstr ""
+
+#: ../../rsts/renom_rg.rst:14
+msgid "**# Utility apis**"
+msgstr ""
+
+#: ../../rsts/renom_rg.api.regression.rst:2
+msgid "renom\\_rg.api.regression"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:1
+msgid "Bases: :class:`renom.layers.function.conv2d.Conv2d`"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:1
+msgid "Graph Comvolution Layer."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:8
+#: renom_rg.api.regression.gcnn.GraphCNN:6
+msgid "Args:"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:4
+msgid ""
+"channel: The dimensionality of the output. feature_graph: Array of "
+"indexes for comvolution. neighbors: Filter size of the convolution "
+"kernel."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:21
+#: renom_rg.api.regression.gcnn.GraphCNN:19
+msgid "Example:"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:1
+msgid "Bases: :class:`renom.layers.function.parameterized.Model`"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:1
+msgid "Graph Comvolution Network."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:4
+msgid ""
+"feature_graph: Array of indexes for comvolution. num_target: Number of "
+"target data. fc_unit: Unit size of dense layers. neighbors: Filter size "
+"of convolution layers. channels: Channel size of convolution layers."
+msgstr ""
+
+#: ../../rsts/renom_rg.api.utility.rst:2
+msgid "renom\\_rg.api.utility"
+msgstr ""
+
+#: ../../rsts/renom_rg.api.utility.rst:5
+msgid "renom\\_rg.api.utility.feature_graph"
+msgstr ""
+

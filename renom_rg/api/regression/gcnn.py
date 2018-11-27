@@ -3,7 +3,25 @@ from renom_rg.api.regression import Regression
 
 
 class GraphCNN(rm.Conv2d):
+    """ Graph Comvolution Layer.
 
+    Args:
+        channel: The dimensionality of the output.
+        feature_graph: Array of indexes for comvolution.
+        neighbors: Filter size of the convolution kernel.
+
+    Example:
+        >>> import renom as rm
+        >>> import numpy as np
+        >>> from renom_rg.api.regression.gcnn import GraphCNN
+        >>> n, c, variables, neighbors = (2, 10, 20, 5)
+        >>> x = rm.Variable(np.random.rand(n, c, variables, neighbors))
+        >>> feature_graph = np.random.rand(0, variables-1, (variables, neighbors))
+        >>> model = GraphCNN(15, feature_graph)
+        >>> t = model(x)
+        >>> t.shape
+        (2, 15, 20, 1)
+    """
     def __init__(self, channel, feature_graph, neighbors=5):
         super(GraphCNN, self).__init__(channel=channel, filter=(1, neighbors))
         self.feature_graph = feature_graph
@@ -15,6 +33,27 @@ class GraphCNN(rm.Conv2d):
 
 
 class GCNet(rm.Model):
+    """ Graph Comvolution Network.
+
+    Args:
+        feature_graph: Array of indexes for comvolution.
+        num_target: Number of target data.
+        fc_unit: Unit size of dense layers.
+        neighbors: Filter size of convolution layers.
+        channels: Channel size of convolution layers.
+
+    Example:
+        >>> import renom as rm
+        >>> import numpy as np
+        >>> from renom_rg.api.regression.gcnn import GCNet
+        >>> n, c, variables, neighbors = (2, 10, 20, 5)
+        >>> x = rm.Variable(np.random.rand(n, c, variables, neighbors))
+        >>> feature_graph = np.random.rand(0, variables-1, (variables, neighbors))
+        >>> model = GCNet(feature_graph)
+        >>> t = model(x)
+        >>> t.shape
+        (2, 1)
+    """
     def __init__(self, feature_graph, num_target=1, fc_unit=(100, 50), neighbors=5, channels=(10, 20, 20)):
         super(GCNet, self).__init__()
         self.gc1 = GraphCNN(channel=channels[0], neighbors=neighbors, feature_graph=feature_graph)

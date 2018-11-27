@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2018, Grid
+# This file is distributed under the same license as the ReNomRG package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ReNomRG \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-11-27 11:45+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: ../../rsts/renom_rg.api.regression.rst:2
+msgid "renom\\_rg.api.regression"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:1
+msgid "Bases: :class:`renom.layers.function.conv2d.Conv2d`"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:1
+msgid "Graph Comvolution Layer."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet renom_rg.api.regression.gcnn.GraphCNN
+msgid "Parameters"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:3
+msgid "The dimensionality of the output."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:3
+#: renom_rg.api.regression.gcnn.GraphCNN:4
+msgid "Array of indexes for comvolution."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:5
+msgid "Filter size of the convolution kernel."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:10
+#: renom_rg.api.regression.gcnn.GraphCNN:8
+msgid "Example"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:1
+msgid "Bases: :class:`renom.layers.function.parameterized.Model`"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:1
+msgid "Graph Comvolution Network."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:4
+msgid "Number of target data."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:5
+msgid "Unit size of dense layers."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:6
+msgid "Filter size of convolution layers."
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet:7
+msgid "Channel size of convolution layers."
+msgstr ""
+
