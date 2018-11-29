@@ -13,6 +13,9 @@ before_script:
   - cd ReNomRG
   - pip3 install -r requirements.txt
   - pip3 install -e .
+  - cd js
+  - npm run build
+  - cd ..
 
 flake8:
   script:
