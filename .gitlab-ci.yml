@@ -10,6 +10,7 @@ before_script:
   - pip3 install -r ReNom/requirements.txt
   - pip3 install -e ReNom/
   - pip3 install wheel
+  - pip3 install pytest
   - cd ReNomRG
   - pip3 install -r requirements.txt
   - pip3 install -e .
@@ -17,3 +18,4 @@ before_script:
 flake8:
   script:
     - flake8 renom_rg
+    - pytest 
