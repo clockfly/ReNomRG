@@ -167,3 +167,4 @@ Additional ignored files
 storage/*
 datasrc/*
 renom_rg/server/.build/*
+scripts/*

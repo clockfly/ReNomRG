@@ -1,10 +1,13 @@
+import os
 import pickle
 import random
 import json
+import pytest
 from renom_rg.server import db
-from renom_rg.server import server
+from renom_rg.server import server, train_task
 from unittest.mock import patch
 from concurrent.futures import ThreadPoolExecutor
+
 
 def test_index(app):
     resp = app.get('/')
@@ -29,7 +32,8 @@ def test_404(app):
     assert resp.status_int == 404
 
 
-def test_get_labels(app):
+
+def test_get_labels(app, data_pickle):
     resp = app.get('/api/renom_rg/datasets/labels')
 
     assert resp.status_int == 200
@@ -57,9 +61,12 @@ def test_create_dataset(app):
 def _add_dataset():
     name = str(random.random())
     ds = db.DatasetDef(name=name, description='description',
-                       target_column_ids=pickle.dumps([1, 2]), labels=pickle.dumps([1, 2, 3]),
-                       train_ratio=0.1, train_index=pickle.dumps([2, 3, 4]),
-                       valid_index=pickle.dumps([3, 4, 5]), target_train=pickle.dumps([1, 2]),
+                       target_column_ids=pickle.dumps([0]),
+                       labels=pickle.dumps([1, 2, 3]),
+                       train_ratio=0.1,
+                       train_index=pickle.dumps(list(range(1, 405))),
+                       valid_index=pickle.dumps(list(range(405, 500))),
+                       target_train=pickle.dumps([1, 2]),
                        target_valid=pickle.dumps([1, 2]))
 
     session = db.session()
@@ -98,16 +105,38 @@ def test_get_datasets(app):
     assert set(ds['dataset_id'] for ds in ret) >= {ds1.id, ds2.id}
 
 
-def _add_model():
+
+DEFAULT_ALGORITHM_PARAMS = {'train_count': 5, 'valid_count': 5,
+    'target_train': [], 'target_valid': [], 'train_index':[1,2,3,4,5],
+    'valid_index': [6,7,8,9,10],
+    'fc_unit': [100, 50],
+    'channels': [10, 20, 20],
+}
+
+def _add_model(algorithm=1, algorithm_params=None):
     ds = _add_dataset()
-    model = db.Model(dataset_id=ds.id, algorithm=1,
-                     algorithm_params=pickle.dumps(None), batch_size=10,
-                     epoch=10)
+
+    params = dict(DEFAULT_ALGORITHM_PARAMS)
+    if algorithm_params:
+        params.update(algorithm_params)
+
+    model = db.Model(dataset_id=ds.id, algorithm=algorithm,
+                     algorithm_params=pickle.dumps(params),
+                     batch_size=10, epoch=10)
 
     session = db.session()
     session.add(model)
     session.commit()
     return model
+
+def test_confirm(app, data_pickle):
+    ds = _add_dataset()
+    resp = app.post('/api/renom_rg/datasets/confirm', {
+        'target_column_ids': '[]',
+        'train_ratio': 0.8})
+
+    assert resp.status_code == 200
+    print(resp.json)
 
 def test_create_model(app):
     ds = _add_dataset()
@@ -192,6 +221,7 @@ def test_train_model(train, app):
     assert resp.json['result'] == 'ok'
 
 
+
 @patch('renom_rg.server.server.set_cuda_active')
 @patch('renom_rg.server.server.use_device')
 @patch('renom_rg.server.server.release_mem_pool')
@@ -208,3 +238,16 @@ def test_gpupool(set_cuda_active, use_device, release_mem_pool):
     with ThreadPoolExecutor() as e:
         all = set(e.map(gpupool.run, (f for _ in range(10))))
         assert all == {0, 1, 2}
+
+
+
+def test_train_usermodel(app, userscript, data_pickle):
+
+    model = _add_model(algorithm=0xffffffff, algorithm_params={
+        'num_neighbors': 10,
+        'script_file_name': 'userdefmodel.py'})
+
+    taskstate = train_task.TaskState.add_task(model)
+
+    train_task.train(taskstate, model.id)
+

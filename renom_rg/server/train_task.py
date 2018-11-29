@@ -11,7 +11,8 @@ from renom.optimizer import Adam
 from renom.cuda import release_mem_pool, use_device
 from renom.utility.distributor.distributor import NdarrayDistributor
 
-from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, DB_DIR_TRAINED_WEIGHT, DATASRC_DIR)
+from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED,
+                             DB_DIR_TRAINED_WEIGHT, DATASRC_DIR, SCRIPT_DIR)
 
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
@@ -86,6 +87,23 @@ def train(taskstate, model_id):
     finally:
         session.commit()
 
+def _load_usermodel(modeldef, algorithm_params, X_train, X_valid, y_train, y_valid):
+    script = algorithm_params['script_file_name']
+
+    scriptdir = os.path.abspath(SCRIPT_DIR)
+    if not scriptdir.endswith(os.path.sep):
+        scriptdir += os.path.sep
+
+    scriptfile = os.path.abspath(os.path.join(scriptdir, script))
+    if not scriptfile.startswith(scriptdir):
+        raise ValueError('Invalid script name: %s' % scriptfile)
+
+    scr = open(scriptfile).read()
+    d = {}
+    exec(scr, d)
+    builder = d['create_model']
+    return builder(modeldef, algorithm_params, X_train, X_valid, y_train, y_valid)
+
 def _train(session, taskstate, model_id):
     modeldef = session.query(db.Model).get(model_id)
 
@@ -118,25 +136,31 @@ def _train(session, taskstate, model_id):
 
     taskstate.algorithm = modeldef.algorithm
     algorithm_params = pickle.loads(modeldef.algorithm_params)
-    num_neighbors = int(algorithm_params["num_neighbors"])
 
-    if modeldef.algorithm == C_GCNN:
+    if modeldef.algorithm == USER_DEFINED:
+        num_neighbors = int(algorithm_params["num_neighbors"])
         feature_graph = get_corr_graph(X_train, num_neighbors)
-    elif modeldef.algorithm == Kernel_GCNN:
-        feature_graph = get_kernel_graph(X_train, num_neighbors, 0.01)
-    elif modeldef.algorithm == DBSCAN_GCNN:
-        feature_graph = get_dbscan_graph(X_train, num_neighbors)
+        model = _load_usermodel(modeldef, algorithm_params, X_train, X_valid, y_train, y_valid)
     else:
-        raise ValueError("{} is not supported algorithm id.".format(modeldef.algorithm))
+        num_neighbors = int(algorithm_params["num_neighbors"])
+        if modeldef.algorithm == C_GCNN:
+            feature_graph = get_corr_graph(X_train, num_neighbors)
+        elif modeldef.algorithm == Kernel_GCNN:
+            feature_graph = get_kernel_graph(X_train, num_neighbors, 0.01)
+        elif modeldef.algorithm == DBSCAN_GCNN:
+            feature_graph = get_dbscan_graph(X_train, num_neighbors)
+        else:
+            raise ValueError("{} is not supported algorithm id.".format(modeldef.algorithm))
 
-    model = GCNet(feature_graph, num_target=y_train.shape[1],
-                  fc_unit=[int(u) for u in algorithm_params["fc_unit"]],
-                  neighbors=num_neighbors,
-                  channels=[int(u) for u in algorithm_params["channels"]])
+        model = GCNet(feature_graph, num_target=y_train.shape[1],
+                      fc_unit=[int(u) for u in algorithm_params["fc_unit"]],
+                      neighbors=num_neighbors,
+                      channels=[int(u) for u in algorithm_params["channels"]])
 
-    # update network params for prediciton
-    algorithm_params["feature_graph"] = feature_graph.tolist()
-    algorithm_params["num_target"] = y_train.shape[1]
+        # update network params for prediciton
+        algorithm_params["feature_graph"] = feature_graph.tolist()
+        algorithm_params["num_target"] = y_train.shape[1]
+
     modeldef.algorithm_params = pickle.dumps(algorithm_params)
 
     filename = '{}.h5'.format(int(time.time()))

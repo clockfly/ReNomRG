@@ -33,12 +33,22 @@
           <div class="input-value">
             <select v-model="algorithm">
               <option v-for="(algorithm, index) in algorithms"
-                :value="index" :key="index">
+                :value="algorithm_ids[index]" :key="index">
                 {{ algorithm }}
               </option>
             </select>
           </div>
         </div>  <!-- sub block -->
+
+        <div class="sub-block flex">
+          <div class="label">Script file name</div>
+          <div class="input-value">
+            <input v-model="algorithm_params['script_file_name']"
+             :disabled="algorithm !== 0xffffffff">
+          </div>
+        </div>  <!-- sub block -->
+
+
       </div>  <!-- setting block -->
 
       <div class="setting-block">
@@ -92,10 +102,12 @@ export default {
   name: 'ModalParamsSetting',
   data: function () {
     return {
-      'algorithms': ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN'],
+      'algorithms': ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN', 'User defined'],
+      'algorithm_ids': [0, 1, 2, 0xffffffff],
       'dataset_index': 0,
       'algorithm': 0,
       'algorithm_params': {
+        'script_file_name': '',
         'num_neighbors': 5,
         'fc_unit': [100, 50],
         'channels': [10, 20, 20]
