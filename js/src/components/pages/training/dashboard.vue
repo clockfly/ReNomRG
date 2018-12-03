@@ -50,7 +50,7 @@
               <div class="running-info-item progress-bar">
                 <div class="bar-background"></div>
                 <div :class="'bar-foreground '+$store.state.algorithms[model.algorithm].toLowerCase()"
-                  :style="{ width: model.nth_epoch * 100 / model.total_epoch + '%' }">
+                  :style="{ width: model.nth_batch * 100 / model.total_batch + '%' }">
                 </div>
               </div>
               <div class="running-info-item pause-button" @click="stop_model = model">
