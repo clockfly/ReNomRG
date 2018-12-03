@@ -101,6 +101,7 @@ def _train(session, taskstate, model_id):
 
     X, y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
+    # TODO: normalize, standardize
     # standardize
     # X_mean = np.mean(X, axis=0)
     # X_std = np.std(X, axis=0)
@@ -234,6 +235,7 @@ def _train(session, taskstate, model_id):
 
             best_loss = valid_loss
 
+    # TODO:
     # calc importances
     # NUM_PERM = 100
     # importances = []

@@ -1,5 +1,5 @@
 .. api documentation master file, created by
-   sphinx-quickstart on Tue Nov 27 11:53:31 2018.
+   sphinx-quickstart on Mon Dec  3 13:58:29 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -10,7 +10,11 @@ Welcome to api's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   api
+   rsts/installation/main
+   rsts/introduction
+   rsts/how_to_use
+   rsts/renom_rg
+
 
 
 Indices and tables

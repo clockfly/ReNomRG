@@ -3,7 +3,7 @@ APIs
 
 ReNomRG also provides python APIs.
 
-These APIs allows you to build graph-comvolutional regression model.
+These APIs allows you to build graph-convolutional regression model.
 
 
 **# Model's for Regression.**

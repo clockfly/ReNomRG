@@ -38,10 +38,14 @@ def get_kernel_graph(X, neighbors, gamma):
     X_t = X.T
     krbf = np.zeros((X.shape[1], X.shape[1]))
 
-    for i in range(X.shape[1]):
-        for j in range(X.shape[1]):
-            krbf[i, j] = math.exp(-(np.linalg.norm(X_t[i] - X_t[j]) ** 2) / gamma ** 2)
+    for index in itertools.combinations_with_replacement(range(X.shape[1]), 2):
+        d = math.exp(-(np.linalg.norm(X_t[index[0]] - X_t[index[1]])**2) / gamma**2)
+        krbf[index[0], index[1]] = d
+        if index[0] != index[1]:
+            krbf[index[1], index[0]] = d
+
     feature_graph = np.argsort(krbf, 1)[:, -neighbors:]
+    print(krbf)
     return feature_graph
 
 
@@ -56,5 +60,5 @@ def get_dbscan_graph(X, neighbors):
     """
     X_t = X.T
     dist_mat = cdist(X_t, X_t)
-    feature_graph = np.argsort(dist_mat)[:, :neighbors]
+    feature_graph = np.argsort(dist_mat, 1)[:, :neighbors]
     return feature_graph
