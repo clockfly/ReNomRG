@@ -5,6 +5,7 @@ import time
 import numpy as np
 from sklearn.metrics import r2_score
 import pickle
+import threading
 
 import renom as rm
 from renom.optimizer import Adam
@@ -35,6 +36,8 @@ class TaskState:
 
     def __init__(self, model_id):
         self.error_msgs = []
+
+        self.model_id = model_id
         self.state = RunningState.TRAINING
         self.canceled = False
         self.nth_epoch = -1
@@ -43,6 +46,40 @@ class TaskState:
         self.total_epoch = -1
         self.total_batch = -1
         self.algorithm = -1
+
+    _lock = threading.RLock()
+    _events = weakref.WeakSet()
+    serial = 0
+
+    @classmethod
+    def add_event(cls, serial, event=None):
+        if event is None:
+            event = threading.Event()
+
+        if serial is None:
+            event.set()
+            return event
+
+        if serial is not None:
+            if serial != cls.serial:
+                # models already updated
+                event.set()
+                return event
+
+        with cls._lock:
+            cls._events.add(event)
+
+        return event
+
+    @classmethod
+    def signal(cls):
+        with cls._lock:
+            cls.serial += 1
+            if not cls._events:
+                return
+            ev = cls._events.pop()
+
+        ev.set()
 
 
 def split_target(data, ids):
@@ -82,9 +119,12 @@ def calc_confidence_area(true_data, pred_data):
 def train(taskstate, model_id):
     session = db.session()
     try:
+        taskstate.signal()
         return _train(session, taskstate, model_id)
     finally:
+        taskstate.signal()
         session.commit()
+
 
 def _train(session, taskstate, model_id):
     modeldef = session.query(db.Model).get(model_id)
@@ -158,6 +198,7 @@ def _train(session, taskstate, model_id):
                 return
 
             taskstate.nth_batch = j
+            taskstate.signal()
 
             index = perm[j * modeldef.batch_size:(j + 1) * modeldef.batch_size]
             train_batch_x = X_train[index].reshape(-1, 1, X_train.shape[1], 1)
@@ -186,6 +227,8 @@ def _train(session, taskstate, model_id):
             # Update
             grad.update(optimizer)
             loss += batch_loss.as_ndarray()
+
+            taskstate.signal()
 
         train_loss = loss / (N // modeldef.batch_size)
         train_loss_list.append(train_loss)
@@ -252,3 +295,4 @@ def _train(session, taskstate, model_id):
     # print(np.array(importances) / np.sum(np.array(importances)))
 
     taskstate.state = RunningState.FINISHED
+    taskstate.signal()

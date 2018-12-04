@@ -2,7 +2,7 @@ import pickle
 import datetime
 import configparser
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.orm import relationship
@@ -12,6 +12,8 @@ Base = declarative_base()
 from sqlalchemy import Column, BigInteger, Integer, TEXT, BLOB, FLOAT, DateTime, ForeignKey
 
 NONE_PICLKLES = pickle.dumps(None)
+DICT_PICLKLES = pickle.dumps({})
+
 
 class DatasetDef(Base):
     __tablename__ = 'dataset_def'
@@ -62,19 +64,50 @@ class Model(Base):
 
     dataset = relationship('DatasetDef')
 
+
+class ParamSearcher(Base):
+    __tablename__ = 'paramsearcher'
+
+    id = Column(Integer, primary_key=True)
+    info = Column(BLOB, default=DICT_PICLKLES)
+
+    searcher_models = relationship("ParamSearcherModel", back_populates='searcher')
+
+
+class ParamSearcherModel(Base):
+    __tablename__ = 'paramsearchermodel'
+
+    id = Column(Integer, primary_key=True)
+
+    searcher_id = Column(Integer, ForeignKey('paramsearcher.id'), nullable=False)
+    searcher = relationship("ParamSearcher", back_populates='searcher_models')
+
+    # define one-to-one relation
+    model_id = Column(Integer, ForeignKey('model.id'),  nullable=False)
+    model = relationship("Model", uselist=False)
+
+
+def set_fk_constrain(con, con_record):
+    con.execute('pragma foreign_keys=ON')
+
+
 def get_engine():
     config = configparser.ConfigParser()
     config.read('alembic.ini')
     url = config['alembic']['sqlalchemy.url']
     engine = create_engine(url, echo=False)
+    event.listen(engine, 'connect', set_fk_constrain)
     return engine
+
 
 def initsession(engine):
     global _session
     _session = scoped_session(sessionmaker(bind=engine))
 
+
 def session():
     return _session
+
 
 def initdb():
     ret = os.system("alembic upgrade head")

@@ -7,12 +7,14 @@ from renom_rg.server import DB_DIR_TRAINED_WEIGHT
 from renom_rg.api.regression.gcnn import GCNet
 from . import db
 
+
 def prediction(model_id, data):
     session = db.session()
     try:
         return _prediction(session, model_id, data)
     finally:
         session.commit()
+
 
 def _prediction(session, model_id, data):
     modeldef = session.query(db.Model).get(model_id)
