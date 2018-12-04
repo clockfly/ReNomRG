@@ -288,7 +288,8 @@ export default {
     },
     shapeDataset: function (valid, pred) {
       let dataset = []
-      for (let i in valid) {
+      let sampling_size = min([valid.length, 100])
+      for (let i in [...Array(sampling_size).keys()]) {
         let d = [valid[i], pred[i]]
         dataset.push(d)
       }
