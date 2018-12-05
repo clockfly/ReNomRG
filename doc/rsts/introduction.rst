@@ -9,14 +9,10 @@ Only numerical data is available in current version.
 
 .. ユーザが自分自身で目的に沿ったAIモデルを作れるようにすること.
 
-The concept of ReNomRG is to allow users to create AI models according to users’ purpose.
-
-We have achieved a steady progress in areas such as automatic driving and image analysis technology, voice application, due to the development of deep learning technology in recent years.
-But in the area of B2B, data acquired from companies and production equipments are diverse and there are still many problems for learning models from certain dataset.
-
-For example, tasks before learning include collecting training dataset of time series data and numerical data such as log data that can be acquired from plant industrial robots, programming models and other tasks such as training, evaluating the model, and so on. Hyper parameter tuning is also requires, thus many trial and error are required.
-
-ReNomRG allows users to easily build the prediction model of target variables and prediction model for predicting state after several hours and days by using GraphCNN technology which can handle numerical data and time series data like image data.
+In recent years, with the progress of deep learning technology, the development of AI related system has made a great progress.
+ReNom has already provided ReNomIMG for image recognition and ReNomTDA for data analysis as an application. And ReNomRG will be an application to create a regression model using numerical data.
+This makes it possible to easily develop a demand prediction model and construct a regression model that predicts target variables by using production equipment of each company or data of ERP (mission critical business system).It will lead to efficiency improvement.
+In addition, ReNomRG uses the GraphCNN technology and in many cases realizes accuracy exceeding the machine learning method.
 
 2. What ReNomRG provides you.
 -------------------------------
