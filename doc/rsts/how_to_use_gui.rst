@@ -46,7 +46,7 @@ The ``datasrc`` directory has following folder structure.
       └── prediction_set
             └── pred.pickle # pickled pandas.DataFrame for prediction.
 
-The data that can be read with ReNomRG v0.0 must be named "data.pickle" and "pred.pickle".
+The data that can be read with ReNomRG beta must be named "data.pickle" and "pred.pickle".
 
 
 Format of the data
@@ -92,7 +92,7 @@ You can confirm created datasets in the dataset page. To go to the dataset page,
 
 .. image:: /_static/image/dataset_page.png
 
-You can see that the dataset page above shows that three datasets have already been created. When you click on each data set name, you can confirm the number of data contained in them, the number of teacher data of each variable, the histogram of the objective variable.
+When you click on each data set name, you can confirm the number of data contained in them, the number of teacher data of each variable, the histogram of the objective variable.
 
 
 Hyper parameter setting

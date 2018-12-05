@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../rsts/introduction.rst:2
 msgid "Introduction"
-msgstr ""
+msgstr "イントロダクション"
 
 #: ../../rsts/introduction.rst:4
 msgid ""
@@ -27,10 +27,11 @@ msgid ""
 "numerical data, time series data. Only numerical data is available in "
 "current version."
 msgstr ""
+"ReNomRGは数値データ、時系列データの回帰モデルを作成するためのGUIツール及びPython APIです。 betaバージョンでは数値データの回帰のみ可能です。"
 
 #: ../../rsts/introduction.rst:8
 msgid "1. Concept"
-msgstr ""
+msgstr "1. コンセプト"
 
 #: ../../rsts/introduction.rst:12
 msgid ""
@@ -46,18 +47,19 @@ msgid ""
 " and in many cases realizes accuracy exceeding the machine learning "
 "method."
 msgstr ""
+"近年、ディープラーニング技術の発展により、AI関連システムの開発は、目まぐるしい進歩を遂げています。 すでに、ReNomでは、画像認識を行うReNomIMGや、データ分析を行うReNomTDAをアプリケーションとして提供してきましたが、今回リリースするReNomRGは、数値データを使って回帰モデルを作成するアプリケーションとなります。 これにより、各企業の生産装置や、ERP（基幹系業務システム）のデータを使い、需要予測モデルの開発や、ターゲット変数の数値予測する回帰モデルの構築を容易に行うことが可能となり、業務の効率化に繋がると考えています。 ReNomRGでは、2018年人工知能学会で論文発表した数値データをディープラーニングのアルゴリズムCNNで特徴抽出できるGraphCNN技術を用いており、多くのケースで、機械学習の手法を上回る精度を実現しております。"
 
 #: ../../rsts/introduction.rst:18
 msgid "2. What ReNomRG provides you."
-msgstr ""
+msgstr "2. ReNomRGが提供するもの"
 
 #: ../../rsts/introduction.rst:20
 msgid "ReNomRG provides gui tool and python api."
-msgstr ""
+msgstr "ReNomRGはWeb GUIとpython APIを提供します。"
 
 #: ../../rsts/introduction.rst:23
 msgid "GUI tool"
-msgstr ""
+msgstr "GUI tool"
 
 #: ../../rsts/introduction.rst:25
 msgid ""
@@ -67,81 +69,14 @@ msgid ""
 "model and manage multiple models on the interface. What users have to do "
 "are prepare training data, set train configuration and push run button."
 msgstr ""
+"ReNomRG GUIでは、数値データや時系列データに対する回帰モデルの作成が可能となります。 ユーザは学習用のデータを用意し実行ボタンを押すだけでモデルが作成でき、また、開発したモデルの評価やモデルの管理をアプリケーション上で行うことができます。"
 
 #: ../../rsts/introduction.rst:29
 msgid "Python API"
-msgstr ""
+msgstr "Python API"
 
 #: ../../rsts/introduction.rst:31
 msgid ""
 "ReNomRG API has a layer that performs graph-convolution and a utility "
 "that selects close variables which have similarity."
-msgstr ""
-
-#~ msgid ""
-#~ "**ReNomRG is a GUI tool & "
-#~ "PythonAPI for building numerical regression"
-#~ " models.**"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The concept of ReNomRG is **ensure "
-#~ "that users can create AI models "
-#~ "according to the purpose by "
-#~ "themselves**."
-#~ msgstr ""
-
-#~ msgid "ReNomRG allows you to build object detection model easily."
-#~ msgstr ""
-
-#~ msgid "ReNomRG GUI tool allows you to build numerical regression models."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "ReNomRG API is a python api which"
-#~ " provides you graph-comvolutional "
-#~ "regression model."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The concept of ReNomRG is to allow"
-#~ " users to create AI models according"
-#~ " to users’ purpose."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "We have achieved a steady progress "
-#~ "in areas such as automatic driving "
-#~ "and image analysis technology, voice "
-#~ "application, due to the development of"
-#~ " deep learning technology in recent "
-#~ "years. But in the area of B2B, "
-#~ "data acquired from companies and "
-#~ "production equipments are diverse and "
-#~ "there are still many problems for "
-#~ "learning models from certain dataset."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "For example, tasks before learning "
-#~ "include collecting training dataset of "
-#~ "time series data and numerical data "
-#~ "such as log data that can be "
-#~ "acquired from plant industrial robots, "
-#~ "programming models and other tasks such"
-#~ " as training, evaluating the model, "
-#~ "and so on. Hyper parameter tuning "
-#~ "is also requires, thus many trial "
-#~ "and error are required."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "ReNomRG allows users to easily build "
-#~ "the prediction model of target variables"
-#~ " and prediction model for predicting "
-#~ "state after several hours and days "
-#~ "by using GraphCNN technology which can"
-#~ " handle numerical data and time "
-#~ "series data like image data."
-#~ msgstr ""
-
+msgstr "ReNomRG APIは、グラフコンボリューションのレイヤーとグラフコンボリューションで畳み込む変数を取得するユーティリティが含まれています。"

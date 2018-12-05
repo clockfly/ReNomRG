@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-27 11:45+0900\n"
+"POT-Creation-Date: 2018-12-05 17:52+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,10 +18,44 @@ msgstr ""
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../rsts/renom_rg.api.utility.rst:2
-msgid "renom\\_rg.api.utility"
+msgid "renom_rg.api.utility"
 msgstr ""
 
 #: ../../rsts/renom_rg.api.utility.rst:5
-msgid "renom\\_rg.api.utility.feature_graph"
+msgid "renom_rg.api.utility.feature_graph"
 msgstr ""
+
+#: of renom_rg.api.utility.feature_graph.get_corr_graph:1
+msgid "Get correlation feature graph."
+msgstr ""
+
+#: of renom_rg.api.utility.feature_graph.get_corr_graph:3
+#: renom_rg.api.utility.feature_graph.get_dbscan_graph:3
+#: renom_rg.api.utility.feature_graph.get_kernel_graph:3
+msgid "Number of neighbors."
+msgstr ""
+
+#: of renom_rg.api.utility.feature_graph.get_corr_graph:6
+#: renom_rg.api.utility.feature_graph.get_dbscan_graph:6
+#: renom_rg.api.utility.feature_graph.get_kernel_graph:7
+msgid "This returns matrix of neighbrs indexes per variables."
+msgstr ""
+
+#: of renom_rg.api.utility.feature_graph.get_kernel_graph:1
+msgid "Get kernel feature graph."
+msgstr ""
+
+#: of renom_rg.api.utility.feature_graph.get_kernel_graph:4
+msgid "Bandwidth."
+msgstr ""
+
+#: of renom_rg.api.utility.feature_graph.get_dbscan_graph:1
+msgid "Get DBSCAN feature graph."
+msgstr ""
+
+#~ msgid "renom\\_rg.api.utility"
+#~ msgstr ""
+
+#~ msgid "renom\\_rg.api.utility.feature_graph"
+#~ msgstr ""
 

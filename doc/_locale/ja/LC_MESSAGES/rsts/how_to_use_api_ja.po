@@ -19,11 +19,11 @@ msgstr ""
 
 #: ../../rsts/how_to_use_api.rst:2
 msgid "How to Use ReNomIMG API"
-msgstr ""
+msgstr "ReNomIMG APIの使い方"
 
 #: ../../rsts/how_to_use_api.rst:5
 msgid "Graph Comvolution"
-msgstr ""
+msgstr "グラフコンボリューション"
 
 #: ../../rsts/how_to_use_api.rst:7
 msgid ""
@@ -31,16 +31,17 @@ msgid ""
 "applying CNN to non-image data, you have to convert input data to image "
 "like data. In this process, you can use a lot of metrics."
 msgstr ""
+"グラフコンボリューションは、非画像データにCNNを適応する手法です。 非画像データにCNNを適応するために、入力データを画像データに変換する必要があります。 この過程では様々な指標を選ぶことができます。"
 
 #: ../../rsts/how_to_use_api.rst:12
 msgid "Convert data"
-msgstr ""
+msgstr "データの変換"
 
 #: ../../rsts/how_to_use_api.rst:14
 msgid ""
 "For example, convert data using correlation between variables. At first, "
 "you calculate correlation matrix."
-msgstr ""
+msgstr "例えば、変数同士の相関を用いることができます。 はじめに、相関行列を計算します。"
 
 #: ../../rsts/how_to_use_api.rst:17
 msgid ""
@@ -48,16 +49,17 @@ msgid ""
 "highest correlation per variables. So, convolute k variable that is "
 "adoped as one variable. k is hyper parameter."
 msgstr ""
+"それから、相関が高いk個の変数の順番を取得したインデックス行列を作成します。 そして、k個の変数を一つの変数として畳み込みを行います。kはパイパーパラメータになります。"
 
 #: ../../rsts/how_to_use_api.rst:21
 msgid "Source Code"
-msgstr ""
+msgstr "ソースコード"
 
 #: ../../rsts/how_to_use_api.rst:23
 msgid ""
 "ReNomRG provide GraphCNN layer and utility functions that is to get index"
 " array."
-msgstr ""
+msgstr "ReNomRGはGraphCNNレイヤーと、インデックス行列を取得するためのユーティリティを提供しています。"
 
 #: ../../rsts/how_to_use_api.rst:116
 msgid ""
@@ -65,4 +67,5 @@ msgid ""
 "ReNomRG provide GraphCNN layer and utility functions that is to get index"
 " array."
 msgstr ""
+"グラフコンボリューションは、非画像データにCNNを適応する手法です。 ReNomRGはGraphCNNレイヤーと、インデックス行列を取得するためのユーティリティを提供しています。"
 

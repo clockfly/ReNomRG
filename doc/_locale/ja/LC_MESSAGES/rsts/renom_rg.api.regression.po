@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-27 11:45+0900\n"
+"POT-Creation-Date: 2018-12-05 17:52+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,10 +29,6 @@ msgstr ""
 msgid "Graph Comvolution Layer."
 msgstr ""
 
-#: of renom_rg.api.regression.gcnn.GCNet renom_rg.api.regression.gcnn.GraphCNN
-msgid "Parameters"
-msgstr ""
-
 #: of renom_rg.api.regression.gcnn.GraphCNN:3
 msgid "The dimensionality of the output."
 msgstr ""
@@ -46,8 +42,8 @@ msgstr ""
 msgid "Filter size of the convolution kernel."
 msgstr ""
 
-#: of renom_rg.api.regression.gcnn.GCNet:10
-#: renom_rg.api.regression.gcnn.GraphCNN:8
+#: of renom_rg.api.regression.gcnn.GCNet:11
+#: renom_rg.api.regression.gcnn.GraphCNN:9
 msgid "Example"
 msgstr ""
 
@@ -74,4 +70,7 @@ msgstr ""
 #: of renom_rg.api.regression.gcnn.GCNet:7
 msgid "Channel size of convolution layers."
 msgstr ""
+
+#~ msgid "Parameters"
+#~ msgstr ""
 
