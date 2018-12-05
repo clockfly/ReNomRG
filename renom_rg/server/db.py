@@ -83,7 +83,7 @@ class ParamSearcherModel(Base):
     searcher = relationship("ParamSearcher", back_populates='searcher_models')
 
     # define one-to-one relation
-    model_id = Column(Integer, ForeignKey('model.id'),  nullable=False)
+    model_id = Column(Integer, ForeignKey('model.id'), nullable=False)
     model = relationship("Model", uselist=False)
 
 
