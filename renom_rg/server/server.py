@@ -12,6 +12,7 @@ import traceback
 import pandas as pd
 import numpy as np
 import pickle
+import uuid
 
 from bottle import HTTPResponse, default_app, route, request, error, abort, static_file
 from concurrent.futures import ThreadPoolExecutor as Executor
@@ -39,6 +40,7 @@ gpupool = None
 
 def create_response(body, status=200, err=None):
     body['err'] = err
+#    body = json.dumps(body, allow_nan=False)
     r = HTTPResponse(status=status, body=body)
     r.set_header('Content-Type', 'application/json')
     return r
@@ -305,19 +307,24 @@ def get_running_models():
 
 MODEL_WAIT_TIMEOUT = 60
 
+SERVER_ID = uuid.uuid4().hex
 
 @route("/api/renom_rg/models/wait_model_update", method="GET")
 def wait_model_update():
-    serial_cookie = request.get_cookie("model_serial")
-    cur_serial = int(serial_cookie) if serial_cookie else None
+    server_id = request.get_cookie("server_id")
+    cur_serial = None
+    if server_id == SERVER_ID:
+        serial_cookie = request.get_cookie("model_serial")
+        cur_serial = int(serial_cookie) if serial_cookie else None
+
     ev = train_task.TaskState.add_event(cur_serial)
 
     updated = ev.wait(MODEL_WAIT_TIMEOUT)
-
     resp = create_response({'updated': updated})
 
     new_serial = train_task.TaskState.serial
     resp.set_cookie("model_serial", str(new_serial))
+    resp.set_cookie("server_id", SERVER_ID)
 
     return resp
 
