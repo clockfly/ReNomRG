@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-27 11:45+0900\n"
+"POT-Creation-Date: 2018-12-05 19:48+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,51 +19,64 @@ msgstr ""
 
 #: ../../rsts/introduction.rst:2
 msgid "Introduction"
-msgstr ""
+msgstr "イントロダクション"
 
 #: ../../rsts/introduction.rst:4
 msgid ""
-"**ReNomRG is a GUI tool & PythonAPI for building numerical regression "
-"models.**"
+"ReNomRG is a GUI tool & Python API for building regression models of "
+"numerical data, time series data. Only numerical data is available in "
+"current version."
 msgstr ""
+"ReNomRGは数値データ、時系列データの回帰モデルを作成するためのGUIツール及びPython APIです。 betaバージョンでは数値データの回帰のみ可能です。"
 
-#: ../../rsts/introduction.rst:7
+#: ../../rsts/introduction.rst:8
 msgid "1. Concept"
-msgstr ""
+msgstr "1. コンセプト"
 
-#: ../../rsts/introduction.rst:11
+#: ../../rsts/introduction.rst:12
 msgid ""
-"The concept of ReNomRG is **ensure that users can create AI models "
-"according to the purpose by themselves**."
+"In recent years, with the progress of deep learning technology, the "
+"development of AI related system has made a great progress. ReNom has "
+"already provided ReNomIMG for image recognition and ReNomTDA for data "
+"analysis as an application. And ReNomRG will be an application to create "
+"a regression model using numerical data. This makes it possible to easily"
+" develop a demand prediction model and construct a regression model that "
+"predicts target variables by using production equipment of each company "
+"or data of ERP (mission critical business system).It will lead to "
+"efficiency improvement. In addition, ReNomRG uses the GraphCNN technology"
+" and in many cases realizes accuracy exceeding the machine learning "
+"method."
 msgstr ""
+"近年、ディープラーニング技術の発展により、AI関連システムの開発は、目まぐるしい進歩を遂げています。 すでに、ReNomでは、画像認識を行うReNomIMGや、データ分析を行うReNomTDAをアプリケーションとして提供してきましたが、今回リリースするReNomRGは、数値データを使って回帰モデルを作成するアプリケーションとなります。 これにより、各企業の生産装置や、ERP（基幹系業務システム）のデータを使い、需要予測モデルの開発や、ターゲット変数の数値予測する回帰モデルの構築を容易に行うことが可能となり、業務の効率化に繋がると考えています。 ReNomRGでは、2018年人工知能学会で論文発表した数値データをディープラーニングのアルゴリズムCNNで特徴抽出できるGraphCNN技術を用いており、多くのケースで、機械学習の手法を上回る精度を実現しております。"
 
-#: ../../rsts/introduction.rst:14
-msgid "ReNomRG allows you to build object detection model easily."
-msgstr ""
-
-#: ../../rsts/introduction.rst:17
+#: ../../rsts/introduction.rst:18
 msgid "2. What ReNomRG provides you."
-msgstr ""
+msgstr "2. ReNomRGが提供するもの"
 
-#: ../../rsts/introduction.rst:19
+#: ../../rsts/introduction.rst:20
 msgid "ReNomRG provides gui tool and python api."
-msgstr ""
+msgstr "ReNomRGはWeb GUIとpython APIを提供します。"
 
-#: ../../rsts/introduction.rst:22
+#: ../../rsts/introduction.rst:23
 msgid "GUI tool"
-msgstr ""
+msgstr "GUI tool"
 
-#: ../../rsts/introduction.rst:24
-msgid "ReNomRG GUI tool allows you to build numerical regression models."
-msgstr ""
-
-#: ../../rsts/introduction.rst:27
-msgid "Python API"
-msgstr ""
-
-#: ../../rsts/introduction.rst:28
+#: ../../rsts/introduction.rst:25
 msgid ""
-"ReNomRG API is a python api which provides you graph-comvolutional "
-"regression model."
+"Using the ReNomRG GUI tool, it is possible to build a regression model "
+"that predicts future variables for several hours and days later, based on"
+" numerical data and time series data. Users can evaluate the developed "
+"model and manage multiple models on the interface. What users have to do "
+"are prepare training data, set train configuration and push run button."
 msgstr ""
+"ReNomRG GUIでは、数値データや時系列データに対する回帰モデルの作成が可能となります。 ユーザは学習用のデータを用意し実行ボタンを押すだけでモデルが作成でき、また、開発したモデルの評価やモデルの管理をアプリケーション上で行うことができます。"
 
+#: ../../rsts/introduction.rst:29
+msgid "Python API"
+msgstr "Python API"
+
+#: ../../rsts/introduction.rst:31
+msgid ""
+"ReNomRG API has a layer that performs graph-convolution and a utility "
+"that selects close variables which have similarity."
+msgstr "ReNomRG APIは、グラフコンボリューションのレイヤーとグラフコンボリューションで畳み込む変数を取得するユーティリティが含まれています。"

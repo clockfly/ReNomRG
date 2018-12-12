@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2018, Grid
+# Copyright (C) 2018, grid
 # This file is distributed under the same license as the ReNomRG package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: ReNomRG \n"
+"Project-Id-Version: ReNomRG beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-27 11:45+0900\n"
+"POT-Creation-Date: 2018-12-05 17:19+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: ../../rsts/renom_rg.rst:2
-msgid "APIs"
+#: ../../rsts/installation/main.rst:2
+msgid "Install ReNomRG"
 msgstr ""
 
-#: ../../rsts/renom_rg.rst:4
-msgid "ReNomRG also provides python APIs."
+#: ../../rsts/installation/main.rst:4
+msgid "ReNomRG requires following python modules."
 msgstr ""
 
-#: ../../rsts/renom_rg.rst:6
-msgid "These APIs allows you to build graph-comvolutional regression model."
+#: ../../rsts/installation/main.rst:8
+msgid "Install from source."
 msgstr ""
 
-#: ../../rsts/renom_rg.rst:9
-msgid "**# Model's for Regression.**"
+#: ../../rsts/installation/main.rst:10
+msgid "If you install ReNomRG from source, Node.js is required."
 msgstr ""
 
-#: ../../rsts/renom_rg.rst:14
-msgid "**# Utility apis**"
+#: ../../rsts/installation/main.rst:22
+msgid "This requires ``node.js``."
 msgstr ""
 

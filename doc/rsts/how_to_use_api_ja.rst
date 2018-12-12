@@ -1,26 +1,26 @@
-How to Use ReNomIMG API
-=======================
+ReNomIMG APIの使い方
+==================
 
-Graph Comvolution
------------------
+グラフコンボリューション
+--------------------
 
-Graph comvolution is a method of applying CNN to non-image data.
-For applying CNN to non-image data, you have to convert input data to image like data.
-In this process, you can use a lot of metrics.
+グラフコンボリューションは、非画像データにCNNを適応する手法です。
+非画像データにCNNを適応するために、入力データを画像データに変換する必要があります。
+この過程では様々な指標を選ぶことができます。
 
-Convert data
-------------
+データの変換
+----------
 
-For example, convert data using correlation between variables.
-At first, you calculate correlation matrix.
+例えば、変数同士の相関を用いることができます。
+はじめに、相関行列を計算します。
 
-Then, get index of sorted correlation, and adopt k variables that is highest correlation per variables.
-So, convolute k variable that is adoped as one variable. k is hyper parameter.
+それから、相関が高いk個の変数の順番を取得したインデックス行列を作成します。
+そして、k個の変数を一つの変数として畳み込みを行います。kはパイパーパラメータになります。
 
-Source Code
------------
+ソースコード
+----------
 
-ReNomRG provide GraphCNN layer and utility functions that is to get index array.
+ReNomRGはGraphCNNレイヤーと、インデックス行列を取得するためのユーティリティを提供しています。
 
 .. code-block:: python
 
@@ -113,5 +113,5 @@ ReNomRG provide GraphCNN layer and utility functions that is to get index array.
 
 .. image:: /_static/image/learning_curve.png
 
-Graph convolution is a methods of appling convolution to non-image data.
-ReNomRG provide GraphCNN layer and utility functions that is to get index array.
+グラフコンボリューションは、非画像データにCNNを適応する手法です。
+ReNomRGはGraphCNNレイヤーと、インデックス行列を取得するためのユーティリティを提供しています。

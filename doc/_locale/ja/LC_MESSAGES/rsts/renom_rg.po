@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-27 11:45+0900\n"
+"POT-Creation-Date: 2018-12-05 17:52+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgid "ReNomRG also provides python APIs."
 msgstr ""
 
 #: ../../rsts/renom_rg.rst:6
-msgid "These APIs allows you to build graph-comvolutional regression model."
+msgid "These APIs allows you to build graph-convolutional regression model."
 msgstr ""
 
 #: ../../rsts/renom_rg.rst:9
@@ -36,4 +36,7 @@ msgstr ""
 #: ../../rsts/renom_rg.rst:14
 msgid "**# Utility apis**"
 msgstr ""
+
+#~ msgid "These APIs allows you to build graph-comvolutional regression model."
+#~ msgstr ""
 

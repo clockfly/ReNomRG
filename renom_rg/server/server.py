@@ -147,7 +147,7 @@ def confirm_dataset():
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
-    print(data.shape)
+
     X, y = split_target(data, target_column_ids)
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
@@ -396,8 +396,7 @@ def train_model(model_id):
         return create_response({'result': 'ok'})
 
     except Exception as e:
-        traceback.print_exc()
-        return create_response({"error_msg": str(e)})
+        return create_response({}, 500, err=str(e))
 
     finally:
         if renom.cuda.has_cuda():
@@ -526,7 +525,8 @@ def get_searcher(searcher_id):
 
 def _create_dirs():
     # Create directories
-    for path in [DATASRC_PREDICTION, DB_DIR_TRAINED_WEIGHT]:
+    for path in [SCRIPT_DIR, DATASRC_PREDICTION, DB_DIR_TRAINED_WEIGHT]:
+
         if not os.path.exists(path):
             os.makedirs(path)
             print("Directory %s is newly created." % (path))

@@ -57,6 +57,11 @@ export default {
     const url = '/api/renom_rg/models/running'
     axios.get(url)
       .then(function (response) {
+        for (let i in response.data.running_models) {
+          if (context.state.running_models.length === 0 || response.data.running_models[i].nth_epoch > context.state.running_models[i].nth_epoch) {
+            context.dispatch('loadModelList')
+          }
+        }
         context.commit('setRunningModels', {'running_models': response.data.running_models})
       }).catch(function (error) {
         commitError(context, error)

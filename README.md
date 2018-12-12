@@ -1,6 +1,8 @@
-# ReNomRG v0.0
+# ReNomRG beta
 
 ReNom RG is model developing tool for numerical regression.
+
+notice: ReNom RG beta is CPU only.
 
 ### ReNomRG
 http://renom.jp/index.html
@@ -47,7 +49,7 @@ To create datasrc directory, please start ReNomRG server according to 'How to st
 The datasrc directory is automatically created when you start up server.
 
 ```
-ReNomIMG
+ReNomRG
     └── storage
     |   └── storage.db // Database(sqlite3).
     └── datasrc
@@ -56,7 +58,7 @@ ReNomIMG
             └── pred.pickle // pickle data for prediction.
 ```
 
-The data that can be read with ReNomRG v0.0 must be named "data.pickle" and "pred.pickle".
+The data that can be read with ReNomRG beta must be named "data.pickle" and "pred.pickle".
 
 ## Format of input data.
 
