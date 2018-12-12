@@ -1,4 +1,5 @@
 # content of a/conftest.py
+import os
 import sys
 import traceback
 import pytest
@@ -53,3 +54,36 @@ def app():
     app = renom_rg.server.server.get_app()
     app.catchall = False  # raise exception on error
     return SaneTestApp(app)
+
+
+@pytest.fixture
+def sitedir(tmpdir):
+    d = tmpdir.mkdir('site')
+
+    d.mkdir('datasrc')
+    d.mkdir('scripts')
+    d.mkdir('storage')
+    d.mkdir('storage/trained_weight')
+
+    cwd = d.chdir()
+
+    try:
+        yield d
+    finally:
+        cwd.chdir()
+
+
+@pytest.fixture
+def data_pickle(sitedir):
+    datasrc = sitedir.join('datasrc')
+    pickefile = os.path.join(os.path.split(__file__)[0], 'data.pickle')
+    with open(pickefile, 'rb') as f:
+        datasrc.join('data.pickle').write_binary(f.read())
+
+@pytest.fixture
+def userscript(sitedir):
+    datasrc = sitedir.join('scripts')
+    srcfile = os.path.join(os.path.split(__file__)[0], 'userdefmodel.py')
+    with open(srcfile) as f:
+        datasrc.join('userdefmodel.py').write(f.read())
+
