@@ -9,7 +9,7 @@ import shutil
 import bottle
 from bottle import default_app
 from webtest import TestApp
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 
 import renom_rg.server.server
 import renom_rg.server.db
@@ -26,12 +26,16 @@ class SaneTestApp(TestApp):
         if errors:
             print(res.errors, file=sys.stderr)
 
+
 bottle.debug(True)
+
 
 @pytest.fixture(scope="session", autouse=True)
 def session():
     dirname = tempfile.mkdtemp()
     engine = create_engine('sqlite:///%s/storage.db' % dirname, echo=True)
+    event.listen(engine, 'connect', renom_rg.server.db.set_fk_constrain)
+
     renom_rg.server.db.Base.metadata.create_all(engine)
     renom_rg.server.db.initsession(engine)
 

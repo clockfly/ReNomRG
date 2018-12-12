@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { mapState } from 'vuex'
 import ModalAdd from '@/components/common/modal_add_model'
 import Dashboard from '@/components/pages/training/dashboard'
@@ -66,21 +67,23 @@ export default {
     this.$store.dispatch('loadModels')
     this.watchStart()
   },
-  watch: {
-    running_models: function () {
-      if (this.running_models.length === 0) this.watchClear()
-    }
-  },
   methods: {
     watchStart: function () {
-      const self = this
-      this.interval = setInterval(function () {
-        self.$store.dispatch('loadRunningModels')
-      }, 1000)
+      const url = '/api/renom_rg/models/wait_model_update'
+      axios.get(url).then(ret=>{
+        if (ret.data.updated === true) {
+          this.$store.dispatch('loadRunningModels').then(ret=>{
+            setTimeout(this.watchStart, 1000)
+          })
+        }
+        else {
+          setTimeout(this.watchStart, 1000)
+        }
+      })
+      .catch(err=>{
+        setTimeout(this.watchStart, 60000)
+      })
     },
-    watchClear: function () {
-      clearInterval(this.interval)
-    }
   }
 }
 </script>

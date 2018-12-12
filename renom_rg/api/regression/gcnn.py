@@ -22,6 +22,7 @@ class GraphCNN(rm.Conv2d):
         >>> t.shape
         (2, 15, 20, 1)
     """
+
     def __init__(self, channel, feature_graph, neighbors=5):
         super(GraphCNN, self).__init__(channel=channel, filter=(1, neighbors))
         self.feature_graph = feature_graph
@@ -54,6 +55,7 @@ class GCNet(rm.Model):
         >>> t.shape
         (2, 1)
     """
+
     def __init__(self, feature_graph, num_target=1, fc_unit=(100, 50), neighbors=5, channels=(10, 20, 20)):
         super(GCNet, self).__init__()
         self.gc1 = GraphCNN(channel=channels[0], neighbors=neighbors, feature_graph=feature_graph)

@@ -1,10 +1,11 @@
 import os
+import time
 import pickle
 import random
 import json
 import pytest
-from renom_rg.server import db
-from renom_rg.server import server, train_task
+import threading
+from renom_rg.server import db, server, train_task
 from unittest.mock import patch
 from concurrent.futures import ThreadPoolExecutor
 
@@ -15,17 +16,20 @@ def test_index(app):
     assert resp.headers['content-type'] == 'text/html'
     assert resp.text.strip()
 
+
 def test_static(app):
     resp = app.get('/static/css/init.css')
     assert resp.status_int == 200
     assert resp.headers['content-type'] == 'text/css'
     assert resp.text.strip()
 
+
 def test_css(app):
     resp = app.get('/css/init.css')
     assert resp.status_int == 200
     assert resp.headers['content-type'] == 'text/css'
     assert resp.text.strip()
+
 
 def test_404(app):
     resp = app.get('/css/none', expect_errors=True)
@@ -57,6 +61,8 @@ def test_create_dataset(app):
     q = db.session().query(db.DatasetDef)
     ds = q.filter(db.DatasetDef.name == 'test_create_dataset_1').one()
     assert ds
+    assert resp.json['dataset']['dataset_id'] == ds.id
+
 
 def _add_dataset():
     name = str(random.random())
@@ -74,8 +80,12 @@ def _add_dataset():
     session.commit()
     return ds
 
+
 def test_delete_dataset(app):
     ds = _add_dataset()
+    searcher = _add_searcher()
+    model = _add_model(dataset=ds, searcher=searcher)
+
     resp = app.delete('/api/renom_rg/datasets/%d' % ds.id)
 
     assert resp.status_int == 200
@@ -83,6 +93,7 @@ def test_delete_dataset(app):
 
     resp = app.delete('/api/renom_rg/datasets/%d' % ds.id)
     assert resp.status_int == 404
+
 
 def test_get_dataset(app):
     ds = _add_dataset()
@@ -92,6 +103,7 @@ def test_get_dataset(app):
 
     ret = resp.json['dataset']
     assert ret['dataset_id'] == ds.id
+
 
 def test_get_datasets(app):
     ds1 = _add_dataset()
@@ -105,6 +117,12 @@ def test_get_datasets(app):
     assert set(ds['dataset_id'] for ds in ret) >= {ds1.id, ds2.id}
 
 
+def _add_searcher():
+    searcher = db.ParamSearcher()
+    session = db.session()
+    session.add(searcher)
+    session.commit()
+    return searcher
 
 DEFAULT_ALGORITHM_PARAMS = {'train_count': 5, 'valid_count': 5,
     'target_train': [], 'target_valid': [], 'train_index':[1,2,3,4,5],
@@ -113,20 +131,28 @@ DEFAULT_ALGORITHM_PARAMS = {'train_count': 5, 'valid_count': 5,
     'channels': [10, 20, 20],
 }
 
-def _add_model(algorithm=1, algorithm_params=None):
-    ds = _add_dataset()
+
+def _add_model(*, dataset=None, searcher=None):
+    if dataset is None:
+        dataset = _add_dataset()
 
     params = dict(DEFAULT_ALGORITHM_PARAMS)
     if algorithm_params:
         params.update(algorithm_params)
 
-    model = db.Model(dataset_id=ds.id, algorithm=algorithm,
-                     algorithm_params=pickle.dumps(params),
-                     batch_size=10, epoch=10)
+    model = db.Model(dataset_id=dataset.id, algorithm=1,
+                     algorithm_params=pickle.dumps(params), batch_size=10,
+                     epoch=10)
 
     session = db.session()
     session.add(model)
     session.commit()
+
+    if searcher:
+        searchermodel = db.ParamSearcherModel(searcher=searcher, model=model)
+        session.add(searchermodel)
+        session.commit()
+
     return model
 
 def test_confirm(app, data_pickle):
@@ -140,21 +166,32 @@ def test_confirm(app, data_pickle):
 
 def test_create_model(app):
     ds = _add_dataset()
+    searcher = _add_searcher()
     resp = app.post('/api/renom_rg/models', {
         'dataset_id': ds.id,
         'algorithm': 1,
         'algorithm_params': json.dumps({'a': 1}),
         'batch_size': 10,
         'epoch': 10,
+        'searcher_id': searcher.id
     })
 
     assert resp.status_int == 200
     model = db.session().query(db.Model).filter(db.Model.dataset_id == ds.id).one()
     assert model
+    assert resp.json['model_id'] == model.id
+
+    searchermodel = (db.session().query(db.ParamSearcherModel)
+                     .filter(db.ParamSearcherModel.searcher_id == searcher.id)
+                     .filter(db.ParamSearcherModel.model_id == model.id)).one()
+
+    assert searchermodel
 
 
 def test_delete_model(app):
-    model = _add_model()
+    searcher = _add_searcher()
+    model = _add_model(searcher=searcher)
+
     resp = app.delete('/api/renom_rg/models/%d' % model.id)
 
     assert resp.status_int == 200
@@ -221,6 +258,54 @@ def test_train_model(train, app):
     assert resp.json['result'] == 'ok'
 
 
+def test_get_running_models(app):
+    model = _add_model()
+    taskstate = train_task.TaskState.add_task(model)
+    resp = app.get('/api/renom_rg/models/running')
+
+    assert resp.status_int == 200
+
+    found = next(s for s in resp.json['running_models'] if s['model_id'] == model.id)
+    assert found
+
+
+def test_wait_model_update_initial(app):
+    model = _add_model()
+    taskstate = train_task.TaskState.add_task(model)
+    resp = app.get('/api/renom_rg/models/wait_model_update')
+
+    assert resp.status_int == 200
+
+
+def test_wait_model_update_nowait(app):
+    model = _add_model()
+    taskstate = train_task.TaskState.add_task(model)
+
+    # wait_model_update returns immediately since serial defers.
+    train_task.TaskState.serial = 0
+    app.set_cookie('model_serial', '10')
+    resp = app.get('/api/renom_rg/models/wait_model_update')
+
+    assert resp.status_int == 200
+
+
+def test_wait_model_update_wait(app):
+    model = _add_model()
+    taskstate = train_task.TaskState.add_task(model)
+
+    def run_later():
+        time.sleep(0.1)
+        taskstate.signal()
+
+    threading.Thread(target=run_later).start()
+    # wait_model_update waits update
+    train_task.TaskState.serial = 100
+    app.set_cookie('model_serial', '100')
+    resp = app.get('/api/renom_rg/models/wait_model_update')
+
+    assert resp.status_int == 200
+    assert resp.json['updated']
+
 
 @patch('renom_rg.server.server.set_cuda_active')
 @patch('renom_rg.server.server.use_device')
@@ -240,6 +325,64 @@ def test_gpupool(set_cuda_active, use_device, release_mem_pool):
         assert all == {0, 1, 2}
 
 
+def test_create_searcher(app):
+    resp = app.post('/api/renom_rg/searchers', {
+        'info': json.dumps({'a': 1}),
+    })
+
+    assert resp.status_int == 200
+    id = resp.json['id']
+    searcher = db.session().query(db.ParamSearcher).filter(db.ParamSearcher.id == id).one()
+    assert searcher
+
+
+def test_get_searcher(app):
+    searcher = _add_searcher()
+    model1 = _add_model(searcher=searcher)
+    model2 = _add_model(searcher=searcher)
+
+    resp = app.get('/api/renom_rg/searchers/%d' % searcher.id)
+    assert resp.status_int == 200
+    id = resp.json['id']
+    assert searcher.id == id
+    assert {model1.id, model2.id} == set(resp.json['model_ids'])
+
+
+def test_get_searchers(app):
+    searcher = _add_searcher()
+    model1 = _add_model(searcher=searcher)
+    model2 = _add_model(searcher=searcher)
+    taskstate = train_task.TaskState.add_task(model1)
+
+    searcher2 = _add_searcher()
+
+    resp = app.get('/api/renom_rg/searchers')
+    assert resp.status_int == 200
+
+    dict1 = next(s for s in resp.json['searchers'] if s['id'] == searcher.id)
+    assert set(dict1['model_ids']) == {model1.id, model2.id}
+    assert set(d['model_id'] for d in dict1['taskstates']) == {model1.id}
+
+    dict2 = next(s for s in resp.json['searchers'] if s['id'] == searcher2.id)
+    assert not dict2['model_ids']
+    assert not dict2['taskstates']
+
+
+def test_delete_searcher(app):
+    searcher = _add_searcher()
+    model1 = _add_model(searcher=searcher)
+    model2 = _add_model(searcher=searcher)
+
+    resp = app.delete('/api/renom_rg/searchers/%d' % searcher.id)
+    assert resp.status_int == 200
+
+    resp = app.delete('/api/renom_rg/searchers/%d' % searcher.id)
+    assert resp.status_int == 404
+
+    q = db.session().query(db.Model).filter_by(id=model1.id).one()
+
+    qq = db.session().query(db.ParamSearcherModel).filter_by(searcher_id=searcher.id).all()
+    assert not qq
 
 def test_train_usermodel(app, userscript, data_pickle):
 
@@ -250,4 +393,3 @@ def test_train_usermodel(app, userscript, data_pickle):
     taskstate = train_task.TaskState.add_task(model)
 
     train_task.train(taskstate, model.id)
-

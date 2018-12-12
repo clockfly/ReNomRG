@@ -12,6 +12,7 @@ import traceback
 import pandas as pd
 import numpy as np
 import pickle
+import uuid
 
 from bottle import HTTPResponse, default_app, route, request, error, abort, static_file
 from concurrent.futures import ThreadPoolExecutor as Executor
@@ -19,6 +20,7 @@ from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import CancelledError
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
+from sqlalchemy.sql import exists
 
 import renom as rm
 import renom.cuda
@@ -35,8 +37,10 @@ logger = logging.getLogger(__name__)
 
 gpupool = None
 
+
 def create_response(body, status=200, err=None):
     body['err'] = err
+#    body = json.dumps(body, allow_nan=False)
     r = HTTPResponse(status=status, body=body)
     r.set_header('Content-Type', 'application/json')
     return r
@@ -101,6 +105,7 @@ def get_labels():
     body = {"labels": list(data.columns)}
     r = create_response(body)
     return r
+
 
 def _dataset_to_dict(ds):
     ret = {
@@ -188,10 +193,18 @@ def create_dataset():
 @route('/api/renom_rg/datasets/<dataset_id:int>', method='DELETE')
 def delete_dataset(dataset_id):
     session = db.session()
+
     ds = session.query(db.DatasetDef).get(dataset_id)
 
     if ds:
+        q = session.query(db.Model.id).filter(db.Model.dataset_id == dataset_id)
+        (session.query(db.ParamSearcherModel)
+         .filter(db.ParamSearcherModel.model_id.in_(q))
+         .delete(synchronize_session=False))
+
+        session.query(db.Model).filter(db.Model.dataset_id == dataset_id).delete()
         session.delete(ds)
+        session.commit()
         return create_response({})
     else:
         return create_response({}, 404, err='dataset not found')
@@ -225,6 +238,7 @@ def _model_to_dict(model):
     }
     return ret
 
+
 @route("/api/renom_rg/models", method="GET")
 def get_models():
     q = db.session().query(db.Model).order_by(db.Model.id.desc()).all()
@@ -243,6 +257,14 @@ def get_model(model_id):
 
 @route("/api/renom_rg/models", method="POST")
 def create_model():
+    session = db.session()
+
+    searcher = None
+    searcher_id = request.params.get('searcher_id', None)
+    if searcher_id is not None:
+        searcher = (session.query(db.ParamSearcher)
+                    .filter_by(id=int(searcher_id)).one())
+
     dataset_id = int(request.params.dataset_id)
     algorithm = int(request.params.algorithm)
     algorithm_params = json.loads(request.params.algorithm_params)
@@ -253,16 +275,20 @@ def create_model():
                      algorithm_params=pickle.dumps(algorithm_params), batch_size=batch_size,
                      epoch=epoch)
 
-    session = db.session()
     session.add(model)
     session.commit()
+
+    if searcher:
+        searchermodel = db.ParamSearcherModel(searcher=searcher, model=model)
+        session.add(searchermodel)
+        session.commit()
 
     return create_response(_model_to_dict(model))
 
 
-def _taskstate_to_dict(key, taskstate):
+def _taskstate_to_dict(taskstate):
     ret = {
-        "model_id": key,
+        "model_id": taskstate.model_id,
         "algorithm": taskstate.algorithm,
         "nth_epoch": taskstate.nth_epoch,
         "nth_batch": taskstate.nth_batch,
@@ -275,15 +301,42 @@ def _taskstate_to_dict(key, taskstate):
 
 @route("/api/renom_rg/models/running", method="GET")
 def get_running_models():
-    ret = [_taskstate_to_dict(key, train_task.TaskState.tasks[key]) for key in train_task.TaskState.tasks]
+    ret = [_taskstate_to_dict(taskstate) for taskstate in train_task.TaskState.tasks.values()]
     return create_response({'running_models': ret})
+
+
+MODEL_WAIT_TIMEOUT = 60
+
+SERVER_ID = uuid.uuid4().hex
+
+@route("/api/renom_rg/models/wait_model_update", method="GET")
+def wait_model_update():
+    server_id = request.get_cookie("server_id")
+    cur_serial = None
+    if server_id == SERVER_ID:
+        serial_cookie = request.get_cookie("model_serial")
+        cur_serial = int(serial_cookie) if serial_cookie else None
+
+    ev = train_task.TaskState.add_event(cur_serial)
+
+    updated = ev.wait(MODEL_WAIT_TIMEOUT)
+    resp = create_response({'updated': updated})
+
+    new_serial = train_task.TaskState.serial
+    resp.set_cookie("model_serial", str(new_serial))
+    resp.set_cookie("server_id", SERVER_ID)
+
+    return resp
 
 
 @route("/api/renom_rg/models/<model_id:int>", method="DELETE")
 def delete_model(model_id):
-    q = db.session().query(db.Model).filter(db.Model.id == model_id)
+    session = db.session()
+    session.query(db.ParamSearcherModel).filter_by(model_id=model_id).delete()
+    q = session.query(db.Model).filter_by(id=model_id)
     n = q.delete()
     if n:
+        session.commit()
         return create_response({})
     else:
         return create_response({}, 404, err='model not found')
@@ -292,7 +345,6 @@ def delete_model(model_id):
 @route("/api/renom_rg/models/<model_id:int>/deploy", method="POST")
 def deploy_model(model_id):
     session = db.session()
-
     session.query(db.Model).update({'deployed': 0})
     model = session.query(db.Model).get(model_id)
 
@@ -329,6 +381,7 @@ def submit_task(executor, f, *args, **kwargs):
 
 
 executor = Executor()
+
 
 @route("/api/renom_rg/models/<model_id:int>/train", method="GET")
 def train_model(model_id):
@@ -392,7 +445,7 @@ def predict_model(model_id):
 
 @route("/api/renom_rg/deployed_model/pull", method="GET")
 def pull_deployed_model():
-    model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
+    model = db.session().query(db.Model).filter_by(db.Model.deployed == 1).one()
     if model:
         file_name = model.weight
         return static_file(file_name, root=DB_DIR_TRAINED_WEIGHT, download='deployed_model.h5')
@@ -405,6 +458,67 @@ def get_deployed_model():
     model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
     if model:
         return create_response(_model_to_dict(model))
+    else:
+        return create_response({}, 404, err='not found')
+
+
+@route("/api/renom_rg/searchers", method="POST")
+def create_searcher():
+    info = json.loads(request.params.info)
+
+    searcher = db.ParamSearcher(info=pickle.dumps(info))
+
+    session = db.session()
+    session.add(searcher)
+    session.commit()
+
+    return create_response({'id': searcher.id})
+
+
+@route("/api/renom_rg/searchers/<searcher_id:int>", method="DELETE")
+def delete_searcher(searcher_id):
+    session = db.session()
+    session.query(db.ParamSearcherModel).filter_by(searcher_id=searcher_id).delete()
+    n = session.query(db.ParamSearcher).filter_by(id=searcher_id).delete()
+    if n:
+        session.commit()
+        return create_response({})
+    else:
+        return create_response({}, 404, err='searcher not found')
+
+
+def searcher_to_dict(searcher):
+    modelids = [m.model_id for m in searcher.searcher_models]
+    taskstate = []
+    for modelid in modelids:
+        if modelid in train_task.TaskState.tasks:
+            taskstate.append(_taskstate_to_dict(train_task.TaskState.tasks[modelid]))
+
+    return {
+        'id': searcher.id,
+        'info': pickle.loads(searcher.info),
+        'model_ids': modelids,
+        'taskstates': taskstate,
+    }
+
+
+@route("/api/renom_rg/searchers", method="GET")
+def get_searchers():
+    session = db.session()
+
+    searchers = session.query(db.ParamSearcher)
+    dicts = [searcher_to_dict(searcher) for searcher in searchers]
+    return create_response({
+        'searchers': dicts
+    })
+
+
+@route("/api/renom_rg/searchers/<searcher_id:int>", method="GET")
+def get_searcher(searcher_id):
+    session = db.session()
+    searcher = session.query(db.ParamSearcher).get(searcher_id)
+    if searcher:
+        return create_response(searcher_to_dict(searcher))
     else:
         return create_response({}, 404, err='not found')
 
