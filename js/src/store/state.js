@@ -1,7 +1,12 @@
 export default {
   page_name: '',
   error_msg: undefined,
-  algorithms: ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN', 'Running', 'Reserved'],
+  algorithms: {
+    0: 'C-GCNN',
+    1: 'Kernel-GCNN',
+    2: 'DBSCAN-GCNN',
+    0xffffffff: 'user-defined'
+  },
 
   // show nav bar or not
   navigation_bar_shown_flag: false,
@@ -20,13 +25,7 @@ export default {
   * dashboard
   */
   // model ratio bar
-  model_counts_per_algorith: {
-    'C-GCNN': 0,
-    'Kernel-GCNN': 0,
-    'DBSCAN-GCNN': 0,
-    'Running': 0,
-    'Reserved': 0
-  },
+  model_counts_per_algorith: {},
 
   /**
   * Model List

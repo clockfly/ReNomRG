@@ -70,20 +70,18 @@ export default {
   methods: {
     watchStart: function () {
       const url = '/api/renom_rg/models/wait_model_update'
-      axios.get(url).then(ret=>{
+      axios.get(url).then(ret => {
         if (ret.data.updated === true) {
-          this.$store.dispatch('loadRunningModels').then(ret=>{
+          this.$store.dispatch('loadRunningModels').then(ret => {
             setTimeout(this.watchStart, 1000)
           })
-        }
-        else {
+        } else {
           setTimeout(this.watchStart, 1000)
         }
-      })
-      .catch(err=>{
+      }).catch(err => {
         setTimeout(this.watchStart, 60000)
       })
-    },
+    }
   }
 }
 </script>

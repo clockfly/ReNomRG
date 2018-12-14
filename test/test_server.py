@@ -132,16 +132,12 @@ DEFAULT_ALGORITHM_PARAMS = {'train_count': 5, 'valid_count': 5,
 }
 
 
-def _add_model(*, dataset=None, searcher=None):
+def _add_model(algorithm=1, algorithm_params=dict(DEFAULT_ALGORITHM_PARAMS), dataset=None, searcher=None):
     if dataset is None:
         dataset = _add_dataset()
 
-    params = dict(DEFAULT_ALGORITHM_PARAMS)
-    if algorithm_params:
-        params.update(algorithm_params)
-
-    model = db.Model(dataset_id=dataset.id, algorithm=1,
-                     algorithm_params=pickle.dumps(params), batch_size=10,
+    model = db.Model(dataset_id=dataset.id, algorithm=algorithm,
+                     algorithm_params=pickle.dumps(algorithm_params), batch_size=10,
                      epoch=10)
 
     session = db.session()

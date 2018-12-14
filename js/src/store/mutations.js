@@ -37,7 +37,7 @@ export default {
   // set  mode llist
   setModelList (state, payload) {
     state.model_list = []
-    state.model_counts_per_algorith = { 'C-GCNN': 0, 'Kernel-GCNN': 0, 'DBSCAN-GCNN': 0, 'Running': 0, 'Reserved': 0 }
+    state.model_counts_per_algorith = { 'C-GCNN': 0, 'Kernel-GCNN': 0, 'DBSCAN-GCNN': 0, 'user-defined': 0 }
     for (let m of payload.model_list) {
       state.model_list.push(m)
 
@@ -54,6 +54,8 @@ export default {
         state.model_counts_per_algorith['Kernel-GCNN'] += 1
       } else if (m['algorithm'] === 2) {
         state.model_counts_per_algorith['DBSCAN-GCNN'] += 1
+      } else if (m['algorithm'] === 0xffffffff) {
+        state.model_counts_per_algorith['user-defined'] += 1
       }
       // }
 
