@@ -28,8 +28,7 @@ class GraphCNN(rm.Conv2d):
         self.feature_graph = feature_graph
 
     def forward(self, x):
-        x = x[:, :, :, 0]
-        x = x[:, :, self.feature_graph]
+        x = x[:, :, self.feature_graph, 0]
         return super(GraphCNN, self).forward(x)
 
 
