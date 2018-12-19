@@ -564,8 +564,7 @@ class GPUPool:
         with self.gpu_resource:
             self.active_gpu.id = self.gpus.pop()
             try:
-                # set_cuda_active(True)
-                set_cuda_active(False)
+                set_cuda_active(True)
                 with use_device(self.active_gpu.id):
                     return f(*args, **kwargs)
             finally:
