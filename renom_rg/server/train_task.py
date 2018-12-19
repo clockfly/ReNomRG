@@ -257,7 +257,7 @@ def _train(session, taskstate, model_id):
             taskstate.signal()
 
         train_loss = loss / (N // modeldef.batch_size)
-        train_loss_list.append(train_loss)
+        train_loss_list.append(float(train_loss))
 
         # validation
         model.set_models(inference=True)
@@ -292,7 +292,7 @@ def _train(session, taskstate, model_id):
             model.save(os.path.join(DB_DIR_TRAINED_WEIGHT, filename))
 
             modeldef.best_epoch = e
-            modeldef.best_epoch_valid_loss = valid_loss
+            modeldef.best_epoch_valid_loss = float(valid_loss)
             modeldef.best_epoch_rmse = float(np.sqrt(valid_loss))
             modeldef.best_epoch_max_abs_error = float(np.max(np.abs(y_valid - valid_predicted)))
             modeldef.best_epoch_r2 = float(r2_score(y_valid, valid_predicted))
