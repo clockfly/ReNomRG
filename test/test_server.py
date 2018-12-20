@@ -127,8 +127,10 @@ def _add_searcher():
 DEFAULT_ALGORITHM_PARAMS = {'train_count': 5, 'valid_count': 5,
     'target_train': [], 'target_valid': [], 'train_index':[1,2,3,4,5],
     'valid_index': [6,7,8,9,10],
+    'num_neighbors': 5,
     'fc_unit': [100, 50],
     'channels': [10, 20, 20],
+    'script_file_name': 'userdefmodel.py'
 }
 
 
@@ -382,9 +384,7 @@ def test_delete_searcher(app):
 
 def test_train_usermodel(app, userscript, data_pickle):
 
-    model = _add_model(algorithm=0xffffffff, algorithm_params={
-        'num_neighbors': 10,
-        'script_file_name': 'userdefmodel.py'})
+    model = _add_model(algorithm=0xffffffff)
 
     taskstate = train_task.TaskState.add_task(model)
 

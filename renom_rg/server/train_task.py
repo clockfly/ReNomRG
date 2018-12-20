@@ -152,8 +152,6 @@ def _train(session, taskstate, model_id):
     best_loss = None
     train_loss_list = []
     valid_loss_list = []
-    valid_predicted = []
-    valid_true = []
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
@@ -237,6 +235,9 @@ def _train(session, taskstate, model_id):
                 batch_loss = rm.mse(train_predicted, train_batch_y)
                 taskstate.train_loss = batch_loss.tolist()
 
+                if rm.is_cuda_active():
+                    train_predicted = train_predicted.as_ndarray()
+
                 if train_predicted_list is None:
                     train_predicted_list = train_predicted
                 else:
@@ -256,27 +257,73 @@ def _train(session, taskstate, model_id):
 
             taskstate.signal()
 
-        train_loss = loss / (N // modeldef.batch_size)
-        train_loss_list.append(train_loss)
+        train_loss = loss / total_batch
+        train_loss_list.append(float(train_loss))
 
         # validation
         model.set_models(inference=True)
         N = X_valid.shape[0]
+        perm = np.random.permutation(N)
+        total_batch = N // modeldef.batch_size
+        loss = 0
+        valid_predicted = None
+        valid_true = None
+        for j in range(total_batch):
+            if taskstate.canceled:
+                return
 
-        valid_predicted = model(X_valid.reshape(-1, 1, X_valid.shape[1], 1))
-        valid_loss = float(rm.mse(valid_predicted, y_valid))
-        valid_loss_list.append(valid_loss)
+            index = perm[j * modeldef.batch_size:(j + 1) * modeldef.batch_size]
+            batch_x = X_valid[index]
+            batch_y = y_valid[index]
 
+            predicted = model(batch_x.reshape(-1, 1, batch_x.shape[1], 1))
+            loss += rm.mse(predicted, batch_y)
+
+            if rm.is_cuda_active():
+                predicted = predicted.as_ndarray()
+
+            if valid_predicted is None:
+                valid_predicted = predicted
+                valid_true = batch_y
+            else:
+                valid_predicted = np.concatenate([valid_predicted, predicted], axis=0)
+                valid_true = np.concatenate([valid_true, batch_y], axis=0)
+
+        valid_loss = loss / total_batch
+        valid_loss_list.append(float(valid_loss))
+
+        # update model info
         modeldef.train_loss_list = pickle.dumps(train_loss_list)
         modeldef.valid_loss_list = pickle.dumps(valid_loss_list)
         modeldef.valid_predicted = pickle.dumps(valid_predicted.T.tolist())
         modeldef.valid_true = pickle.dumps(valid_true.T.tolist())
 
-        sampled_train_pred = train_predicted_list
-        sampled_train_true = train_true_list
+        SAMPLING_SIZE = 100
+        sampled_train_pred = train_predicted_list[:SAMPLING_SIZE]
+        sampled_train_true = train_true_list[:SAMPLING_SIZE]
 
         modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
         modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())
+
+        # true histogram
+        true_histogram = []
+        pred_histogram = []
+        for i in range(y_valid.shape[1]):
+            counts, bins = np.histogram(train_true_list[:, i])
+            train_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            counts, bins = np.histogram(y_valid[:, i])
+            valid_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            true_histogram.append({"train": train_true_histogram, "valid": valid_true_histogram})
+
+            # pred histogram
+            counts, bins = np.histogram(train_predicted_list[:, i])
+            train_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            counts, bins = np.histogram(valid_predicted[:, i])
+            valid_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            pred_histogram.append({"train": train_pred_histogram, "valid": valid_pred_histogram})
+
+        modeldef.true_histogram = pickle.dumps(true_histogram)
+        modeldef.pred_histogram = pickle.dumps(pred_histogram)
 
         # calc train data confidence area
         confidence_data_list = calc_confidence_area(train_true_list.T, train_predicted_list.T)
@@ -285,17 +332,18 @@ def _train(session, taskstate, model_id):
         session.add(modeldef)
         session.commit()
 
-        print("epoch: {}, valid_loss: {}".format(e, valid_loss))
+        if e % 10 == 0:
+            print("epoch: {}, valid_loss: {}".format(e, valid_loss))
 
         # update best loss model info
         if best_loss is None or best_loss > valid_loss:
             model.save(os.path.join(DB_DIR_TRAINED_WEIGHT, filename))
 
             modeldef.best_epoch = e
-            modeldef.best_epoch_valid_loss = valid_loss
+            modeldef.best_epoch_valid_loss = float(valid_loss)
             modeldef.best_epoch_rmse = float(np.sqrt(valid_loss))
-            modeldef.best_epoch_max_abs_error = float(np.max(np.abs(y_valid - valid_predicted)))
-            modeldef.best_epoch_r2 = float(r2_score(y_valid, valid_predicted))
+            modeldef.best_epoch_max_abs_error = float(np.max(np.abs(valid_true - valid_predicted)))
+            modeldef.best_epoch_r2 = float(r2_score(valid_true, valid_predicted))
             modeldef.weight = filename
 
             session.add(modeldef)

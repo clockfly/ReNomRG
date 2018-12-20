@@ -55,6 +55,8 @@ class Model(Base):
     valid_true = Column(BLOB, default=NONE_PICLKLES)
     sampled_train_pred = Column(BLOB, default=NONE_PICLKLES)
     sampled_train_true = Column(BLOB, default=NONE_PICLKLES)
+    true_histogram = Column(BLOB, default=NONE_PICLKLES)
+    pred_histogram = Column(BLOB, default=NONE_PICLKLES)
     confidence_data = Column(BLOB, default=NONE_PICLKLES)
     weight = Column(TEXT, nullable=True)
     deployed = Column(Integer, default=0)
