@@ -80,7 +80,7 @@ export default {
     this.drawDeployed()
   },
   methods: {
-    drawTruePredPlot: function (id, train_true, train_pred, valid_true, valid_pred, confidence_data) {
+    drawTruePredPlot: function (id, train_true, train_pred, valid_true, valid_pred, confidence_data, true_histogram, pred_histogram) {
       if (!train_true || !train_pred || !valid_true || !valid_pred) return
       // define svg element
       const width = 400
@@ -185,69 +185,63 @@ export default {
         )
 
       // draw histogram train true
-      const true_histogram = this.getHistgram(x_scale, 10)
-      const train_true_bins = true_histogram(train_true)
-      const true_hist_max = this.getHistgramSizeMax(train_true_bins)
+      const true_hist_max = max(true_histogram.train.counts)
       const histy_scale = getScale([plot_max, plot_max + true_hist_max], [margin.top - margin.hist_inner, margin.hist_outer])
-
+      // const train_true_hist
       svg.append('path')
-        .datum(train_true_bins)
+        .datum(true_histogram.train.counts)
         .attr('fill', train_color)
         .attr('opacity', 0.2)
         .attr('stroke', train_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
-          .y1(function (d) { return histy_scale(plot_max + d.length) })
+          .x(function (d, index) { return x_scale((true_histogram.train.bins[index] + true_histogram.train.bins[index + 1]) / 2) })
+          .y1(function (d) { return histy_scale(plot_max + d) })
           .y0(function (d) { return histy_scale(plot_max) })
           .curve(d3.curveCardinal)
         )
 
       // draw histogram valid true
-      const valid_true_bins = true_histogram(valid_true)
       svg.append('path')
-        .datum(valid_true_bins)
+        .datum(true_histogram.valid.counts)
         .attr('fill', valid_color)
         .attr('opacity', 0.2)
         .attr('stroke', valid_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
-          .y1(function (d) { return histy_scale(plot_max + d.length) })
+          .x(function (d, index) { return x_scale((true_histogram.train.bins[index] + true_histogram.train.bins[index + 1]) / 2) })
+          .y1(function (d) { return histy_scale(plot_max + d) })
           .y0(function (d) { return histy_scale(plot_max) })
           .curve(d3.curveCardinal)
         )
 
       // draw histogram train prediction
-      const pred_histogram = this.getHistgram(y_scale, 10)
-      const train_pred_bins = pred_histogram(train_pred)
-      const pred_hist_max = this.getHistgramSizeMax(train_pred_bins)
+      const pred_hist_max = max(pred_histogram.train.counts)
       const histx_scale = getScale([y_max, y_max + pred_hist_max], [width - margin.right + margin.hist_inner, width - margin.hist_outer])
       svg.append('path')
-        .datum(train_pred_bins)
+        .datum(pred_histogram.train.counts)
         .attr('fill', train_color)
         .attr('opacity', 0.2)
         .attr('stroke', train_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x1(function (d) { return histx_scale(y_max + d.length) })
+          .x1(function (d) { return histx_scale(y_max + d) })
           .x0(function (d) { return histx_scale(y_max) })
-          .y(function (d, index) { return y_scale((d.x0 + d.x1) / 2) })
+          .y(function (d, index) { return y_scale((pred_histogram.train.bins[index] + pred_histogram.train.bins[index + 1]) / 2) })
           .curve(d3.curveCardinal)
         )
 
       // draw histogram valid prediction
-      const valid_pred_bins = pred_histogram(valid_pred)
       svg.append('path')
-        .datum(valid_pred_bins)
+        .datum(pred_histogram.valid.counts)
         .attr('fill', valid_color)
         .attr('opacity', 0.2)
         .attr('stroke', valid_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x1(function (d) { return histx_scale(plot_max + d.length) })
+          .x1(function (d) { return histx_scale(plot_max + d) })
           .x0(function (d) { return histx_scale(plot_max) })
-          .y(function (d, index) { return y_scale((d.x0 + d.x1) / 2) })
+          .y(function (d, index) { return y_scale((pred_histogram.train.bins[index] + pred_histogram.train.bins[index + 1]) / 2) })
           .curve(d3.curveCardinal)
         )
     },
@@ -261,7 +255,9 @@ export default {
         const valid_true = this.deployedModel.valid_true[i]
         const valid_pred = this.deployedModel.valid_predicted[i]
         const confidence_data = this.deployedModel.confidence_data[i]
-        this.drawTruePredPlot(id, train_true, train_pred, valid_true, valid_pred, confidence_data)
+        const true_histogram = this.selectedModel.true_histogram[i]
+        const pred_histogram = this.selectedModel.pred_histogram[i]
+        this.drawTruePredPlot(id, train_true, train_pred, valid_true, valid_pred, confidence_data, true_histogram, pred_histogram)
       }
     },
     drawSelected: function () {
@@ -274,22 +270,14 @@ export default {
         const valid_true = this.selectedModel.valid_true[i]
         const valid_pred = this.selectedModel.valid_predicted[i]
         const confidence_data = this.selectedModel.confidence_data[i]
-        this.drawTruePredPlot(id, train_true, train_pred, valid_true, valid_pred, confidence_data)
+        const true_histogram = this.selectedModel.true_histogram[i]
+        const pred_histogram = this.selectedModel.pred_histogram[i]
+        this.drawTruePredPlot(id, train_true, train_pred, valid_true, valid_pred, confidence_data, true_histogram, pred_histogram)
       }
-    },
-    getHistgram: function (scale, ticks) {
-      return d3.histogram()
-        .value(function (d) { return d })
-        .domain(scale.domain())
-        .thresholds(scale.ticks(ticks))
-    },
-    getHistgramSizeMax: function (hist) {
-      return max(hist.map(function (d) { return d.length }))
     },
     shapeDataset: function (valid, pred) {
       let dataset = []
-      let sampling_size = min([valid.length, 100])
-      for (let i in [...Array(sampling_size).keys()]) {
+      for (let i in valid) {
         let d = [valid[i], pred[i]]
         dataset.push(d)
       }

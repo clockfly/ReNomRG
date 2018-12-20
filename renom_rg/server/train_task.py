@@ -278,22 +278,32 @@ def _train(session, taskstate, model_id):
         modeldef.valid_predicted = pickle.dumps(valid_predicted.T.tolist())
         modeldef.valid_true = pickle.dumps(valid_true.T.tolist())
 
-        sampled_train_pred = train_predicted_list
-        sampled_train_true = train_true_list
+        SAMPLING_SIZE = 100
+        sampled_train_pred = train_predicted_list[:SAMPLING_SIZE]
+        sampled_train_true = train_true_list[:SAMPLING_SIZE]
 
         modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
         modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())
 
-        # histogram
-        counts, bins = np.histogram(train_true_list)
-        true_histogram = {"counts": counts, "bins": bins}
+        # true histogram
+        true_histogram = []
+        pred_histogram = []
+        for i in range(y_valid.shape[1]):
+            counts, bins = np.histogram(train_true_list[:, i])
+            train_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            counts, bins = np.histogram(y_valid[:, i])
+            valid_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            true_histogram.append({"train": train_true_histogram, "valid": valid_true_histogram})
 
-        
-        counts, bins = np.histogram(train_predicted_list)
-        pred_histogram = {"counts": counts, "bins": bins}
+            # pred histogram
+            counts, bins = np.histogram(train_predicted_list[:, i])
+            train_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            counts, bins = np.histogram(valid_predicted[:, i])
+            valid_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+            pred_histogram.append({"train": train_pred_histogram, "valid": valid_pred_histogram})
 
-        modeldef.true_histogram = true_histogram
-        modeldef.pred_histogram = pred_histogram
+        modeldef.true_histogram = pickle.dumps(true_histogram)
+        modeldef.pred_histogram = pickle.dumps(pred_histogram)
 
         # calc train data confidence area
         confidence_data_list = calc_confidence_area(train_true_list.T, train_predicted_list.T)
