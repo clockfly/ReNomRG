@@ -255,8 +255,8 @@ export default {
         const valid_true = this.deployedModel.valid_true[i]
         const valid_pred = this.deployedModel.valid_predicted[i]
         const confidence_data = this.deployedModel.confidence_data[i]
-        const true_histogram = this.selectedModel.true_histogram[i]
-        const pred_histogram = this.selectedModel.pred_histogram[i]
+        const true_histogram = this.deployedModel.true_histogram[i]
+        const pred_histogram = this.deployedModel.pred_histogram[i]
         this.drawTruePredPlot(id, train_true, train_pred, valid_true, valid_pred, confidence_data, true_histogram, pred_histogram)
       }
     },
