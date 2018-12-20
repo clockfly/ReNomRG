@@ -237,6 +237,9 @@ def _train(session, taskstate, model_id):
                 batch_loss = rm.mse(train_predicted, train_batch_y)
                 taskstate.train_loss = batch_loss.tolist()
 
+                if rm.is_cuda_active():
+                    train_predicted = train_predicted.as_ndarray()
+
                 if train_predicted_list is None:
                     train_predicted_list = train_predicted
                 else:
@@ -264,9 +267,12 @@ def _train(session, taskstate, model_id):
         N = X_valid.shape[0]
 
         valid_predicted = model(X_valid.reshape(-1, 1, X_valid.shape[1], 1))
-        valid_loss = float(rm.mse(valid_predicted, y_valid))
-        valid_loss_list.append(valid_loss)
+        valid_loss = rm.mse(valid_predicted, y_valid)
+        if rm.is_cuda_active():
+            valid_predicted = valid_predicted.as_ndarray()
+        valid_loss_list.append(float(valid_loss))
 
+        # update model info
         modeldef.train_loss_list = pickle.dumps(train_loss_list)
         modeldef.valid_loss_list = pickle.dumps(valid_loss_list)
         modeldef.valid_predicted = pickle.dumps(valid_predicted.T.tolist())
@@ -277,6 +283,17 @@ def _train(session, taskstate, model_id):
 
         modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
         modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())
+
+        # histogram
+        counts, bins = np.histogram(train_true_list)
+        true_histogram = {"counts": counts, "bins": bins}
+
+        
+        counts, bins = np.histogram(train_predicted_list)
+        pred_histogram = {"counts": counts, "bins": bins}
+
+        modeldef.true_histogram = true_histogram
+        modeldef.pred_histogram = pred_histogram
 
         # calc train data confidence area
         confidence_data_list = calc_confidence_area(train_true_list.T, train_predicted_list.T)

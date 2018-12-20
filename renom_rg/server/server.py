@@ -230,6 +230,8 @@ def _model_to_dict(model):
         'valid_true': pickle.loads(model.valid_true),
         'sampled_train_pred': pickle.loads(model.sampled_train_pred),
         'sampled_train_true': pickle.loads(model.sampled_train_true),
+        'true_histogram': pickle.loads(model.true_histogram),
+        'pred_histogram': pickle.loads(model.pred_histogram),
         'confidence_data': pickle.loads(model.confidence_data),
         'weight': model.weight,
         'deployed': model.deployed,
