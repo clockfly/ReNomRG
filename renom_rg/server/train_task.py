@@ -14,6 +14,7 @@ from renom.utility.distributor.distributor import NdarrayDistributor
 
 from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED,
                              DB_DIR_TRAINED_WEIGHT, DATASRC_DIR, SCRIPT_DIR)
+from renom_rg.server.custom_util import _load_usermodel
 
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
@@ -127,24 +128,6 @@ def train(taskstate, model_id):
         session.commit()
 
 
-def _load_usermodel(modeldef, algorithm_params, X_train, X_valid, y_train, y_valid):
-    script = algorithm_params['script_file_name']
-
-    scriptdir = os.path.abspath(SCRIPT_DIR)
-    if not scriptdir.endswith(os.path.sep):
-        scriptdir += os.path.sep
-
-    scriptfile = os.path.abspath(os.path.join(scriptdir, script))
-    if not scriptfile.startswith(scriptdir):
-        raise ValueError('Invalid script name: %s' % scriptfile)
-
-    scr = open(scriptfile).read()
-    d = {}
-    exec(scr, d)
-    builder = d['create_model']
-    return builder(modeldef, algorithm_params, X_train, X_valid, y_train, y_valid)
-
-
 def _train(session, taskstate, model_id):
     modeldef = session.query(db.Model).get(model_id)
 
@@ -176,11 +159,13 @@ def _train(session, taskstate, model_id):
 
     taskstate.algorithm = modeldef.algorithm
     algorithm_params = pickle.loads(modeldef.algorithm_params)
+    algorithm_params["num_target"] = y_train.shape[1]
 
     if modeldef.algorithm == USER_DEFINED:
         num_neighbors = int(algorithm_params["num_neighbors"])
         feature_graph = get_corr_graph(X_train, num_neighbors)
-        model = _load_usermodel(modeldef, algorithm_params, X_train, X_valid, y_train, y_valid)
+        algorithm_params["feature_graph"] = feature_graph.tolist()
+        model = _load_usermodel(algorithm_params)
     else:
         num_neighbors = int(algorithm_params["num_neighbors"])
         if modeldef.algorithm == C_GCNN:
@@ -199,7 +184,6 @@ def _train(session, taskstate, model_id):
 
         # update network params for prediciton
         algorithm_params["feature_graph"] = feature_graph.tolist()
-        algorithm_params["num_target"] = y_train.shape[1]
 
     modeldef.algorithm_params = pickle.dumps(algorithm_params)
 

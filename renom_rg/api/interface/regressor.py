@@ -2,6 +2,7 @@ import requests
 import os
 from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED,
                              DB_DIR_TRAINED_WEIGHT, DATASRC_DIR, SCRIPT_DIR)
+from renom_rg.server.custom_util import _load_usermodel
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.download import download
 
@@ -41,23 +42,26 @@ class Regressor(object):
         download_param_api = url + download_param_api
 
         ret = requests.get(download_param_api).json()
+        params = ret["algorithm_params"]
         filename = ret["weight"]
         if not os.path.exists(filename):
             download(download_weight_api, filename)
 
-        if ret["algorithm"] == C_GCNN:
-            self._alg_name = "C_GCNN"
-        elif ret["algorithm"] == Kernel_GCNN:
-            self._alg_name = "Kernel_GCNN"
-        elif ret["algorithm"] == DBSCAN_GCNN:
-            self._alg_name = "DBSCAN_GCNN"
+        if ret["algorithm"] == USER_DEFINED:
+            self._model = _load_usermodel(params)
+        else:
+            if ret["algorithm"] == C_GCNN:
+                self._alg_name = "C_GCNN"
+            elif ret["algorithm"] == Kernel_GCNN:
+                self._alg_name = "Kernel_GCNN"
+            elif ret["algorithm"] == DBSCAN_GCNN:
+                self._alg_name = "DBSCAN_GCNN"
 
-        params = ret["algorithm_params"]
-        self._model = GCNet(list(params["feature_graph"]),
-                            num_target=int(params["num_target"]),
-                            fc_unit=[int(u) for u in params["fc_unit"]],
-                            neighbors=int(params["num_neighbors"]),
-                            channels=[int(u) for u in params["channels"]])
+            self._model = GCNet(list(params["feature_graph"]),
+                                num_target=int(params["num_target"]),
+                                fc_unit=[int(u) for u in params["fc_unit"]],
+                                neighbors=int(params["num_neighbors"]),
+                                channels=[int(u) for u in params["channels"]])
 
         self._model_info = {
             "model_id": ret["model_id"],
