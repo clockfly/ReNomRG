@@ -445,9 +445,9 @@ def predict_model(model_id):
             release_mem_pool()
 
 
-@route("/api/renom_rg/deployed_model/pull", method="GET")
-def pull_deployed_model():
-    model = db.session().query(db.Model).filter_by(db.Model.deployed == 1).one()
+@route("/api/renom_rg/deployed_model", method="GET")
+def get_deployed_model_weight():
+    model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
     if model:
         file_name = model.weight
         return static_file(file_name, root=DB_DIR_TRAINED_WEIGHT, download='deployed_model.h5')
@@ -455,8 +455,8 @@ def pull_deployed_model():
         return create_response({}, 404, err='model not found')
 
 
-@route("/api/renom_rg/deployed_model", method="GET")
-def get_deployed_model():
+@route("/api/renom_rg/deployed_model_info", method="GET")
+def get_deployed_model_info():
     model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
     if model:
         return create_response(_model_to_dict(model))

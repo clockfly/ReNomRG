@@ -77,3 +77,7 @@ class GCNet(rm.Model):
         h = self.dropout(rm.relu(self.fc2(h)))
         h = self.fc3(h)
         return h
+
+    def predict(self, x):
+        self.set_models(inference=True)
+        return self.forward(x.reshape(-1, 1, x.shape[1], 1))
