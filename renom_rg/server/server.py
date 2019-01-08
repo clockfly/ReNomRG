@@ -4,6 +4,7 @@ import threading
 import logging
 import argparse
 import os
+import sys
 import json
 import pkg_resources
 import mimetypes
@@ -13,6 +14,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import uuid
+import shutil
 
 from bottle import HTTPResponse, default_app, route, request, error, abort, static_file
 from concurrent.futures import ThreadPoolExecutor as Executor
@@ -581,7 +583,24 @@ def _init_gpu():
         gpupool = GPUPool(num)
 
 
+def _cp_alembic():
+    pathlist = [p for p in sys.path if "ReNomRG" in p]
+
+    # copy alembic.ini
+    inifile = os.path.join(pathlist[0], "alembic.ini")
+    outfile = os.path.join(os.getcwd(), "alembic.ini")
+    if not os.path.exists(outfile):
+        shutil.copy(inifile, outfile)
+
+    # copy alembic dir
+    alembicdir = os.path.join(pathlist[0], "alembic")
+    outdir = os.path.join(os.getcwd(), "alembic")
+    if not os.path.isdir(outdir):
+        shutil.copytree(alembicdir, outdir)
+
+
 def main():
+    _cp_alembic()
     _create_dirs()
     db.initdb()
     _init_gpu()
