@@ -4,7 +4,7 @@ before_script:
   - apt-get update
   - apt-get install -y python3 python3-tk build-essential python3-pip nodejs npm curl git
   - npm install -g n
-  - n stable
+  - n 10.15.0
   - cd ..
   - pip3 install pytest webtest wheel h5py cython
   - git clone https://github.com/ReNom-dev-team/ReNom.git
@@ -21,4 +21,4 @@ before_script:
 flake8:
   script:
     - flake8 renom_rg
-    - pytest 
+    - pytest
