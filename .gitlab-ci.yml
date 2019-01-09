@@ -36,4 +36,4 @@ pages:
 
   only:
     - /^release\/.*$/
-    - /^v*beta$/
+    - /^v.*beta$/
