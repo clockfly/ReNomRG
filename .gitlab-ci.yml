@@ -20,7 +20,8 @@ before_script:
 
 flake8:
   script:
-    - flake8 renom_rg
+    - flake8 renom_rg/api
+    - flake8 renom_rg/server
     - pytest
 
 pages:
