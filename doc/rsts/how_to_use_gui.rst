@@ -5,12 +5,13 @@ Start the Application
 ---------------------
 
 ReNomRG is a single page web application.
-You can run application in ReNomRG directory with ReNomRG beta version.
+If your installation have done successfully,
+you can run application in any directory with following commands.
 
 .. code-block :: shell
 
-    cd ReNomRG
-    python -m renom_rg # This command will starts ReNomRG GUI server.
+    cd workspace # Workspace can be any directory.
+    renom_rg # This command will starts ReNomRG GUI server.
 
 For the command ``renom_rg``, you can give following arguments.
 
@@ -21,7 +22,7 @@ For example, following code runs ReNomRG with port 8888.
 
 .. code-block :: shell
 
-    python -m renom_rg --port 8888 # Running ReNomRG with port 8888
+    renom_rg --port 8888 # Running ReNomRG with port 8888
 
 If the application server runs, open web browser and type the
 server address to the address bar like this.
@@ -34,26 +35,33 @@ Then the application will be appeared.
 Place your dataset
 ------------------
 
-When the server starts, ``datasrc`` directory and ``storage`` directory
-will be created in the server running directory.
+When the server starts, ``datasrc``, ``storage``, ``scripts`` and ``alembic`` directories
+and ``alembic.ini`` file will be created in the server running directory.
 
-The ``datasrc`` directory has following folder structure.
+The directory structure is below.
 
 .. code-block :: shell
-
-    datasrc/
-      ├── data.pickle # pickled pandas.DataFrame for train & validation.
-      └── prediction_set
-            └── pred.pickle # pickled pandas.DataFrame for prediction.
+<server_start_directory>
+    └── alembic.ini        # database setting file.
+    └── alembic
+    |   └── versions       # database migration files.
+    |   └── env.py         # database environment file.
+    └── storage
+    |   └── storage.db     # default database(sqlite3).
+    |   └── trained_weight # weights for regression models.
+    └── datasrc
+    |   └── data.pickle    # pickle data for train & validation.
+    |   └── prediction_set
+    |       └── pred.pickle # pickle data for prediction.
+    └── scripts
+        └── userdefmodel.py # scripts for user defined model.(available any name.)
 
 The data that can be read with ReNomRG beta must be named "data.pickle" and "pred.pickle".
-
 
 Format of the data
 ~~~~~~~~~~~~~~~~~~
 
-In the ReNomRG beta version, you can enter a file that pickled pandas.DataFrame into the application.
-
+The format of input file is pickled pandas.DataFrame object.
 
 Create Regression Model
 -----------------------
@@ -73,7 +81,7 @@ In ReNomRG, training dataset and validation dataset will be randomly sampled fro
 According to the above figure, you can create dataset from the datasrc. Once the dataset is created, its content will not be changed.
 Please press new button.
 
-.. image:: /_static/image/dataset.png
+.. image:: /_static/image/add.png
 
 The following page will be appeared.
 
@@ -92,7 +100,7 @@ You can confirm created datasets in the dataset page. To go to the dataset page,
 
 .. image:: /_static/image/dataset_page.png
 
-When you click on each data set name, you can confirm the number of data contained in them, the number of teacher data of each variable, the histogram of the objective variable.
+When you click on each dataset row, you can confirm the number of data contained in them, the number of teacher data of each variable, the histogram of the objective variable.
 
 
 Hyper parameter setting

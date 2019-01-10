@@ -19,24 +19,20 @@ msgstr ""
 
 #: ../../rsts/renom_rg.rst:2
 msgid "APIs"
-msgstr ""
+msgstr "APIs"
 
 #: ../../rsts/renom_rg.rst:4
 msgid "ReNomRG also provides python APIs."
-msgstr ""
+msgstr "ReNomRGはpythonAPIを提供します。"
 
 #: ../../rsts/renom_rg.rst:6
 msgid "These APIs allows you to build graph-convolutional regression model."
-msgstr ""
+msgstr "これらのAPIはグラフコンボリューションを用いた回帰モデル作成に役立ちます。"
 
 #: ../../rsts/renom_rg.rst:9
 msgid "**# Model's for Regression.**"
-msgstr ""
+msgstr "回帰モデル"
 
 #: ../../rsts/renom_rg.rst:14
 msgid "**# Utility apis**"
-msgstr ""
-
-#~ msgid "These APIs allows you to build graph-comvolutional regression model."
-#~ msgstr ""
-
+msgstr "ユーティリティAPI"

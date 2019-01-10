@@ -26,7 +26,6 @@ msgid "Start the Application"
 msgstr "アプリケーションの起動"
 
 #: ../../rsts/how_to_use_gui.rst:7
-#, fuzzy
 msgid ""
 "ReNomRG is a single page web application. If your installation have done "
 "successfully, you can run application in any directory with following "
@@ -66,20 +65,20 @@ msgid "Place your dataset"
 msgstr "データセットの置き方"
 
 #: ../../rsts/how_to_use_gui.rst:38
-#, fuzzy
 msgid ""
 "When the server starts, ``datasrc``, ``storage``, ``scripts`` and "
 "``alembic`` directories and ``alembic.ini`` file will be created in the "
 "server running directory."
-msgstr "サーバが起動すると、サーバを起動したディレクトリに datasrcディレクトリとstorageディレクトリが作成されます。"
+msgstr ""
+"サーバが起動すると、サーバを起動したディレクトリに ``datasrc``, ``storage``, ``scripts``, ``alembic``ディレクトリ、``alembic.ini``ファイルが作成されます。"
 
 #: ../../rsts/how_to_use_gui.rst:41
 msgid "The directory structure is below."
-msgstr ""
+msgstr "ディレクトリ構成は以下のようになります。"
 
 #: ../../rsts/how_to_use_gui.rst:57
 msgid "<server_start_directory>"
-msgstr ""
+msgstr "<server_start_directory>"
 
 #: ../../rsts/how_to_use_gui.rst:45
 msgid ""
@@ -91,10 +90,11 @@ msgid ""
 "validation. |   └── prediction_set |       └── pred.pickle # pickle data "
 "for prediction. └── scripts"
 msgstr ""
+"└── alembic.ini        # データベース設定ファイル. └── alembic |   └── versions       # データベースマイグレーションファイル. |   └── env.py         # データベース環境ファイル. └── storage |   └── storage.db     # デフォルトデータベース(sqlite3). |   └── trained_weight # 学習済みweight. └── datasrc |   └── data.pickle    # 学習&バリデーション用データ. |   └── prediction_set |       └── pred.pickle # 予測用データ. └── scripts"
 
 #: ../../rsts/how_to_use_gui.rst:57
 msgid "└── userdefmodel.py # scripts for user defined model.(available any name.)"
-msgstr ""
+msgstr "└── userdefmodel.py # ユーザ定義モデルのスクリプトファイル.(名前は任意に設定可能)"
 
 #: ../../rsts/how_to_use_gui.rst:59
 msgid ""
@@ -108,7 +108,7 @@ msgstr "データのフォーマット"
 
 #: ../../rsts/how_to_use_gui.rst:64
 msgid "The format of input file is pickled pandas.DataFrame object."
-msgstr ""
+msgstr "ReNomRGのbetaバージョンでは、pickle化したpandas.DataFrameをアプリケーションに入力することができます。"
 
 #: ../../rsts/how_to_use_gui.rst:67
 msgid "Create Regression Model"
@@ -134,8 +134,7 @@ msgid ""
 "validation dataset will be randomly sampled from the data that is in the "
 "datasrc directory."
 msgstr ""
-"回帰モデルの学習には、学習データとバリデーションデータの作成が必要です。 データセットは学習とモデルの評価のためのバリデーションに用いられます。 "
-"ReNomRGでは、学習データセットとバリデーションデータセットはdatasrcディレクトリのデータからランダムにサンプリングされます。"
+"回帰モデルの学習には、学習データとバリデーションデータの作成が必要です。 データセットは学習とモデルの評価のためのバリデーションに用いられます。 ReNomRGでは、学習データセットとバリデーションデータセットはdatasrcディレクトリのデータからランダムにサンプリングされます。"
 
 #: ../../rsts/how_to_use_gui.rst:81
 msgid ""
@@ -154,8 +153,7 @@ msgid ""
 "ratio of training data. After filling all forms, push the confirm button "
 "to confirm the dataset."
 msgstr ""
-"データセット名、説明、学習データの比率を選択することができます。 "
-"フォームを入力し、confirmボタンを押すと、データセットの確認画面が表示されます。"
+"データセット名、説明、学習データの比率を選択することができます。 フォームを入力し、confirmボタンを押すと、データセットの確認画面が表示されます。"
 
 #: ../../rsts/how_to_use_gui.rst:95
 msgid ""
@@ -165,12 +163,10 @@ msgid ""
 " can confirm created datasets in the dataset page. To go to the dataset "
 "page, please follow the figure below."
 msgstr ""
-"次のようなグラフが表示されます。データセットに含まれるデータ数や学習データの比率、目的変数のヒストグラムを確認することができます。 "
-"データセットを保存するにはsaveボタンを押してください。 "
+"次のようなグラフが表示されます。データセットに含まれるデータ数や学習データの比率、目的変数のヒストグラムを確認することができます。 データセットを保存するにはsaveボタンを押してください。 データセットページでは、作成したデータセットを確認することができます。データセットページに移動するには次のような操作を行います。"
 "データセットページでは、作成したデータセットを確認することができます。データセットページに移動するには次のような操作を行います。"
 
 #: ../../rsts/how_to_use_gui.rst:103
-#, fuzzy
 msgid ""
 "When you click on each dataset row, you can confirm the number of data "
 "contained in them, the number of teacher data of each variable, the "
@@ -202,9 +198,7 @@ msgid ""
 "variables obtained from Gaussian kernel. DBSCAN-GCNN selects variables "
 "for convolution based on the Euclidean distance between variables."
 msgstr ""
-"CNN architecture: 回帰手法 C-GCNNは変数同士の相関係数を用いたインデックス行列を使って畳み込む変数を取得します。 "
-"Kernel-GCNNはガウスカーネルを用いた変数の類似度からインデックス行列を取得し、畳み込む変数を取得します。 DBSCAN-"
-"GCNNは変数間のユークリッド距離からインデックス行列を取得し、畳み込む変数を取得します。"
+"CNN architecture: 回帰手法 C-GCNNは変数同士の相関係数を用いたインデックス行列を使って畳み込む変数を取得します。 Kernel-GCNNはガウスカーネルを用いた変数の類似度からインデックス行列を取得し、畳み込む変数を取得します。 DBSCAN-GCNNは変数間のユークリッド距離からインデックス行列を取得し、畳み込む変数を取得します。"
 
 #: ../../rsts/how_to_use_gui.rst:124
 msgid ""
@@ -218,8 +212,7 @@ msgid ""
 "Convolution. The number of neighbors used when data are expanded as if "
 "they were images."
 msgstr ""
-"Graph Comvolution Params Number of "
-"neighborsはグラフコンボリューションのパラメータです。近傍の数はインデックス行列を取得する際に使います。"
+"Graph Comvolution Params Number of neighborsはグラフコンボリューションのパラメータです。近傍の数はインデックス行列を取得する際に使います。"
 
 #: ../../rsts/how_to_use_gui.rst:132
 msgid "Training Model"
@@ -239,13 +232,3 @@ msgstr "ReNomRGのアンインストール"
 #: ../../rsts/how_to_use_gui.rst:146
 msgid "ReNomRG can be uninstalled with the following pip command."
 msgstr "ReNomRGは次のコマンドでアンインストールすることができます。"
-
-#~ msgid "The ``datasrc`` directory has following folder structure."
-#~ msgstr "datasrcディレクトリでは次のようにデータを配置してください。"
-
-#~ msgid ""
-#~ "In the ReNomRG beta version, you "
-#~ "can enter a file that pickled "
-#~ "pandas.DataFrame into the application."
-#~ msgstr "ReNomRGのbetaバージョンでは、pickle化したpandas.DataFrameをアプリケーションに入力することができます。"
-

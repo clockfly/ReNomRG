@@ -5,12 +5,12 @@ ReNomRG GUIの使い方
 ------------------
 
 ReNomRGはシングルページウェブアプリケーションです。
-ReNomRGのbetaバージョンはReNomRGディレクトリの中でアプリケーションを起動する必要があります。
+インストールが成功している場合、以下のコマンドでアプリケーションを起動することができます。
 
 .. code-block :: shell
 
-    cd ReNomRG
-    python -m renom_rg # このコマンドでReNomRGのGUIが起動します。
+    cd workspace # workspaceは任意のディレクトリ。
+    renom_rg # このコマンドでReNomRGのGUIが起動します。
 
 ``renom_rg``コマンドは、次の引数を与えることができます。
 
@@ -21,7 +21,7 @@ ReNomRGのbetaバージョンはReNomRGディレクトリの中でアプリケ�
 
 .. code-block :: shell
 
-    python -m renom_rg --port 8888 # ReNomRGを8888ポートで起動する
+    renom_rg --port 8888 # ReNomRGを8888ポートで起動する
 
 サーバが起動できると、webブラウザを開き、
 サーバのアドレスを入力してください。
@@ -35,16 +35,27 @@ ReNomRGのbetaバージョンはReNomRGディレクトリの中でアプリケ�
 -----------------
 
 サーバが起動すると、サーバを起動したディレクトリに
-datasrcディレクトリとstorageディレクトリが作成されます。
+``datasrc``, ``storage``, ``scripts``, ``alembic``ディレクトリ、``alembic.ini``ファイルが作成されます。
 
-datasrcディレクトリでは次のようにデータを配置してください。
+ディレクトリ構成は以下のようになります。
 
 .. code-block :: shell
 
-    datasrc/
-      ├── data.pickle # 学習・バリデーションに用いるpandas.DataFrame
-      └── prediction_set
-            └── pred.pickle # 予測に用いるpandas.DataFrame
+<server_start_directory>
+    └── alembic.ini        # データベース設定ファイル.
+    └── alembic
+    |   └── versions       # データベースマイグレーションファイル.
+    |   └── env.py         # データベース環境ファイル.
+    └── storage
+    |   └── storage.db     # デフォルトデータベース(sqlite3).
+    |   └── trained_weight # 学習済みweight.
+    └── datasrc
+    |   └── data.pickle    # 学習&バリデーション用データ.
+    |   └── prediction_set
+    |       └── pred.pickle # 予測用データ.
+    └── scripts
+        └── userdefmodel.py # ユーザ定義モデルのスクリプトファイル.(名前は任意に設定可能)
+
 
 ReNomRGのbetaバージョンで読み込みが可能なデータは"data.pickle"と"pred.pickle"と名付けてください。
 
@@ -73,7 +84,7 @@ ReNomRGでは、学習データセットとバリデーションデータセッ�
 上図のように、datasrcからデータセットを作成します。データセットは作成すると変更できません。
 Newボタンを押してください。
 
-.. image:: /_static/image/dataset.png
+.. image:: /_static/image/add.png
 
 次のようなページが現れます。
 
