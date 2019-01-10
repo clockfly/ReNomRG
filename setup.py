@@ -55,7 +55,7 @@ class BuildNPM(distutils.command.build.build):
 
 setup(
     name="renom_rg",
-    version="0.0.0",
+    version="v0.0beta",
     entry_points=entry_points,
     packages=['renom_rg'],
     install_requires=requires,

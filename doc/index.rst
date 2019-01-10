@@ -14,12 +14,4 @@ Welcome to api's documentation!
    rsts/introduction
    rsts/how_to_use
    rsts/renom_rg
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   rsts/change_log

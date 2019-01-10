@@ -28,6 +28,7 @@ import renom as rm
 import renom.cuda
 from renom.cuda import set_cuda_active, release_mem_pool, use_device
 
+import renom_rg.db
 from renom_rg.server import DATASRC_DIR, DB_DIR_TRAINED_WEIGHT
 from renom_rg.server import wsgi_server
 from . import *
@@ -584,16 +585,15 @@ def _init_gpu():
 
 
 def _cp_alembic():
-    pathlist = [p for p in sys.path if "ReNomRG" in p]
-
+    rgdbpath = list(renom_rg.db.__path__)[0]
     # copy alembic.ini
-    inifile = os.path.join(pathlist[0], "alembic.ini")
+    inifile = os.path.join(rgdbpath, "alembic.ini")
     outfile = os.path.join(os.getcwd(), "alembic.ini")
     if not os.path.exists(outfile):
         shutil.copy(inifile, outfile)
 
     # copy alembic dir
-    alembicdir = os.path.join(pathlist[0], "alembic")
+    alembicdir = os.path.join(rgdbpath, "alembic")
     outdir = os.path.join(os.getcwd(), "alembic")
     if not os.path.isdir(outdir):
         shutil.copytree(alembicdir, outdir)

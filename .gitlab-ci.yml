@@ -20,5 +20,21 @@ before_script:
 
 flake8:
   script:
-    - flake8 renom_rg
+    - flake8 renom_rg/api
+    - flake8 renom_rg/server
     - pytest
+
+pages:
+  script:
+    - python3 setup.py bdist_wheel
+    - mkdir -p public/bin
+    - cp dist/* public/bin
+    - ls public/bin
+
+  artifacts:
+    paths:
+    - public
+
+  only:
+    - /^release\/.*$/
+    - /^v.*beta$/

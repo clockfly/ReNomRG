@@ -19,5 +19,4 @@ msgstr ""
 
 #: ../../rsts/how_to_use.rst:2
 msgid "How to Use"
-msgstr ""
-
+msgstr "ReNomRGの使い方"

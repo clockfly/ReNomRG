@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-05 17:19+0900\n"
+"POT-Creation-Date: 2019-01-10 16:13+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,21 +19,36 @@ msgstr ""
 
 #: ../../rsts/installation/main.rst:2
 msgid "Install ReNomRG"
-msgstr ""
+msgstr "ReNomRGのインストール"
 
 #: ../../rsts/installation/main.rst:4
 msgid "ReNomRG requires following python modules."
-msgstr ""
+msgstr "ReNomRGは以下のpythonモジュールが必要です。"
 
-#: ../../rsts/installation/main.rst:8
+#: ../../rsts/installation/main.rst:7
+msgid "Install by pip."
+msgstr "pipによるインストール"
+
+#: ../../rsts/installation/main.rst:9
+msgid ""
+"You can install ReNomRG by ``pip`` command. This is the simplest way for "
+"installation."
+msgstr "pipコマンドでReNomRGをインストールすることができます。これがもっとも簡単なインストール方法です。"
+
+#: ../../rsts/installation/main.rst:19
+msgid ""
+"This is ``linux OS`` only. If your OS is windows or MAC, please install "
+"ReNomRG from binary code."
+msgstr "このコマンドはLinuxOSのみ可能です。もしWindowsやMacなどのOSを使用している場合はソースコードからインストールしてください。"
+
+#: ../../rsts/installation/main.rst:24
 msgid "Install from source."
-msgstr ""
+msgstr "ソースコードからのインストール"
 
-#: ../../rsts/installation/main.rst:10
+#: ../../rsts/installation/main.rst:26
 msgid "If you install ReNomRG from source, Node.js is required."
-msgstr ""
+msgstr "もしReNomRGをソースコードからインストールする場合は、Node.jsが必要になります。"
 
-#: ../../rsts/installation/main.rst:22
+#: ../../rsts/installation/main.rst:38
 msgid "This requires ``node.js``."
-msgstr ""
-
+msgstr "Node.jsが必要です。"

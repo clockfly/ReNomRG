@@ -15,7 +15,7 @@ For example, convert data using correlation between variables.
 At first, you calculate correlation matrix.
 
 Then, get index of sorted correlation, and adopt k variables that is highest correlation per variables.
-So, convolute k variable that is adoped as one variable. k is hyper parameter.
+So, convolute k variable that is adopted as one variable. k is hyper parameter.
 
 Source Code
 -----------
