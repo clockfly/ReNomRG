@@ -30,8 +30,8 @@ Install from source.
         git clone https://github.com/ReNom-dev-team/ReNomRG.git
         cd ReNomRG/
         pip install -r requirements.txt
-        pip install -e .
         python setup.py build
+        pip install -e .
 
     .. note ::
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-05 17:52+0900\n"
+"POT-Creation-Date: 2019-01-11 10:07+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,23 +27,25 @@ msgstr ""
 
 #: of renom_rg.api.regression.gcnn.GraphCNN:1
 msgid "Graph Comvolution Layer."
-msgstr ""
+msgstr "グラフコンボリューションのレイヤー"
 
 #: of renom_rg.api.regression.gcnn.GraphCNN:3
 msgid "The dimensionality of the output."
-msgstr ""
+msgstr "出力チャンネル数"
 
-#: of renom_rg.api.regression.gcnn.GCNet:3
-#: renom_rg.api.regression.gcnn.GraphCNN:4
+#: of renom_rg.api.regression.gcnn.GCNet:4
+#: renom_rg.api.regression.gcnn.GraphCNN:5
 msgid "Array of indexes for comvolution."
-msgstr ""
+msgstr "畳み込みに使用するインデックス行列"
 
-#: of renom_rg.api.regression.gcnn.GraphCNN:5
+#: of renom_rg.api.regression.gcnn.GraphCNN:7
 msgid "Filter size of the convolution kernel."
-msgstr ""
+msgstr "畳み込みに使用する近傍数"
 
-#: of renom_rg.api.regression.gcnn.GCNet:11
-#: renom_rg.api.regression.gcnn.GraphCNN:9
+#: of renom_rg.api.regression.gcnn.GCNet:17
+#: renom_rg.api.regression.gcnn.GCNet.forward:14
+#: renom_rg.api.regression.gcnn.GCNet.predict:13
+#: renom_rg.api.regression.gcnn.GraphCNN:12
 msgid "Example"
 msgstr ""
 
@@ -51,26 +53,47 @@ msgstr ""
 msgid "Bases: :class:`renom.layers.function.parameterized.Model`"
 msgstr ""
 
-#: of renom_rg.api.regression.gcnn.GCNet:1
+#: of renom_rg.api.regression.gcnn.GCNet:2
 msgid "Graph Comvolution Network."
-msgstr ""
+msgstr "GraphCNNを用いたサンプルネットワーク"
 
-#: of renom_rg.api.regression.gcnn.GCNet:4
-msgid "Number of target data."
-msgstr ""
-
-#: of renom_rg.api.regression.gcnn.GCNet:5
-msgid "Unit size of dense layers."
-msgstr ""
+#: of renom_rg.api.regression.gcnn.GCNet:2
+msgid "This network has 3 GraphCNN layer and 2 FC layer and 1 output layer."
+msgstr "このネットワークはGraphCNN3層、全結合層2層、そして出力層というネットワークになっています。"
 
 #: of renom_rg.api.regression.gcnn.GCNet:6
+#, fuzzy
+msgid "Number of unit size of output layer."
+msgstr "全結合層のユニットサイズのタブル"
+
+#: of renom_rg.api.regression.gcnn.GCNet:8
+msgid "Tuple of unit size of dense layers."
+msgstr "全結合層のユニットサイズのタブル"
+
+#: of renom_rg.api.regression.gcnn.GCNet:10
 msgid "Filter size of convolution layers."
-msgstr ""
+msgstr "畳み込みに使用する近傍の数"
 
-#: of renom_rg.api.regression.gcnn.GCNet:7
-msgid "Channel size of convolution layers."
-msgstr ""
+#: of renom_rg.api.regression.gcnn.GCNet:12
+msgid "Tuple of channel size of convolution layers."
+msgstr "畳み込みに使用するチャンネル数のタプル"
 
-#~ msgid "Parameters"
-#~ msgstr ""
+#: of renom_rg.api.regression.gcnn.GCNet.forward:1
+msgid ""
+"Performs forward propagation. This function can be called using "
+"``__call__`` method. See following example of method usage."
+msgstr "順伝播を実行します。この関数は__call__メソッドにより呼ばれます。メソッドの利用例については以下を参照してください。"
 
+#: of renom_rg.api.regression.gcnn.GCNet.forward:5
+#: renom_rg.api.regression.gcnn.GCNet.predict:4
+msgid "Input data as ndarray."
+msgstr "ndarrayの入力データ"
+
+#: of renom_rg.api.regression.gcnn.GCNet.forward:9
+#: renom_rg.api.regression.gcnn.GCNet.predict:8
+msgid "predicted values for input ndarray."
+msgstr "入力したndarrayに対する予測値"
+
+#: of renom_rg.api.regression.gcnn.GCNet.predict:1
+msgid "Perform prediction. Execute forward function in inference mode."
+msgstr "予測を実行します。推論モードでforward関数を実行します。"

@@ -47,13 +47,13 @@ Then install all required packages.
 
 `pip install -r requirements.txt`
 
-And install renom_rg module using following command.
-
-`pip install -e .`
-
 At last, build extension modules.
 
 `python setup.py build`
+
+And install renom_rg module using following command.
+
+`pip install -e .`
 
 ## How to use
 
