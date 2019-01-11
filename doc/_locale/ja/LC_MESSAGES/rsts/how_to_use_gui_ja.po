@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 16:13+0900\n"
+"POT-Creation-Date: 2019-01-11 10:07+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,218 +17,411 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: ../../rsts/how_to_use_gui.rst:2
-msgid "How to Use ReNomRG GUI tool"
-msgstr "ReNomRG GUIの使い方"
-
-#: ../../rsts/how_to_use_gui.rst:5
-msgid "Start the Application"
-msgstr "アプリケーションの起動"
-
-#: ../../rsts/how_to_use_gui.rst:7
-msgid ""
-"ReNomRG is a single page web application. If your installation have done "
-"successfully, you can run application in any directory with following "
-"commands."
+#: ../../rsts/how_to_use_gui_ja.rst:2
+msgid "ReNomRG GUIの使い方"
 msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:5
+msgid "アプリケーションの起動"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:7
+msgid ""
 "ReNomRGはシングルページウェブアプリケーションです。 "
-"ReNomRGのbetaバージョンはReNomRGディレクトリの中でアプリケーションを起動する必要があります。"
-
-#: ../../rsts/how_to_use_gui.rst:16
-msgid "For the command ``renom_rg``, you can give following arguments."
-msgstr "``renom_rg``コマンドは、次の引数を与えることができます。"
-
-#: ../../rsts/how_to_use_gui.rst:18
-msgid "--host : This specifies server address."
-msgstr "--host : サーバのIPアドレス"
-
-#: ../../rsts/how_to_use_gui.rst:19
-msgid "--port : This specifies port number of the server."
-msgstr "--port : サーバのポート番号"
-
-#: ../../rsts/how_to_use_gui.rst:21
-msgid "For example, following code runs ReNomRG with port 8888."
-msgstr "例えば、ReNomRGを8888ポートで起動する場合は次のコマンドを入力します。"
-
-#: ../../rsts/how_to_use_gui.rst:27
-msgid ""
-"If the application server runs, open web browser and type the server "
-"address to the address bar like this."
-msgstr "サーバが起動できると、webブラウザを開き、 サーバのアドレスを入力してください。"
-
-#: ../../rsts/how_to_use_gui.rst:33
-msgid "Then the application will be appeared."
-msgstr "するとアプリケーションの画面が表示されます。"
-
-#: ../../rsts/how_to_use_gui.rst:36
-msgid "Place your dataset"
-msgstr "データセットの置き方"
-
-#: ../../rsts/how_to_use_gui.rst:38
-msgid ""
-"When the server starts, ``datasrc``, ``storage``, ``scripts`` and "
-"``alembic`` directories and ``alembic.ini`` file will be created in the "
-"server running directory."
+"インストールが成功している場合、以下のコマンドでアプリケーションを起動することができます。"
 msgstr ""
-"サーバが起動すると、サーバを起動したディレクトリに ``datasrc``, ``storage``, ``scripts``, ``alembic``ディレクトリ、``alembic.ini``ファイルが作成されます。"
 
-#: ../../rsts/how_to_use_gui.rst:41
-msgid "The directory structure is below."
-msgstr "ディレクトリ構成は以下のようになります。"
+#: ../../rsts/how_to_use_gui_ja.rst:15
+msgid "``renom_rg``コマンドは、次の引数を与えることができます。"
+msgstr ""
 
-#: ../../rsts/how_to_use_gui.rst:57
+#: ../../rsts/how_to_use_gui_ja.rst:17
+msgid "--host : サーバのIPアドレス"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:18
+msgid "--port : サーバのポート番号"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:20
+msgid "例えば、ReNomRGを8888ポートで起動する場合は次のコマンドを入力します。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:26
+msgid "サーバが起動できると、webブラウザを開き、 サーバのアドレスを入力してください。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:32
+msgid "するとアプリケーションの画面が表示されます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:35
+msgid "データセットの置き方"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:37
+msgid ""
+"サーバが起動すると、サーバを起動したディレクトリに ``datasrc``, ``storage``, ``scripts``, "
+"``alembic``ディレクトリ、``alembic.ini``ファイルが作成されます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:40
+msgid "ディレクトリ構成は以下のようになります。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:58
 msgid "<server_start_directory>"
 msgstr "<server_start_directory>"
 
-#: ../../rsts/how_to_use_gui.rst:45
+#: ../../rsts/how_to_use_gui_ja.rst:45
 msgid ""
-"└── alembic.ini        # database setting file. └── alembic |   └── "
-"versions       # database migration files. |   └── env.py         # "
-"database environment file. └── storage |   └── storage.db     # default "
-"database(sqlite3). |   └── trained_weight # weights for regression "
-"models. └── datasrc |   └── data.pickle    # pickle data for train & "
-"validation. |   └── prediction_set |       └── pred.pickle # pickle data "
-"for prediction. └── scripts"
+"└── alembic.ini        # データベース設定ファイル. └── alembic |   └── versions"
+"       # データベースマイグレーションファイル. |   └── env.py         # データベース環境ファイル. └── "
+"storage |   └── storage.db     # デフォルトデータベース(sqlite3). |   └── "
+"trained_weight # 学習済みweight. └── datasrc |   └── data.pickle    # "
+"学習&バリデーション用データ. |   └── prediction_set |       └── pred.pickle # 予測用データ. "
+"└── scripts"
 msgstr ""
-"└── alembic.ini        # データベース設定ファイル. └── alembic |   └── versions       # データベースマイグレーションファイル. |   └── env.py         # データベース環境ファイル. └── storage |   └── storage.db     # デフォルトデータベース(sqlite3). |   └── trained_weight # 学習済みweight. └── datasrc |   └── data.pickle    # 学習&バリデーション用データ. |   └── prediction_set |       └── pred.pickle # 予測用データ. └── scripts"
 
-#: ../../rsts/how_to_use_gui.rst:57
-msgid "└── userdefmodel.py # scripts for user defined model.(available any name.)"
-msgstr "└── userdefmodel.py # ユーザ定義モデルのスクリプトファイル.(名前は任意に設定可能)"
-
-#: ../../rsts/how_to_use_gui.rst:59
-msgid ""
-"The data that can be read with ReNomRG beta must be named \"data.pickle\""
-" and \"pred.pickle\"."
-msgstr "ReNomRGのbetaバージョンで読み込みが可能なデータは\"data.pickle\"と\"pred.pickle\"と名付けてください。"
-
-#: ../../rsts/how_to_use_gui.rst:62
-msgid "Format of the data"
-msgstr "データのフォーマット"
-
-#: ../../rsts/how_to_use_gui.rst:64
-msgid "The format of input file is pickled pandas.DataFrame object."
-msgstr "ReNomRGのbetaバージョンでは、pickle化したpandas.DataFrameをアプリケーションに入力することができます。"
-
-#: ../../rsts/how_to_use_gui.rst:67
-msgid "Create Regression Model"
-msgstr "回帰モデルの作成"
-
-#: ../../rsts/how_to_use_gui.rst:69
-msgid ""
-"So far, the server and dataset are prepared. Let's build a regression "
-"model. For building a model, you have to specify ``dataset`` and ``hyper "
-"parameters``."
-msgstr "これで、サーバとデータセットが準備できました。それではモデルを開発しましょう。 モデルを作成するには、データセットとハイパーパラメータを設定します。"
-
-#: ../../rsts/how_to_use_gui.rst:73
-msgid "Create Dataset"
-msgstr "データセットの作成"
-
-#: ../../rsts/how_to_use_gui.rst:75
-msgid ""
-"For training a machine learning model, you have to prepare training "
-"dataset and validation dataset. Training dataset is used for training "
-"model, and validation dataset is used for evaluating a model in terms of "
-"how accurately predicted value is. In ReNomRG, training dataset and "
-"validation dataset will be randomly sampled from the data that is in the "
-"datasrc directory."
+#: ../../rsts/how_to_use_gui_ja.rst:57
+msgid "└── userdefmodel.py # ユーザ定義モデルのスクリプトファイル.(名前は任意に設定可能)"
 msgstr ""
-"回帰モデルの学習には、学習データとバリデーションデータの作成が必要です。 データセットは学習とモデルの評価のためのバリデーションに用いられます。 ReNomRGでは、学習データセットとバリデーションデータセットはdatasrcディレクトリのデータからランダムにサンプリングされます。"
 
-#: ../../rsts/how_to_use_gui.rst:81
-msgid ""
-"According to the above figure, you can create dataset from the datasrc. "
-"Once the dataset is created, its content will not be changed. Please "
-"press new button."
-msgstr "上図のように、datasrcからデータセットを作成します。データセットは作成すると変更できません。 Newボタンを押してください。"
-
-#: ../../rsts/how_to_use_gui.rst:86
-msgid "The following page will be appeared."
-msgstr "次のようなページが現れます。"
-
-#: ../../rsts/how_to_use_gui.rst:90
-msgid ""
-"As you can see, you can specify the dataset name, ''description'' and "
-"ratio of training data. After filling all forms, push the confirm button "
-"to confirm the dataset."
+#: ../../rsts/how_to_use_gui_ja.rst:60
+msgid "ReNomRGのbetaバージョンで読み込みが可能なデータは\"data.pickle\"と\"pred.pickle\"と名付けてください。"
 msgstr ""
-"データセット名、説明、学習データの比率を選択することができます。 フォームを入力し、confirmボタンを押すと、データセットの確認画面が表示されます。"
 
-#: ../../rsts/how_to_use_gui.rst:95
-msgid ""
-"Then following graph will appear. You can confirm total number of data "
-"and ratio of training data contained in the dataset and the histogram of "
-"the objective variable. For saving the dataset, push the save button. You"
-" can confirm created datasets in the dataset page. To go to the dataset "
-"page, please follow the figure below."
+#: ../../rsts/how_to_use_gui_ja.rst:64
+msgid "データのフォーマット"
 msgstr ""
-"次のようなグラフが表示されます。データセットに含まれるデータ数や学習データの比率、目的変数のヒストグラムを確認することができます。 データセットを保存するにはsaveボタンを押してください。 データセットページでは、作成したデータセットを確認することができます。データセットページに移動するには次のような操作を行います。"
+
+#: ../../rsts/how_to_use_gui_ja.rst:66
+msgid "ReNomRGのbetaバージョンでは、pickle化したpandas.DataFrameをアプリケーションに入力することができます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:70
+msgid "回帰モデルの作成"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:72
+msgid "これで、サーバとデータセットが準備できました。それではモデルを開発しましょう。 モデルを作成するには、データセットとハイパーパラメータを設定します。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:76
+msgid "データセットの作成"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:78
+msgid ""
+"回帰モデルの学習には、学習データとバリデーションデータの作成が必要です。 データセットは学習とモデルの評価のためのバリデーションに用いられます。 "
+"ReNomRGでは、学習データセットとバリデーションデータセットはdatasrcディレクトリのデータからランダムにサンプリングされます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:84
+msgid "上図のように、datasrcからデータセットを作成します。データセットは作成すると変更できません。 Newボタンを押してください。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:89
+msgid "次のようなページが現れます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:93
+msgid ""
+"データセット名、説明、学習データの比率を選択することができます。 "
+"フォームを入力し、confirmボタンを押すと、データセットの確認画面が表示されます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:98
+msgid ""
+"次のようなグラフが表示されます。データセットに含まれるデータ数や学習データの比率、目的変数のヒストグラムを確認することができます。 "
+"データセットを保存するにはsaveボタンを押してください。 "
 "データセットページでは、作成したデータセットを確認することができます。データセットページに移動するには次のような操作を行います。"
-
-#: ../../rsts/how_to_use_gui.rst:103
-msgid ""
-"When you click on each dataset row, you can confirm the number of data "
-"contained in them, the number of teacher data of each variable, the "
-"histogram of the objective variable."
-msgstr "データセット名をクリックすると、データセット内のデータ数や、目的変数のヒストグラムを確認することができます。"
-
-#: ../../rsts/how_to_use_gui.rst:107
-msgid "Hyper parameter setting"
-msgstr "ハイパーパラメータの設定"
-
-#: ../../rsts/how_to_use_gui.rst:109
-msgid ""
-"All the materials have been completed so far. Let's create a model and "
-"train it. To create a model, press the + New button. The model setting "
-"hyper parameter appears as shown in the figure below."
-msgstr "それでは学習を開始しましょう。 モデルを作成するには、Newボタンを押してください。 ハイパーパラメータの設定モーダルが表示されます。"
-
-#: ../../rsts/how_to_use_gui.rst:116
-msgid ""
-"As you can see in figure above, you can specify the following parameters:"
-" Dataset Name: Dataset for training."
-msgstr "次のパラメータを設定することができます。 Dataset Name: データセット名"
-
-#: ../../rsts/how_to_use_gui.rst:119
-msgid ""
-"CNN architecture: Regression algorithm. C-GCNN selects variables for "
-"convolution based on correlation coefficient between variables. Kernel-"
-"GCNN selects variables for convolution based on similarities between "
-"variables obtained from Gaussian kernel. DBSCAN-GCNN selects variables "
-"for convolution based on the Euclidean distance between variables."
 msgstr ""
-"CNN architecture: 回帰手法 C-GCNNは変数同士の相関係数を用いたインデックス行列を使って畳み込む変数を取得します。 Kernel-GCNNはガウスカーネルを用いた変数の類似度からインデックス行列を取得し、畳み込む変数を取得します。 DBSCAN-GCNNは変数間のユークリッド距離からインデックス行列を取得し、畳み込む変数を取得します。"
 
-#: ../../rsts/how_to_use_gui.rst:124
+#: ../../rsts/how_to_use_gui_ja.rst:106
+msgid "データセット名をクリックすると、データセット内のデータ数や、目的変数のヒストグラムを確認することができます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:110
+msgid "ハイパーパラメータの設定"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:112
+msgid "それでは学習を開始しましょう。 モデルを作成するには、Newボタンを押してください。 ハイパーパラメータの設定モーダルが表示されます。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:119
+msgid "次のパラメータを設定することができます。 Dataset Name: データセット名"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:122
 msgid ""
-"Training loop setting: Number of training and batch size. Batch Size "
-"Total Epoch"
+"CNN architecture: 回帰手法 C-GCNNは変数同士の相関係数を用いたインデックス行列を使って畳み込む変数を取得します。 "
+"Kernel-GCNNはガウスカーネルを用いた変数の類似度からインデックス行列を取得し、畳み込む変数を取得します。 DBSCAN-"
+"GCNNは変数間のユークリッド距離からインデックス行列を取得し、畳み込む変数を取得します。"
+msgstr ""
+
+#: ../../rsts/how_to_use_gui_ja.rst:127
+#, fuzzy
+msgid "Training loop setting: 学習回数とバッチサイス Batch Size Total Epoch"
 msgstr "Training loop setting: 学習回数とバッチサイス Batch Size Total Epoch"
 
-#: ../../rsts/how_to_use_gui.rst:128
+#: ../../rsts/how_to_use_gui_ja.rst:131
 msgid ""
-"Graph Comvolution Params Number of neighbors is parameters of Graph "
-"Convolution. The number of neighbors used when data are expanded as if "
-"they were images."
+"Graph Comvolution Params Number of "
+"neighborsはグラフコンボリューションのパラメータです。近傍の数はインデックス行列を取得する際に使います。"
 msgstr ""
-"Graph Comvolution Params Number of neighborsはグラフコンボリューションのパラメータです。近傍の数はインデックス行列を取得する際に使います。"
 
-#: ../../rsts/how_to_use_gui.rst:132
-msgid "Training Model"
-msgstr "学習モデル"
+#: ../../rsts/how_to_use_gui_ja.rst:135
+msgid "学習モデル"
+msgstr ""
 
-#: ../../rsts/how_to_use_gui.rst:134
-msgid ""
-"When the hyper parameter setting is completed, press the [Run] button to "
-"start the training. When training begins, the model is displayed in the "
-"model list and a progress bar appears."
-msgstr "ハイパーパラメータの設定が完了したらRunボタンを押してください。 学習が始まると、進捗が表示されます。"
+#: ../../rsts/how_to_use_gui_ja.rst:137
+msgid "ハイパーパラメータの設定が完了したらRunボタンを押してください。 学習が始まると、進捗が表示されます。"
+msgstr ""
 
-#: ../../rsts/how_to_use_gui.rst:140
-msgid "Uninstall ReNomRG"
-msgstr "ReNomRGのアンインストール"
+#: ../../rsts/how_to_use_gui_ja.rst:143
+msgid "ReNomRGのアンインストール"
+msgstr ""
 
-#: ../../rsts/how_to_use_gui.rst:146
-msgid "ReNomRG can be uninstalled with the following pip command."
-msgstr "ReNomRGは次のコマンドでアンインストールすることができます。"
+#: ../../rsts/how_to_use_gui_ja.rst:149
+msgid "ReNomRGは次のコマンドでアンインストールすることができます。"
+msgstr ""
+
+#~ msgid "How to Use ReNomRG GUI tool"
+#~ msgstr "ReNomRG GUIの使い方"
+
+#~ msgid "Start the Application"
+#~ msgstr "アプリケーションの起動"
+
+#~ msgid ""
+#~ "ReNomRG is a single page web "
+#~ "application. If your installation have "
+#~ "done successfully, you can run "
+#~ "application in any directory with "
+#~ "following commands."
+#~ msgstr ""
+#~ "ReNomRGはシングルページウェブアプリケーションです。 "
+#~ "ReNomRGのbetaバージョンはReNomRGディレクトリの中でアプリケーションを起動する必要があります。"
+
+#~ msgid "For the command ``renom_rg``, you can give following arguments."
+#~ msgstr "``renom_rg``コマンドは、次の引数を与えることができます。"
+
+#~ msgid "--host : This specifies server address."
+#~ msgstr "--host : サーバのIPアドレス"
+
+#~ msgid "--port : This specifies port number of the server."
+#~ msgstr "--port : サーバのポート番号"
+
+#~ msgid "For example, following code runs ReNomRG with port 8888."
+#~ msgstr "例えば、ReNomRGを8888ポートで起動する場合は次のコマンドを入力します。"
+
+#~ msgid ""
+#~ "If the application server runs, open "
+#~ "web browser and type the server "
+#~ "address to the address bar like "
+#~ "this."
+#~ msgstr "サーバが起動できると、webブラウザを開き、 サーバのアドレスを入力してください。"
+
+#~ msgid "Then the application will be appeared."
+#~ msgstr "するとアプリケーションの画面が表示されます。"
+
+#~ msgid "Place your dataset"
+#~ msgstr "データセットの置き方"
+
+#~ msgid ""
+#~ "When the server starts, ``datasrc``, "
+#~ "``storage``, ``scripts`` and ``alembic`` "
+#~ "directories and ``alembic.ini`` file will "
+#~ "be created in the server running "
+#~ "directory."
+#~ msgstr ""
+#~ "サーバが起動すると、サーバを起動したディレクトリに ``datasrc``, ``storage``, "
+#~ "``scripts``, ``alembic``ディレクトリ、``alembic.ini``ファイルが作成されます。"
+
+#~ msgid "The directory structure is below."
+#~ msgstr "ディレクトリ構成は以下のようになります。"
+
+#~ msgid ""
+#~ "└── alembic.ini        # database setting "
+#~ "file. └── alembic |   └── versions"
+#~ "       # database migration files. |   "
+#~ "└── env.py         # database environment "
+#~ "file. └── storage |   └── storage.db"
+#~ "     # default database(sqlite3). |   └──"
+#~ " trained_weight # weights for regression"
+#~ " models. └── datasrc |   └── "
+#~ "data.pickle    # pickle data for train"
+#~ " & validation. |   └── prediction_set "
+#~ "|       └── pred.pickle # pickle data"
+#~ " for prediction. └── scripts"
+#~ msgstr ""
+#~ "└── alembic.ini        # データベース設定ファイル. └── "
+#~ "alembic |   └── versions       # "
+#~ "データベースマイグレーションファイル. |   └── env.py         #"
+#~ " データベース環境ファイル. └── storage |   └── "
+#~ "storage.db     # デフォルトデータベース(sqlite3). |   └──"
+#~ " trained_weight # 学習済みweight. └── datasrc"
+#~ " |   └── data.pickle    # 学習&バリデーション用データ."
+#~ " |   └── prediction_set |       └── "
+#~ "pred.pickle # 予測用データ. └── scripts"
+
+#~ msgid ""
+#~ "└── userdefmodel.py # scripts for user"
+#~ " defined model.(available any name.)"
+#~ msgstr "└── userdefmodel.py # ユーザ定義モデルのスクリプトファイル.(名前は任意に設定可能)"
+
+#~ msgid ""
+#~ "The data that can be read with "
+#~ "ReNomRG beta must be named "
+#~ "\"data.pickle\" and \"pred.pickle\"."
+#~ msgstr "ReNomRGのbetaバージョンで読み込みが可能なデータは\"data.pickle\"と\"pred.pickle\"と名付けてください。"
+
+#~ msgid "Format of the data"
+#~ msgstr "データのフォーマット"
+
+#~ msgid "The format of input file is pickled pandas.DataFrame object."
+#~ msgstr "ReNomRGのbetaバージョンでは、pickle化したpandas.DataFrameをアプリケーションに入力することができます。"
+
+#~ msgid "Create Regression Model"
+#~ msgstr "回帰モデルの作成"
+
+#~ msgid ""
+#~ "So far, the server and dataset are"
+#~ " prepared. Let's build a regression "
+#~ "model. For building a model, you "
+#~ "have to specify ``dataset`` and ``hyper"
+#~ " parameters``."
+#~ msgstr ""
+#~ "これで、サーバとデータセットが準備できました。それではモデルを開発しましょう。 "
+#~ "モデルを作成するには、データセットとハイパーパラメータを設定します。"
+
+#~ msgid "Create Dataset"
+#~ msgstr "データセットの作成"
+
+#~ msgid ""
+#~ "For training a machine learning model,"
+#~ " you have to prepare training dataset"
+#~ " and validation dataset. Training dataset"
+#~ " is used for training model, and "
+#~ "validation dataset is used for "
+#~ "evaluating a model in terms of how"
+#~ " accurately predicted value is. In "
+#~ "ReNomRG, training dataset and validation "
+#~ "dataset will be randomly sampled from"
+#~ " the data that is in the "
+#~ "datasrc directory."
+#~ msgstr ""
+#~ "回帰モデルの学習には、学習データとバリデーションデータの作成が必要です。 "
+#~ "データセットは学習とモデルの評価のためのバリデーションに用いられます。 "
+#~ "ReNomRGでは、学習データセットとバリデーションデータセットはdatasrcディレクトリのデータからランダムにサンプリングされます。"
+
+#~ msgid ""
+#~ "According to the above figure, you "
+#~ "can create dataset from the datasrc. "
+#~ "Once the dataset is created, its "
+#~ "content will not be changed. Please "
+#~ "press new button."
+#~ msgstr "上図のように、datasrcからデータセットを作成します。データセットは作成すると変更できません。 Newボタンを押してください。"
+
+#~ msgid "The following page will be appeared."
+#~ msgstr "次のようなページが現れます。"
+
+#~ msgid ""
+#~ "As you can see, you can specify"
+#~ " the dataset name, ''description'' and "
+#~ "ratio of training data. After filling"
+#~ " all forms, push the confirm button"
+#~ " to confirm the dataset."
+#~ msgstr ""
+#~ "データセット名、説明、学習データの比率を選択することができます。 "
+#~ "フォームを入力し、confirmボタンを押すと、データセットの確認画面が表示されます。"
+
+#~ msgid ""
+#~ "Then following graph will appear. You"
+#~ " can confirm total number of data "
+#~ "and ratio of training data contained "
+#~ "in the dataset and the histogram "
+#~ "of the objective variable. For saving"
+#~ " the dataset, push the save button."
+#~ " You can confirm created datasets in"
+#~ " the dataset page. To go to the"
+#~ " dataset page, please follow the "
+#~ "figure below."
+#~ msgstr ""
+#~ "次のようなグラフが表示されます。データセットに含まれるデータ数や学習データの比率、目的変数のヒストグラムを確認することができます。 "
+#~ "データセットを保存するにはsaveボタンを押してください。 "
+#~ "データセットページでは、作成したデータセットを確認することができます。データセットページに移動するには次のような操作を行います。データセットページでは、作成したデータセットを確認することができます。データセットページに移動するには次のような操作を行います。"
+
+#~ msgid ""
+#~ "When you click on each dataset "
+#~ "row, you can confirm the number of"
+#~ " data contained in them, the number"
+#~ " of teacher data of each variable,"
+#~ " the histogram of the objective "
+#~ "variable."
+#~ msgstr "データセット名をクリックすると、データセット内のデータ数や、目的変数のヒストグラムを確認することができます。"
+
+#~ msgid "Hyper parameter setting"
+#~ msgstr "ハイパーパラメータの設定"
+
+#~ msgid ""
+#~ "All the materials have been completed"
+#~ " so far. Let's create a model "
+#~ "and train it. To create a model,"
+#~ " press the + New button. The "
+#~ "model setting hyper parameter appears as"
+#~ " shown in the figure below."
+#~ msgstr "それでは学習を開始しましょう。 モデルを作成するには、Newボタンを押してください。 ハイパーパラメータの設定モーダルが表示されます。"
+
+#~ msgid ""
+#~ "As you can see in figure above,"
+#~ " you can specify the following "
+#~ "parameters: Dataset Name: Dataset for "
+#~ "training."
+#~ msgstr "次のパラメータを設定することができます。 Dataset Name: データセット名"
+
+#~ msgid ""
+#~ "CNN architecture: Regression algorithm. C-GCNN"
+#~ " selects variables for convolution based"
+#~ " on correlation coefficient between "
+#~ "variables. Kernel-GCNN selects variables "
+#~ "for convolution based on similarities "
+#~ "between variables obtained from Gaussian "
+#~ "kernel. DBSCAN-GCNN selects variables "
+#~ "for convolution based on the Euclidean"
+#~ " distance between variables."
+#~ msgstr ""
+#~ "CNN architecture: 回帰手法 "
+#~ "C-GCNNは変数同士の相関係数を用いたインデックス行列を使って畳み込む変数を取得します。 Kernel-"
+#~ "GCNNはガウスカーネルを用いた変数の類似度からインデックス行列を取得し、畳み込む変数を取得します。 DBSCAN-"
+#~ "GCNNは変数間のユークリッド距離からインデックス行列を取得し、畳み込む変数を取得します。"
+
+#~ msgid ""
+#~ "Graph Comvolution Params Number of "
+#~ "neighbors is parameters of Graph "
+#~ "Convolution. The number of neighbors "
+#~ "used when data are expanded as if"
+#~ " they were images."
+#~ msgstr ""
+#~ "Graph Comvolution Params Number of "
+#~ "neighborsはグラフコンボリューションのパラメータです。近傍の数はインデックス行列を取得する際に使います。"
+
+#~ msgid "Training Model"
+#~ msgstr "学習モデル"
+
+#~ msgid ""
+#~ "When the hyper parameter setting is "
+#~ "completed, press the [Run] button to "
+#~ "start the training. When training "
+#~ "begins, the model is displayed in "
+#~ "the model list and a progress bar"
+#~ " appears."
+#~ msgstr "ハイパーパラメータの設定が完了したらRunボタンを押してください。 学習が始まると、進捗が表示されます。"
+
+#~ msgid "Uninstall ReNomRG"
+#~ msgstr "ReNomRGのアンインストール"
+
+#~ msgid "ReNomRG can be uninstalled with the following pip command."
+#~ msgstr "ReNomRGは次のコマンドでアンインストールすることができます。"
+

@@ -27,35 +27,34 @@ msgstr ""
 
 #: of renom_rg.api.utility.feature_graph.get_corr_graph:1
 msgid "Get correlation feature graph."
-msgstr ""
+msgstr "相関を用いたインデックス行列を取得します。"
 
 #: of renom_rg.api.utility.feature_graph.get_corr_graph:3
 #: renom_rg.api.utility.feature_graph.get_dbscan_graph:3
 #: renom_rg.api.utility.feature_graph.get_kernel_graph:3
 msgid "Number of neighbors."
-msgstr ""
+msgstr "近傍の数"
 
 #: of renom_rg.api.utility.feature_graph.get_corr_graph:6
 #: renom_rg.api.utility.feature_graph.get_dbscan_graph:6
 #: renom_rg.api.utility.feature_graph.get_kernel_graph:7
 msgid "This returns matrix of neighbrs indexes per variables."
-msgstr ""
+msgstr "変数ごとの近傍のインデックスの行列を返します。"
 
 #: of renom_rg.api.utility.feature_graph.get_kernel_graph:1
 msgid "Get kernel feature graph."
-msgstr ""
+msgstr "カーネルを用いたインデックス行列を取得します。"
 
 #: of renom_rg.api.utility.feature_graph.get_kernel_graph:4
 msgid "Bandwidth."
-msgstr ""
+msgstr "カーネル幅"
 
 #: of renom_rg.api.utility.feature_graph.get_dbscan_graph:1
 msgid "Get DBSCAN feature graph."
-msgstr ""
+msgstr "ユークリッド距離を用いたインデックス行列を返します。"
 
 #~ msgid "renom\\_rg.api.utility"
 #~ msgstr ""
 
 #~ msgid "renom\\_rg.api.utility.feature_graph"
 #~ msgstr ""
-

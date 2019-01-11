@@ -15,3 +15,8 @@ These APIs allows you to build graph-convolutional regression model.
 
 .. toctree::
     renom_rg.api.utility
+
+**# Interface apis**
+
+.. toctree::
+    renom_rg.api.interface

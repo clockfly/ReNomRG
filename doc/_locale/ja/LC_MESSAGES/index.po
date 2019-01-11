@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 16:13+0900\n"
+"POT-Creation-Date: 2019-01-11 10:07+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,5 +18,9 @@ msgstr ""
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../index.rst:7
-msgid "Welcome to api's documentation!"
+msgid "ReNomRG v0.1beta"
 msgstr ""
+
+#~ msgid "Welcome to api's documentation!"
+#~ msgstr ""
+
