@@ -97,14 +97,18 @@ def calc_confidence_area(true_data, pred_data):
     confidence_area = []
     for j, d in enumerate(true_data):
         hist, bins = np.histogram(d, bins=num_bin)
+
         confidence_data = None
         for i in range(num_bin):
             true_data_index = np.logical_and(bins[i] < d, d < bins[i + 1])
             pred_data_in_bin = pred_data[j][true_data_index]
 
-            m = np.mean(pred_data_in_bin)
-            sd = np.sqrt(np.sum((pred_data_in_bin - m)**2) / len(pred_data_in_bin))
-            c = np.array([m - sd * 2, m - sd, m, m + sd, m + sd * 2]).reshape(1, -1)
+            if len(pred_data_in_bin) > 0:
+                m = np.mean(pred_data_in_bin)
+                sd = np.sqrt(np.sum((pred_data_in_bin - m)**2) / len(pred_data_in_bin))
+                c = np.array([m - sd * 2, m - sd, m, m + sd, m + sd * 2]).reshape(1, -1)
+            else:
+                c = np.array([0, 0, 0, 0, 0]).reshape(1, -1)
 
             if confidence_data is None:
                 # append histogram x_min data
@@ -279,13 +283,16 @@ def _train(session, taskstate, model_id):
         # update model info
         modeldef.train_loss_list = pickle.dumps(train_loss_list)
         modeldef.valid_loss_list = pickle.dumps(valid_loss_list)
-        modeldef.valid_predicted = pickle.dumps(valid_predicted.T.tolist())
-        modeldef.valid_true = pickle.dumps(valid_true.T.tolist())
 
         SAMPLING_SIZE = 100
+
+        sampled_valid_pred = valid_predicted[:SAMPLING_SIZE]
+        sampled_valid_true = valid_true[:SAMPLING_SIZE]
+        modeldef.valid_predicted = pickle.dumps(sampled_valid_pred.T.tolist())
+        modeldef.valid_true = pickle.dumps(sampled_valid_true.T.tolist())
+
         sampled_train_pred = train_predicted_list[:SAMPLING_SIZE]
         sampled_train_true = train_true_list[:SAMPLING_SIZE]
-
         modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
         modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())
 

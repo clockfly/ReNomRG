@@ -118,10 +118,6 @@ def _dataset_to_dict(ds):
         "target_column_ids": pickle.loads(ds.target_column_ids),
         "labels": pickle.loads(ds.labels),
         "train_ratio": ds.train_ratio,
-        "train_index": pickle.loads(ds.train_index),
-        "valid_index": pickle.loads(ds.valid_index),
-        "target_train": pickle.loads(ds.target_train),
-        "target_valid": pickle.loads(ds.target_valid),
         "created": ds.created.isoformat()
     }
     return ret
@@ -154,13 +150,22 @@ def confirm_dataset():
     X, y = split_target(data, target_column_ids)
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
+    num_bin = 10
+    # true histogram
+    true_histogram = []
+    for i in range(y_valid.shape[1]):
+        counts, bins = np.histogram(y_train.iloc[:, i], bins=num_bin)
+        train_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+        counts, bins = np.histogram(y_valid.iloc[:, i], bins=num_bin)
+        valid_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+        true_histogram.append({"train": train_true_histogram, "valid": valid_true_histogram})
+
     body = {
         "train_count": y_train.shape[0],
         "valid_count": y_valid.shape[0],
-        "target_train": y_train.T.values.tolist(),
-        "target_valid": y_valid.T.values.tolist(),
         "train_index": np.array(y_train.index).tolist(),
-        "valid_index": np.array(y_valid.index).tolist()
+        "valid_index": np.array(y_valid.index).tolist(),
+        "true_histogram": true_histogram
     }
     r = create_response(body)
     return r
@@ -175,17 +180,13 @@ def create_dataset():
     train_ratio = float(request.params.train_ratio)
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
-    target_train = json.loads(request.params.target_train)
-    target_valid = json.loads(request.params.target_valid)
 
     dataset = db.DatasetDef(name=name, description=description,
                             target_column_ids=pickle.dumps(target_column_ids),
                             labels=pickle.dumps(labels),
                             train_ratio=train_ratio,
                             train_index=pickle.dumps(train_index),
-                            valid_index=pickle.dumps(valid_index),
-                            target_train=pickle.dumps(target_train),
-                            target_valid=pickle.dumps(target_valid))
+                            valid_index=pickle.dumps(valid_index))
     session = db.session()
     session.add(dataset)
     session.commit()
@@ -401,6 +402,7 @@ def train_model(model_id):
         return create_response({'result': 'ok'})
 
     except Exception as e:
+        traceback.print_exc()
         return create_response({}, 500, err=str(e))
 
     finally:

@@ -45,7 +45,6 @@ def get_kernel_graph(X, neighbors, gamma):
             krbf[index[1], index[0]] = d
 
     feature_graph = np.argsort(krbf, 1)[:, -neighbors:]
-    print(krbf)
     return feature_graph
 
 

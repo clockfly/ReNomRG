@@ -41,6 +41,7 @@ export default {
   target_valid: [],
   train_index: [],
   valid_index: [],
+  true_histogram: [],
 
   /**
   * prediction

@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     drawCurve: function () {
-      if (!this.selectedModel) return
+      if (!this.selectedModel || !this.selectedModel.train_loss_list || !this.selectedModel.valid_loss_list) return
 
       const id = '#curve-canvas'
       removeSvg(id)
