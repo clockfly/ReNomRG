@@ -40,21 +40,22 @@ and ``alembic.ini`` file will be created in the server running directory.
 
 The directory structure is below.
 
-.. code-block :: shell
-<server_start_directory>
-    └── alembic.ini        # database setting file.
-    └── alembic
-    |   └── versions       # database migration files.
-    |   └── env.py         # database environment file.
-    └── storage
-    |   └── storage.db     # default database(sqlite3).
-    |   └── trained_weight # weights for regression models.
-    └── datasrc
-    |   └── data.pickle    # pickle data for train & validation.
-    |   └── prediction_set
-    |       └── pred.pickle # pickle data for prediction.
-    └── scripts
-        └── userdefmodel.py # scripts for user defined model.(available any name.)
+  .. code-block :: shell
+
+    <server_start_directory>
+        └── alembic.ini        # database setting file.
+        └── alembic
+        |   └── versions       # database migration files.
+        |   └── env.py         # database environment file.
+        └── storage
+        |   └── storage.db     # default database(sqlite3).
+        |   └── trained_weight # weights for regression models.
+        └── datasrc
+        |   └── data.pickle    # pickle data for train & validation.
+        |   └── prediction_set
+        |       └── pred.pickle # pickle data for prediction.
+        └── scripts
+            └── userdefmodel.py # scripts for user defined model.(available any name.)
 
 The data that can be read with ReNomRG beta must be named "data.pickle" and "pred.pickle".
 

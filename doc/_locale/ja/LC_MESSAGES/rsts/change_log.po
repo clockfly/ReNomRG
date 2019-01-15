@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 16:13+0900\n"
+"POT-Creation-Date: 2019-01-15 11:13+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,8 +22,8 @@ msgid "Change Log"
 msgstr "変更履歴"
 
 #: ../../rsts/change_log.rst:5
-msgid "v0.0beta => v0.1beta"
-msgstr "v0.0beta => v0.1beta"
+msgid "v0.0beta => 0.1.0b"
+msgstr "v0.0beta => 0.1.0b"
 
 #: ../../rsts/change_log.rst:7
 msgid "GraphCNN is possible with GPU."

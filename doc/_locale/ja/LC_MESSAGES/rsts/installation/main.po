@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 16:13+0900\n"
+"POT-Creation-Date: 2019-01-15 11:37+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,34 +21,90 @@ msgstr ""
 msgid "Install ReNomRG"
 msgstr "ReNomRGのインストール"
 
-#: ../../rsts/installation/main.rst:4
+#: ../../rsts/installation/main.rst:5
+msgid "Recommended Environment."
+msgstr "推奨環境"
+
+#: ../../rsts/installation/main.rst:7
+msgid "OS: Ubuntu 16.04"
+msgstr ""
+
+#: ../../rsts/installation/main.rst:8
+msgid "Browser: Google Chrome(version 63.0.3239.132)"
+msgstr ""
+
+#: ../../rsts/installation/main.rst:9
+msgid "Python: >=3.5"
+msgstr ""
+
+#: ../../rsts/installation/main.rst:12
+msgid "Requirements Packages."
+msgstr "必要なパッケージ"
+
+#: ../../rsts/installation/main.rst:14
 msgid "ReNomRG requires following python modules."
 msgstr "ReNomRGは以下のpythonモジュールが必要です。"
 
-#: ../../rsts/installation/main.rst:7
+#: ../../rsts/installation/main.rst:16
+msgid "alembic==1.0.5"
+msgstr ""
+
+#: ../../rsts/installation/main.rst:17
+msgid "bottle==0.12.16"
+msgstr ""
+
+#: ../../rsts/installation/main.rst:18
+msgid "SQLAlchemy==1.2.15"
+msgstr ""
+
+#: ../../rsts/installation/main.rst:20
+msgid "And ReNomRG requires ReNom."
+msgstr "ReNomRGを使用するにはReNomが必要です。"
+
+#: ../../rsts/installation/main.rst:22
+msgid ""
+"If you haven't install ReNom, please install ReNom from  "
+"https://github.com/ReNom-dev-team/ReNom.git."
+msgstr "ReNomをインストールしていない場合は、 https://github.com/ReNom-dev-team/ReNom.git. こちらからReNomをインストールしてください。"
+
+#: ../../rsts/installation/main.rst:24
+msgid ""
+"Please refer to the ReNom installation below. "
+"https://www.renom.jp/packages/renomdl/rsts/installation/installation.html"
+msgstr "ReNomのインストール方法は次のリンクを参照してください。https://www.renom.jp/packages/renomdl/rsts/installation/installation.html"
+
+#: ../../rsts/installation/main.rst:28
 msgid "Install by pip."
 msgstr "pipによるインストール"
 
-#: ../../rsts/installation/main.rst:9
+#: ../../rsts/installation/main.rst:30
 msgid ""
 "You can install ReNomRG by ``pip`` command. This is the simplest way for "
 "installation."
 msgstr "pipコマンドでReNomRGをインストールすることができます。これがもっとも簡単なインストール方法です。"
 
-#: ../../rsts/installation/main.rst:19
+#: ../../rsts/installation/main.rst:32
+msgid "The Wheel package is provided at:"
+msgstr "Wheelパッケージは以下のようなリンクからインストールすることが可能です。"
+
+#: ../../rsts/installation/main.rst:38
+msgid "Install 0.1.0b(beta version) is follow."
+msgstr "以下のように、0.1.0b(βバージョン)をインストールすることができます。"
+
+#: ../../rsts/installation/main.rst:47
 msgid ""
 "This is ``linux OS`` only. If your OS is windows or MAC, please install "
 "ReNomRG from binary code."
 msgstr "このコマンドはLinuxOSのみ可能です。もしWindowsやMacなどのOSを使用している場合はソースコードからインストールしてください。"
 
-#: ../../rsts/installation/main.rst:24
+#: ../../rsts/installation/main.rst:52
 msgid "Install from source."
 msgstr "ソースコードからのインストール"
 
-#: ../../rsts/installation/main.rst:26
+#: ../../rsts/installation/main.rst:54
 msgid "If you install ReNomRG from source, Node.js is required."
 msgstr "もしReNomRGをソースコードからインストールする場合は、Node.jsが必要になります。"
 
-#: ../../rsts/installation/main.rst:38
+#: ../../rsts/installation/main.rst:66
 msgid "This requires ``node.js``."
 msgstr "Node.jsが必要です。"

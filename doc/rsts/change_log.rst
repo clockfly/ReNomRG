@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-v0.0beta => v0.1beta
---------------------
+v0.0beta => 0.1.0b
+------------------
 
 - GraphCNN is possible with GPU.
 - Enabled install with wheel.

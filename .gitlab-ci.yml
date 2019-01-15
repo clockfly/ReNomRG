@@ -35,6 +35,6 @@ pages:
     paths:
     - public
 
-  # only:
-  #   - /^release\/.*$/
-  #   - /^v.*beta$/
+  only:
+    - /^release\/.*$/
+    - /^v.*beta$/
