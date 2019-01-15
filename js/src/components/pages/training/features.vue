@@ -51,10 +51,9 @@ export default {
   computed: {
     ...mapGetters(['selectedDataset']),
     target_labels: function () {
-      const target_column_ids = this.selectedDataset.target_column_ids
-
       let filtered = []
       if (this.selectedDataset && this.selectedDataset.labels) {
+        const target_column_ids = this.selectedDataset.target_column_ids
         filtered = this.selectedDataset.labels.filter(function (element, index, array) {
           return target_column_ids.indexOf(index) !== -1
         })
@@ -62,10 +61,9 @@ export default {
       return filtered
     },
     explanatory_labels: function () {
-      const target_column_ids = this.selectedDataset.target_column_ids
-
       let filtered = []
       if (this.selectedDataset && this.selectedDataset.labels) {
+        const target_column_ids = this.selectedDataset.target_column_ids
         filtered = this.selectedDataset.labels.filter(function (element, index, array) {
           return target_column_ids.indexOf(index) === -1
         })

@@ -99,6 +99,7 @@ export default {
     state.target_valid = payload.data.target_valid
     state.train_index = payload.data.train_index
     state.valid_index = payload.data.valid_index
+    state.true_histogram = payload.data.true_histogram
   },
 
   setDatasetList (state, payload) {
