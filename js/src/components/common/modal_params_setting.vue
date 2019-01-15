@@ -1,22 +1,29 @@
 <template>
   <div class="modal-params-setting flex">
     <div class="column">
-
       <div class="setting-block">
         <div class="setting-type">
           Dataset Setting
         </div>
 
         <div class="sub-block flex">
-          <div class="label">Dataset Name</div>
+          <div class="label">
+            Dataset Name
+          </div>
           <div class="input-value">
             <select v-model="dataset_index">
-              <option v-for="(dataset, index) in $store.state.dataset_list"
-                :value="index" :key="index">
+              <option
+                v-for="(dataset, index) in $store.state.dataset_list"
+                :key="index"
+                :value="index"
+              >
                 {{ dataset.name }}
               </option>
             </select>
-            <div class="to-setting-dataset" @click="$emit('todataset')">
+            <div
+              class="to-setting-dataset"
+              @click="$emit('todataset')"
+            >
               > Setting of Dataset
             </div>
           </div>
@@ -29,26 +36,33 @@
         </div>
 
         <div class="sub-block flex">
-          <div class="label">CNN Architecture</div>
+          <div class="label">
+            CNN Architecture
+          </div>
           <div class="input-value">
             <select v-model="algorithm">
-              <option v-for="(algorithm, index) in algorithms"
-                :value="algorithm_ids[index]" :key="index">
-                {{ algorithm }}
+              <option
+                v-for="(a, index) in algorithms"
+                :key="index"
+                :value="algorithm_ids[index]"
+              >
+                {{ a }}
               </option>
             </select>
           </div>
         </div>  <!-- sub block -->
 
         <div class="sub-block flex">
-          <div class="label">Script file name</div>
+          <div class="label">
+            Script file name
+          </div>
           <div class="input-value">
-            <input v-model="algorithm_params['script_file_name']"
-             :disabled="algorithm !== 0xffffffff">
+            <input
+              v-model="algorithm_params['script_file_name']"
+              :disabled="algorithm !== 0xffffffff"
+            >
           </div>
         </div>  <!-- sub block -->
-
-
       </div>  <!-- setting block -->
 
       <div class="setting-block">
@@ -57,20 +71,29 @@
         </div>
 
         <div class="sub-block flex">
-          <div class="label">Batch Size</div>
+          <div class="label">
+            Batch Size
+          </div>
           <div class="input-value">
-            <input type="text" v-model="batch_size">
+            <input
+              v-model="batch_size"
+              type="text"
+            >
           </div>
         </div>  <!-- sub block -->
 
         <div class="sub-block flex">
-          <div class="label">Total Epoch</div>
+          <div class="label">
+            Total Epoch
+          </div>
           <div class="input-value">
-            <input type="text" v-model="epoch">
+            <input
+              v-model="epoch"
+              type="text"
+            >
           </div>
         </div>  <!-- sub block -->
       </div>  <!-- setting block -->
-
     </div>  <!-- column -->
 
     <div class="column">
@@ -80,20 +103,30 @@
         </div>
 
         <div class="sub-block flex">
-          <div class="label">Number of neighbors</div>
+          <div class="label">
+            Number of neighbors
+          </div>
           <div class="input-value">
-            <input type="text" v-model="algorithm_params['num_neighbors']">
+            <input
+              v-model="algorithm_params['num_neighbors']"
+              type="text"
+            >
           </div>
         </div>  <!-- sub block -->
       </div>  <!-- setting block -->
-
     </div>  <!-- column -->
 
     <div class="button-area">
-      <button @click="runModel">Run</button>
-      <button class="button-cancel" @click="hideModal">Cancel</button>
+      <button @click="runModel">
+        Run
+      </button>
+      <button
+        class="button-cancel"
+        @click="hideModal"
+      >
+        Cancel
+      </button>
     </div>
-
   </div>
 </template>
 

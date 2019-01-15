@@ -4,18 +4,29 @@
       <div class="panel-title">
         Learning Curve
       </div>
-      <div id="curve-canvas" class="panel-content">
-        <div class="x-axis-name">Epoch</div>
-        <div class="y-axis-name">Loss [-]</div>
+      <div
+        id="curve-canvas"
+        class="panel-content"
+      >
+        <div class="x-axis-name">
+          Epoch
+        </div>
+        <div class="y-axis-name">
+          Loss [-]
+        </div>
         <div class="bar-legends flex">
           <div class="legend flex">
-            <div class="legend-color train"></div>
-            <div class="legend-name">Train</div>
+            <div class="legend-color train" />
+            <div class="legend-name">
+              Train
+            </div>
           </div>
 
           <div class="legend flex">
-            <div class="legend-color validation"></div>
-            <div class="legend-name">Validation</div>
+            <div class="legend-color validation" />
+            <div class="legend-name">
+              Validation
+            </div>
           </div>
         </div>
       </div>

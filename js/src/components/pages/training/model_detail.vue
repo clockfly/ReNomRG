@@ -3,10 +3,18 @@
     <div class="panel">
       <div class="panel-title panel-title-button-area">
         Model Detail
-        <div class="panel-title-button" v-if="selectedModel && selectedModel.deployed === 0" @click="deploy_model=selectedModel">
+        <div
+          v-if="selectedModel && selectedModel.deployed === 0"
+          class="panel-title-button"
+          @click="deploy_model=selectedModel"
+        >
           > Deploy Model
         </div>
-        <div class="panel-title-button" v-if="selectedModel && selectedModel.deployed === 1" @click="undeploy_model=selectedModel">
+        <div
+          v-if="selectedModel && selectedModel.deployed === 1"
+          class="panel-title-button"
+          @click="undeploy_model=selectedModel"
+        >
           > Undeploy Model
         </div>
       </div>
@@ -14,83 +22,139 @@
       <div class="panel-content detail flex">
         <div class="column">
           <div class="label-value model-id flex">
-            <div class="label">Model ID</div>
-            <div class="value" v-if="selectedModel">{{selectedModel.model_id}}</div>
+            <div class="label">
+              Model ID
+            </div>
+            <div
+              v-if="selectedModel"
+              class="value"
+            >
+              {{ selectedModel.model_id }}
+            </div>
           </div>
         </div>
 
-        <div class="column" v-if="selectedModel">
+        <div
+          v-if="selectedModel"
+          class="column"
+        >
           <div class="label-value flex">
-            <div class="label">Algorithm</div>
-            <div class="value">{{$store.state.algorithms[selectedModel.algorithm]}}</div>
+            <div class="label">
+              Algorithm
+            </div>
+            <div class="value">
+              {{ $store.state.algorithms[selectedModel.algorithm] }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Total Epoch</div>
-            <div class="value">{{selectedModel.epoch}}</div>
+            <div class="label">
+              Total Epoch
+            </div>
+            <div class="value">
+              {{ selectedModel.epoch }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Batch Size</div>
-            <div class="value">{{selectedModel.batch_size}}</div>
+            <div class="label">
+              Batch Size
+            </div>
+            <div class="value">
+              {{ selectedModel.batch_size }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Validation Loss</div>
-            <div class="value">{{round(selectedModel.best_epoch_valid_loss)}}</div>
+            <div class="label">
+              Validation Loss
+            </div>
+            <div class="value">
+              {{ round(selectedModel.best_epoch_valid_loss) }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">RMSE</div>
-            <div class="value">{{round(selectedModel.best_epoch_rmse)}}</div>
+            <div class="label">
+              RMSE
+            </div>
+            <div class="value">
+              {{ round(selectedModel.best_epoch_rmse) }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Max Absolute Error</div>
-            <div class="value">{{round(selectedModel.best_epoch_max_abs_error)}}</div>
+            <div class="label">
+              Max Absolute Error
+            </div>
+            <div class="value">
+              {{ round(selectedModel.best_epoch_max_abs_error) }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">R2 Score</div>
-            <div class="value">{{round(selectedModel.best_epoch_r2)}}</div>
+            <div class="label">
+              R2 Score
+            </div>
+            <div class="value">
+              {{ round(selectedModel.best_epoch_r2) }}
+            </div>
           </div>
         </div>
 
-        <div class="column" v-if="selectedModel">
+        <div
+          v-if="selectedModel"
+          class="column"
+        >
           <div class="label-value">
-            <div class="label">Graph Comvolution Params</div>
+            <div class="label">
+              Graph Comvolution Params
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Number of Neighbors</div>
-            <div class="value">{{selectedModel.algorithm_params.num_neighbors}}</div>
+            <div class="label">
+              Number of Neighbors
+            </div>
+            <div class="value">
+              {{ selectedModel.algorithm_params.num_neighbors }}
+            </div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <ModalConfirm v-if='deploy_model'
-      @ok='deploy'
-      @cancel='deploy_model=undefined'>
-      <div slot='contents'>
-        Would you like to deploy Model ID: {{deploy_model.model_id}}?
+    <ModalConfirm
+      v-if="deploy_model"
+      @ok="deploy"
+      @cancel="deploy_model=undefined"
+    >
+      <div slot="contents">
+        Would you like to deploy Model ID: {{ deploy_model.model_id }}?
       </div>
       <span slot="okbutton">
-        <button class="button-ok" @click="deploy">
+        <button
+          class="button-ok"
+          @click="deploy"
+        >
           Deploy
         </button>
       </span>
     </ModalConfirm>
 
-    <ModalConfirm v-if='undeploy_model'
-      @ok='undeploy'
-      @cancel='undeploy_model=undefined'>
-      <div slot='contents'>
-        Would you like to undeploy Model ID: {{undeploy_model.model_id}}?
+    <ModalConfirm
+      v-if="undeploy_model"
+      @ok="undeploy"
+      @cancel="undeploy_model=undefined"
+    >
+      <div slot="contents">
+        Would you like to undeploy Model ID: {{ undeploy_model.model_id }}?
       </div>
       <span slot="okbutton">
-        <button class="button-ok" @click="undeploy">
+        <button
+          class="button-ok"
+          @click="undeploy"
+        >
           Undeploy
         </button>
       </span>

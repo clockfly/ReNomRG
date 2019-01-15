@@ -1,32 +1,47 @@
 <template>
   <div class="modal-dataset flex">
     <div class="column">
-
       <div class="setting-block">
         <div class="setting-type">
           Dataset Setting
         </div>
 
         <div class="sub-block flex">
-          <div class="label">Dataset Name</div>
+          <div class="label">
+            Dataset Name
+          </div>
           <div class="input-value">
-            <input type="text" v-model="name">
+            <input
+              v-model="name"
+              type="text"
+            >
           </div>
         </div>  <!-- sub block -->
 
         <div class="sub-block flex">
-          <div class="label">Description</div>
+          <div class="label">
+            Description
+          </div>
           <div class="input-value description">
-            <textarea name="description" rows="3" v-model="description"></textarea>
+            <textarea
+              v-model="description"
+              name="description"
+              rows="3"
+            />
           </div>
         </div>  <!-- sub block -->
 
         <div class="sub-block flex">
-          <div class="label">Ratio of training data</div>
+          <div class="label">
+            Ratio of training data
+          </div>
           <div class="input-value">
             <select v-model="train_ratio">
-              <option v-for="(ratio, index) in train_ratio_list"
-                :value="ratio" :key="ratio">
+              <option
+                v-for="ratio in train_ratio_list"
+                :key="ratio"
+                :value="ratio"
+              >
                 {{ ratio }}
               </option>
             </select>
@@ -34,9 +49,15 @@
         </div>  <!-- sub block -->
 
         <div class="sub-block flex">
-          <div class="label">Target Valiables</div>
+          <div class="label">
+            Target Valiables
+          </div>
           <div class="input-value">
-            <div class="target-variable-name" v-for="id in target_column_ids" :key="id">
+            <div
+              v-for="id in target_column_ids"
+              :key="id"
+              class="target-variable-name"
+            >
               {{ $store.state.labels[id] }}
             </div>
           </div>
@@ -44,29 +65,51 @@
       </div>  <!-- setting block -->
 
       <div class="button-area">
-        <button @click="confirmDataset"
-          :disabled="name === '' || target_column_ids.length > 4 || target_column_ids.length === 0">
+        <button
+          :disabled="name === '' || target_column_ids.length > 4 || target_column_ids.length === 0"
+          @click="confirmDataset"
+        >
           Confirm
         </button>
-        <button class="button-cancel"
-          @click="$emit('cancel')">Cancel</button>
+        <button
+          class="button-cancel"
+          @click="$emit('cancel')"
+        >
+          Cancel
+        </button>
       </div>
-
     </div>  <!-- column -->
 
-    <div class="column" v-if="!is_confirm">
+    <div
+      v-if="!is_confirm"
+      class="column"
+    >
       <div class="variable-scroll-area">
         <div class="setting-type">
           Target Valiables
         </div>
-        <div class="variable-item" v-for="(label, index) in $store.state.labels">
-          <input type="checkbox" :id="index" :value="index" v-model="target_column_ids">
-          <label :for="index">{{label}}</label>
+        <div
+          v-for="(label, index) in $store.state.labels"
+          :key="index"
+          class="variable-item"
+        >
+          <input
+            :id="index"
+            v-model="target_column_ids"
+            type="checkbox"
+            :value="index"
+          >
+          <label :for="index">
+            {{ label }}
+          </label>
         </div>
       </div>
     </div> <!-- column before confirm -->
 
-    <div class="column" v-if="is_confirm">
+    <div
+      v-if="is_confirm"
+      class="column"
+    >
       <div class="setting-block">
         <div class="setting-type">
           Detail
@@ -74,37 +117,56 @@
 
         <div class="sub-block">
           <div class="flex">
-            <div class="label">Number of data size</div>
+            <div class="label">
+              Number of data size
+            </div>
             <div class="values flex">
-              <div class="train-number">Train {{$store.state.train_index.length}}</div>
-              <div class="valid-number">Validation {{$store.state.valid_index.length}}</div>
+              <div class="train-number">
+                Train {{ $store.state.train_index.length }}
+              </div>
+              <div class="valid-number">
+                Validation {{ $store.state.valid_index.length }}
+              </div>
             </div>
           </div>
           <div class="flex">
-            <div class="label">All {{$store.state.train_index.length+$store.state.valid_index.length}}</div>
+            <div class="label">
+              All {{ $store.state.train_index.length+$store.state.valid_index.length }}
+            </div>
             <div class="values flex">
               <div class="train-ratio-bar flex">
-                <div class="bar-item train"
-                  v-bind:style="{ 'flex-grow': $store.state.train_index.length }"></div>
-                <div class="bar-item validation"
-                  v-bind:style="{ 'flex-grow': $store.state.valid_index.length }"></div>
+                <div
+                  class="bar-item train"
+                  :style="{ 'flex-grow': $store.state.train_index.length }"
+                />
+                <div
+                  class="bar-item validation"
+                  :style="{ 'flex-grow': $store.state.valid_index.length }"
+                />
               </div>
             </div>
           </div>
         </div>
 
         <div class="sub-block flex">
-          <div class="label">Histogram</div>
+          <div class="label">
+            Histogram
+          </div>
         </div>
-        <div id="train-test-histogram"></div>
+        <div id="train-test-histogram" />
       </div> <!-- setting block -->
 
       <div class="button-area">
-        <button @click="saveDataset">Save</button>
-        <button class="button-cancel"
-          @click="is_confirm = false">Back</button>
+        <button @click="saveDataset">
+          Save
+        </button>
+        <button
+          class="button-cancel"
+          @click="is_confirm = false"
+        >
+          Back
+        </button>
       </div>
-
     </div> <!-- column after confirm -->
   </div>
 </template>

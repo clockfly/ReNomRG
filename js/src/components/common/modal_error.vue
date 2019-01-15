@@ -1,11 +1,19 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" @click="hide">
+    <div
+      class="modal-mask"
+      @click="hide"
+    >
       <div class="modal-wrapper">
         <div class="modal-container">
-          {{$store.state.error_msg}}
+          {{ $store.state.error_msg }}
           <div class="modal-footer">
-            <button class="button-cancel" @click="hide">Close</button>
+            <button
+              class="button-cancel"
+              @click="hide"
+            >
+              Close
+            </button>
           </div>
         </div>
       </div>
@@ -16,13 +24,13 @@
 <script>
 export default {
   name: 'ModalError',
+  mounted: function () {
+    document.getElementsByClassName('button-cancel')[0].focus()
+  },
   methods: {
     hide: function () {
       this.$store.commit('setErrorMsg', {'error_msg': undefined})
     }
-  },
-  mounted: function () {
-    document.getElementsByClassName('button-cancel')[0].focus()
   }
 }
 </script>

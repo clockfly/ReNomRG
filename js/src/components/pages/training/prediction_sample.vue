@@ -8,19 +8,42 @@
       <div class="panel-content prediction-result-content flex">
         <div class="column">
           <div class="label-value flex">
-            <div class="model-type">Deploy Model</div>
-            <div class="label">Model ID</div>
-            <div class="value" v-if="deployedModel">{{deployedModel.model_id}}</div>
+            <div class="model-type">
+              Deploy Model
+            </div>
+            <div class="label">
+              Model ID
+            </div>
+            <div
+              v-if="deployedModel"
+              class="value"
+            >
+              {{ deployedModel.model_id }}
+            </div>
           </div>
           <div v-if="deployedModel">
-            <div v-for="(d, index) in deployedModel.valid_true">
+            <div
+              v-for="(d, index) in deployedModel.valid_true"
+              :key="index"
+            >
               <div class="label-value flex">
-                <div class="label">Target</div>
-                <div class="value">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+                <div class="label">
+                  Target
+                </div>
+                <div class="value">
+                  {{ selectedDataset.labels[selectedDataset.target_column_ids[index]] }}
+                </div>
               </div>
-              <div :id="'deployed-plot'+index" class="plot-area">
-                <div class="x-axis-name">True</div>
-                <div class="y-axis-name">Prediction</div>
+              <div
+                :id="'deployed-plot'+index"
+                class="plot-area"
+              >
+                <div class="x-axis-name">
+                  True
+                </div>
+                <div class="y-axis-name">
+                  Prediction
+                </div>
               </div>
             </div>
           </div>
@@ -28,19 +51,42 @@
 
         <div class="column">
           <div class="label-value flex">
-            <div class="model-type">Select Model</div>
-            <div class="label">Model ID</div>
-            <div class="value" v-if="selectedModel">{{selectedModel.model_id}}</div>
+            <div class="model-type">
+              Select Model
+            </div>
+            <div class="label">
+              Model ID
+            </div>
+            <div
+              v-if="selectedModel"
+              class="value"
+            >
+              {{ selectedModel.model_id }}
+            </div>
           </div>
           <div v-if="selectedModel">
-            <div v-for="(d, index) in selectedModel.valid_true">
+            <div
+              v-for="(d, index) in selectedModel.valid_true"
+              :key="index"
+            >
               <div class="label-value flex">
-                <div class="label">Target</div>
-                <div class="value">{{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}</div>
+                <div class="label">
+                  Target
+                </div>
+                <div class="value">
+                  {{ selectedDataset.labels[selectedDataset.target_column_ids[index]] }}
+                </div>
               </div>
-              <div :id="'selected-plot'+index" class="plot-area">
-                <div class="x-axis-name">True</div>
-                <div class="y-axis-name">Prediction</div>
+              <div
+                :id="'selected-plot'+index"
+                class="plot-area"
+              >
+                <div class="x-axis-name">
+                  True
+                </div>
+                <div class="y-axis-name">
+                  Prediction
+                </div>
               </div>
             </div>
           </div>

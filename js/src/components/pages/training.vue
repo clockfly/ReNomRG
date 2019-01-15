@@ -1,38 +1,38 @@
 <template>
   <div id="page">
     <div class="page-content">
-
       <div class="main-content">
         <div class="panel-columns">
           <div class="panel-left">
-            <Dashboard></Dashboard>
+            <Dashboard />
           </div>
           <div class="panel-right">
-            <ModelMap></ModelMap>
+            <ModelMap />
           </div>
         </div>
 
         <div class="panel-columns">
           <div class="panel-left">
-            <ModelDetail></ModelDetail>
+            <ModelDetail />
           </div>
           <div class="panel-right">
-            <LearningCurve></LearningCurve>
+            <LearningCurve />
           </div>
         </div>
 
-        <PredictionSample></PredictionSample>
-        <Features></Features>
+        <PredictionSample />
+        <Features />
       </div>
 
       <div class="list-area">
-        <ModelList></ModelList>
+        <ModelList />
       </div>
     </div>
 
-    <ModalAdd v-if="$store.state.add_model_modal_shown_flag"
-      @run="watchStart">
-    </ModalAdd>
+    <ModalAdd
+      v-if="$store.state.add_model_modal_shown_flag"
+      @run="watchStart"
+    />
   </div>
 </template>
 
