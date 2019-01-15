@@ -1,15 +1,21 @@
 <template>
-<header>
-  <div class="header-top">
-    <div class="menu-button" @click="toggleMenu">
-      <i class="fa fa-bars icon" aria-hidden="true"></i>
-    </div>
+  <header>
+    <div class="header-top">
+      <div
+        class="menu-button"
+        @click="toggleMenu"
+      >
+        <i
+          class="fa fa-bars icon"
+          aria-hidden="true"
+        />
+      </div>
 
-    <div class="title">
-      ReNomRG > {{$store.state.page_name}}
+      <div class="title">
+        ReNomRG > {{ $store.state.page_name }}
+      </div>
     </div>
-  </div>
-</header>
+  </header>
 </template>
 
 <script>

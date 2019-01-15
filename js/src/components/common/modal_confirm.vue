@@ -1,9 +1,11 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" @click="$emit('cancel')">
+    <div
+      class="modal-mask"
+      @click="$emit('cancel')"
+    >
       <div class="modal-wrapper">
         <div class="modal-container">
-
           <slot name="contents">
             default content
           </slot>
@@ -11,12 +13,18 @@
           <div class="modal-footer">
             <slot name="footer">
               <slot name="okbutton">
-                <button class="button-ok" @click="$emit('ok')">
+                <button
+                  class="button-ok"
+                  @click="$emit('ok')"
+                >
                   OK
                 </button>
               </slot>
               <slot name="cancelbutton">
-                <button class="button-cancel" @click="$emit('cancel')">
+                <button
+                  class="button-cancel"
+                  @click="$emit('cancel')"
+                >
                   Cancel
                 </button>
               </slot>

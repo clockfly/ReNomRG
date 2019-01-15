@@ -1,29 +1,50 @@
 <template>
-<div id="navigation">
-  <transition name="mask">
-    <div id='mask' v-if="$store.state.navigation_bar_shown_flag" @click='hideMenu'></div>
-  </transition>
+  <div id="navigation">
+    <transition name="mask">
+      <div
+        v-if="$store.state.navigation_bar_shown_flag"
+        id="mask"
+        @click="hideMenu"
+      />
+    </transition>
 
-  <transition name="nav">
-    <div id="navigation-bar" v-if="$store.state.navigation_bar_shown_flag">
-      <div class="menu-item flex" @click="goTraining()">
-        <i class="fa fa-home icon"></i>
-        <div class="menu-name">Training</div>
+    <transition name="nav">
+      <div
+        v-if="$store.state.navigation_bar_shown_flag"
+        id="navigation-bar"
+      >
+        <div
+          class="menu-item flex"
+          @click="goTraining()"
+        >
+          <i class="fa fa-home icon" />
+          <div class="menu-name">
+            Training
+          </div>
+        </div>
+
+        <div
+          class="menu-item flex"
+          @click="goDataset()"
+        >
+          <i class="fas fa-database icon" />
+          <div class="menu-name">
+            Dataset
+          </div>
+        </div>
+
+        <div
+          class="menu-item flex"
+          @click="goPrediction()"
+        >
+          <i class="fas fa-chart-area icon" />
+          <div class="menu-name">
+            Prediction
+          </div>
+        </div>
       </div>
-
-      <div class="menu-item flex" @click="goDataset()">
-        <i class="fas fa-database icon"></i>
-        <div class="menu-name">Dataset</div>
-      </div>
-
-      <div class="menu-item flex" @click="goPrediction()">
-        <i class="fas fa-chart-area icon"></i>
-        <div class="menu-name">Prediction</div>
-      </div>
-
-    </div>
-  </transition>
-</div>
+    </transition>
+  </div>
 </template>
 
 <script>

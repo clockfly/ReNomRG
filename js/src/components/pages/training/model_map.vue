@@ -5,10 +5,17 @@
         Model Map
       </div>
 
-      <div id="value-map" class="panel-content">
-        <div class="x-axis-name">Root Mean Squared Error</div>
-        <div class="y-axis-name">Max Absolute Error</div>
-        <div id="map-tooltip"></div>
+      <div
+        id="value-map"
+        class="panel-content"
+      >
+        <div class="x-axis-name">
+          Root Mean Squared Error
+        </div>
+        <div class="y-axis-name">
+          Max Absolute Error
+        </div>
+        <div id="map-tooltip" />
       </div>
     </div>
   </div>

@@ -3,40 +3,65 @@
     <div class="panel list-area">
       <div class="panel-title panel-title-button-area model-list-title">
         Model List
-        <div class="panel-title-button" @click="showModal">
-          <i class="fa fa-plus icon"></i>New
+        <div
+          class="panel-title-button"
+          @click="showModal"
+        >
+          <i class="fa fa-plus icon" />New
         </div>
       </div>
 
-      <div class="model-list-item model-list-item-deployed"
+      <div
         v-if="deployedModel"
-        v-bind:class="{ active: deployedModel.model_id === $store.state.selected_model_id }"
-        @click="selectModel(deployedModel)">
-        <div :class="'algorithm-color '+$store.state.algorithms[deployedModel.algorithm].toLowerCase()"></div>
+        class="model-list-item model-list-item-deployed"
+        :class="{ active: deployedModel.model_id === $store.state.selected_model_id }"
+        @click="selectModel(deployedModel)"
+      >
+        <div :class="'algorithm-color '+$store.state.algorithms[deployedModel.algorithm].toLowerCase()" />
 
         <div class="label-value flex">
-          <div class="label">Model ID</div>
-          <div class="value">{{deployedModel.model_id}}</div>
+          <div class="label">
+            Model ID
+          </div>
+          <div class="value">
+            {{ deployedModel.model_id }}
+          </div>
         </div>
 
         <div class="label-value flex">
-          <div class="label">Algorithm</div>
-          <div class="value">{{$store.state.algorithms[deployedModel.algorithm]}}</div>
+          <div class="label">
+            Algorithm
+          </div>
+          <div class="value">
+            {{ $store.state.algorithms[deployedModel.algorithm] }}
+          </div>
         </div>
 
         <div class="label-value flex">
-          <div class="label">RMSE</div>
-          <div class="value">{{round(deployedModel.best_epoch_rmse)}}</div>
+          <div class="label">
+            RMSE
+          </div>
+          <div class="value">
+            {{ round(deployedModel.best_epoch_rmse) }}
+          </div>
         </div>
 
         <div class="label-value flex">
-          <div class="label">Max Absolute Error</div>
-          <div class="value">{{round(deployedModel.best_epoch_max_abs_error)}}</div>
+          <div class="label">
+            Max Absolute Error
+          </div>
+          <div class="value">
+            {{ round(deployedModel.best_epoch_max_abs_error) }}
+          </div>
         </div>
 
         <div class="label-value flex">
-          <div class="label">Validation Loss</div>
-          <div class="value">{{round(deployedModel.best_epoch_valid_loss)}}</div>
+          <div class="label">
+            Validation Loss
+          </div>
+          <div class="value">
+            {{ round(deployedModel.best_epoch_valid_loss) }}
+          </div>
         </div>
 
         <div class="deployed">
@@ -45,58 +70,87 @@
       </div>
 
       <div class="model-list-scrollable-area">
-        <div class="model-list-item"
-          v-bind:class="{ active: model.model_id === $store.state.selected_model_id }"
-          v-for="(model,index) in $store.state.model_list"
-          v-if="model.deployed === 0"
-          @click="selectModel(model)">
-          <div :class="'algorithm-color '+$store.state.algorithms[model.algorithm].toLowerCase()"></div>
+        <div
+          v-for="(model,index) in undeployed_models"
+          :key="index"
+          class="model-list-item"
+          :class="{ active: model.model_id === $store.state.selected_model_id }"
+          @click="selectModel(model)"
+        >
+          <div :class="'algorithm-color '+$store.state.algorithms[model.algorithm].toLowerCase()" />
 
           <div class="label-value flex">
-            <div class="label">Model ID</div>
-            <div class="value">{{model.model_id}}</div>
+            <div class="label">
+              Model ID
+            </div>
+            <div class="value">
+              {{ model.model_id }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Algorithm</div>
-            <div class="value">{{$store.state.algorithms[model.algorithm]}}</div>
+            <div class="label">
+              Algorithm
+            </div>
+            <div class="value">
+              {{ $store.state.algorithms[model.algorithm] }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">RMSE</div>
-            <div class="value">{{round(model.best_epoch_rmse)}}</div>
+            <div class="label">
+              RMSE
+            </div>
+            <div class="value">
+              {{ round(model.best_epoch_rmse) }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Max Absolute Error</div>
-            <div class="value">{{round(model.best_epoch_max_abs_error)}}</div>
+            <div class="label">
+              Max Absolute Error
+            </div>
+            <div class="value">
+              {{ round(model.best_epoch_max_abs_error) }}
+            </div>
           </div>
 
           <div class="label-value flex">
-            <div class="label">Validation Loss</div>
-            <div class="value">{{round(model.best_epoch_valid_loss)}}</div>
+            <div class="label">
+              Validation Loss
+            </div>
+            <div class="value">
+              {{ round(model.best_epoch_valid_loss) }}
+            </div>
           </div>
 
-          <div class="delete-button" @click="delete_model=model">
-            <i class="fa fa-times icon"></i>
+          <div
+            class="delete-button"
+            @click="delete_model=model"
+          >
+            <i class="fa fa-times icon" />
           </div>
         </div>
       </div>
     </div>
 
-    <ModalConfirm v-if='delete_model'
-      @ok='deleteModel'
-      @cancel='delete_model=undefined'>
-      <div slot='contents'>
-        Would you like to delete Model ID: {{delete_model.model_id}}?
+    <ModalConfirm
+      v-if="delete_model"
+      @ok="deleteModel"
+      @cancel="delete_model=undefined"
+    >
+      <div slot="contents">
+        Would you like to delete Model ID: {{ delete_model.model_id }}?
       </div>
       <span slot="okbutton">
-        <button class="button-ok" @click="deleteModel">
+        <button
+          class="button-ok"
+          @click="deleteModel"
+        >
           Delete
         </button>
       </span>
     </ModalConfirm>
-
   </div>
 </template>
 
@@ -115,7 +169,15 @@ export default {
       'delete_model': undefined
     }
   },
-  computed: mapGetters(['deployedModel']),
+  computed: {
+    ...mapGetters(['deployedModel']),
+    undeployed_models: function () {
+      const filtered = this.$store.state.model_list.filter(function (element, index, array) {
+        return element.deployed === 0
+      })
+      return filtered
+    }
+  },
   methods: {
     round: function (v) {
       return round(v, 1000)

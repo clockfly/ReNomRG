@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 16:13+0900\n"
+"POT-Creation-Date: 2019-01-15 11:13+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,6 @@ msgid "Start the Application"
 msgstr "アプリケーションの起動"
 
 #: ../../rsts/how_to_use_gui.rst:7
-#, fuzzy
 msgid ""
 "ReNomRG is a single page web application. If your installation have done "
 "successfully, you can run application in any directory with following "
@@ -66,7 +65,6 @@ msgid "Place your dataset"
 msgstr "データセットの置き方"
 
 #: ../../rsts/how_to_use_gui.rst:38
-#, fuzzy
 msgid ""
 "When the server starts, ``datasrc``, ``storage``, ``scripts`` and "
 "``alembic`` directories and ``alembic.ini`` file will be created in the "
@@ -75,26 +73,7 @@ msgstr "サーバが起動すると、サーバを起動したディレクトリ
 
 #: ../../rsts/how_to_use_gui.rst:41
 msgid "The directory structure is below."
-msgstr ""
-
-#: ../../rsts/how_to_use_gui.rst:57
-msgid "<server_start_directory>"
-msgstr ""
-
-#: ../../rsts/how_to_use_gui.rst:45
-msgid ""
-"└── alembic.ini        # database setting file. └── alembic |   └── "
-"versions       # database migration files. |   └── env.py         # "
-"database environment file. └── storage |   └── storage.db     # default "
-"database(sqlite3). |   └── trained_weight # weights for regression "
-"models. └── datasrc |   └── data.pickle    # pickle data for train & "
-"validation. |   └── prediction_set |       └── pred.pickle # pickle data "
-"for prediction. └── scripts"
-msgstr ""
-
-#: ../../rsts/how_to_use_gui.rst:57
-msgid "└── userdefmodel.py # scripts for user defined model.(available any name.)"
-msgstr ""
+msgstr "以下のようなディレクトリが作成されます。"
 
 #: ../../rsts/how_to_use_gui.rst:59
 msgid ""
@@ -108,7 +87,7 @@ msgstr "データのフォーマット"
 
 #: ../../rsts/how_to_use_gui.rst:64
 msgid "The format of input file is pickled pandas.DataFrame object."
-msgstr ""
+msgstr "入力するファイルはpandas.DataFrameをpickle化したものでなければいけません。"
 
 #: ../../rsts/how_to_use_gui.rst:67
 msgid "Create Regression Model"
@@ -170,7 +149,6 @@ msgstr ""
 "データセットページでは、作成したデータセットを確認することができます。データセットページに移動するには次のような操作を行います。"
 
 #: ../../rsts/how_to_use_gui.rst:103
-#, fuzzy
 msgid ""
 "When you click on each dataset row, you can confirm the number of data "
 "contained in them, the number of teacher data of each variable, the "
@@ -239,13 +217,3 @@ msgstr "ReNomRGのアンインストール"
 #: ../../rsts/how_to_use_gui.rst:146
 msgid "ReNomRG can be uninstalled with the following pip command."
 msgstr "ReNomRGは次のコマンドでアンインストールすることができます。"
-
-#~ msgid "The ``datasrc`` directory has following folder structure."
-#~ msgstr "datasrcディレクトリでは次のようにデータを配置してください。"
-
-#~ msgid ""
-#~ "In the ReNomRG beta version, you "
-#~ "can enter a file that pickled "
-#~ "pandas.DataFrame into the application."
-#~ msgstr "ReNomRGのbetaバージョンでは、pickle化したpandas.DataFrameをアプリケーションに入力することができます。"
-

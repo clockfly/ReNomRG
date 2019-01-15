@@ -1,15 +1,15 @@
 <template>
-<div id="app">
-  <AppHeader></AppHeader>
-  <NavigationBar></NavigationBar>
+  <div id="app">
+    <AppHeader />
+    <NavigationBar />
 
-  <div class="paging-area">
-    <router-view></router-view>
+    <div class="paging-area">
+      <router-view />
+    </div>
+
+    <AppFooter />
+    <ModalError v-if="$store.state.error_msg" />
   </div>
-
-  <AppFooter></AppFooter>
-  <ModalError v-if="$store.state.error_msg"></ModalError>
-</div>
 </template>
 
 <script>

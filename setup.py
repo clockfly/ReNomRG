@@ -8,8 +8,8 @@ from setuptools import find_packages, setup
 import distutils.command.build
 
 
-if sys.version_info < (3, 4):
-    raise RuntimeError('renom_rg requires greater than Python3.4')
+if sys.version_info < (3, 5):
+    raise RuntimeError('renom_rg requires greater than Python3.5')
 
 DIR = str(pathlib.Path(__file__).resolve().parent)
 
@@ -55,7 +55,7 @@ class BuildNPM(distutils.command.build.build):
 
 setup(
     name="renom_rg",
-    version="v0.0beta",
+    version="0.1.0b",
     entry_points=entry_points,
     packages=['renom_rg'],
     install_requires=requires,

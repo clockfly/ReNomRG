@@ -1,9 +1,12 @@
 <template>
   <div id="dataset-modal">
-    <div class="modal-background" @click="$emit('hide')"></div>
+    <div
+      class="modal-background"
+      @click="$emit('hide')"
+    />
 
     <div class="modal-content">
-      <ModalDatasetSetting @cancel="$emit('hide')"></ModalDatasetSetting>
+      <ModalDatasetSetting @cancel="$emit('hide')" />
     </div>
   </div>
 </template>

@@ -1,20 +1,38 @@
 <template>
   <div id="add-model-modal">
-    <div class="modal-background" @click="hideModal"></div>
+    <div
+      class="modal-background"
+      @click="hideModal"
+    />
 
     <div class="modal-content">
       <div class="modal-tab flex">
-        <div class="tab-item"
-          v-bind:class="{ 'tab-active': tab === 'params' }"
-          @click="tab = 'params'">Setting of new Model</div>
-        <div class="tab-item"
-          v-bind:class="{ 'tab-active': tab === 'dataset' }"
-          @click="tab = 'dataset'">Setting of Dataset</div>
-        <div class="tab-rest"></div>
+        <div
+          class="tab-item"
+          :class="{ 'tab-active': tab === 'params' }"
+          @click="tab = 'params'"
+        >
+          Setting of new Model
+        </div>
+        <div
+          class="tab-item"
+          :class="{ 'tab-active': tab === 'dataset' }"
+          @click="tab = 'dataset'"
+        >
+          Setting of Dataset
+        </div>
+        <div class="tab-rest" />
       </div>
 
-      <ModalParamsSetting v-if="tab === 'params'" @todataset="tab = 'dataset'" @run="$emit('run')"></ModalParamsSetting>
-      <ModalDatasetSetting v-if="tab === 'dataset'" @cancel="tab = 'params'"></ModalDatasetSetting>
+      <ModalParamsSetting
+        v-if="tab === 'params'"
+        @todataset="tab = 'dataset'"
+        @run="$emit('run')"
+      />
+      <ModalDatasetSetting
+        v-if="tab === 'dataset'"
+        @cancel="tab = 'params'"
+      />
     </div>
   </div>
 </template>

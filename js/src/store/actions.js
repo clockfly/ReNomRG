@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const commitError = function (context, error) {
-  context.commit('setErrorMsg', {'error_msg': error.response.data.err})
+  context.commit('setErrorMsg', { 'error_msg': error.response.data.err })
 }
 
 export default {
@@ -49,7 +49,7 @@ export default {
     let response = await context.dispatch('createModel', payload)
 
     const model_id = response.data.model_id
-    await context.dispatch('runModel', {'model_id': model_id})
+    await context.dispatch('runModel', { 'model_id': model_id })
     await context.dispatch('loadModelList')
   },
 
@@ -62,7 +62,7 @@ export default {
             context.dispatch('loadModelList')
           }
         }
-        context.commit('setRunningModels', {'running_models': response.data.running_models})
+        context.commit('setRunningModels', { 'running_models': response.data.running_models })
       }).catch(function (error) {
         commitError(context, error)
       })
@@ -157,7 +157,7 @@ export default {
     const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
     axios.get(url)
       .then(function (response) {
-        context.commit('setPredResult', {'data': response.data})
+        context.commit('setPredResult', { 'data': response.data })
       }).catch(function (error) {
         commitError(context, error)
       })

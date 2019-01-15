@@ -1,11 +1,13 @@
 <template>
   <div id="page">
     <div class="page-content">
-
       <div class="panel">
         <div class="panel-title panel-title-button-area">
           Dataset List
-          <div class="panel-title-button" @click="show_modal = true">
+          <div
+            class="panel-title-button"
+            @click="show_modal = true"
+          >
             > Setting of Dataset
           </div>
         </div>
@@ -14,51 +16,104 @@
           <div class="column-left">
             <div class="table-header padding-for-scroll-bar">
               <div class="table-row flex">
-                <div class="table-item">Name</div>
-                <div class="table-item">Train Ratio</div>
-                <div class="table-item">Train</div>
-                <div class="table-item">Validation</div>
+                <div class="table-item">
+                  Name
+                </div>
+                <div class="table-item">
+                  Train Ratio
+                </div>
+                <div class="table-item">
+                  Train
+                </div>
+                <div class="table-item">
+                  Validation
+                </div>
               </div>
             </div>
             <div class="table-content">
-              <div class="table-row flex" v-for="(dataset, index) in $store.state.dataset_list" :key="index" @click="selected_dataset_index = index">
-                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.name }}</div>
-                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.train_ratio * 100 }}%</div>
-                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.train_index.length }}</div>
-                <div class="table-item" v-bind:class="{ 'active': selected_dataset_index === index }">{{ dataset.valid_index.length }}</div>
+              <div
+                v-for="(dataset, index) in $store.state.dataset_list"
+                :key="index"
+                class="table-row flex"
+                @click="selected_dataset_index = index"
+              >
+                <div
+                  class="table-item"
+                  :class="{ 'active': selected_dataset_index === index }"
+                >
+                  {{ dataset.name }}
+                </div>
+                <div
+                  class="table-item"
+                  :class="{ 'active': selected_dataset_index === index }"
+                >
+                  {{ dataset.train_ratio * 100 }}%
+                </div>
+                <div
+                  class="table-item"
+                  :class="{ 'active': selected_dataset_index === index }"
+                >
+                  {{ dataset.train_index.length }}
+                </div>
+                <div
+                  class="table-item"
+                  :class="{ 'active': selected_dataset_index === index }"
+                >
+                  {{ dataset.valid_index.length }}
+                </div>
               </div>
             </div>
           </div> <!-- content-left dataset list -->
 
-          <div class="column-right" v-if="selectedDataset">
+          <div
+            v-if="selectedDataset"
+            class="column-right"
+          >
             <div class="dataset-name">
-              {{selectedDataset.name}}
+              {{ selectedDataset.name }}
             </div>
             <div class="dataset-detail flex">
               <div class="column">
-
                 <div class="dataset-description-area">
-                  <div class="label">Description</div>
-                  <textarea class="description-text" :placeholder="selectedDataset.description" disabled></textarea>
+                  <div class="label">
+                    Description
+                  </div>
+                  <textarea
+                    class="description-text"
+                    :placeholder="selectedDataset.description"
+                    disabled
+                  />
                 </div> <!-- dataset description area -->
 
                 <div class="train-ratio-area">
                   <div class="train-ratio-block flex">
-                    <div class="label">Number of data size</div>
+                    <div class="label">
+                      Number of data size
+                    </div>
                     <div class="values flex">
-                      <div class="train-number">Train {{selectedDataset.train_index.length}}</div>
-                      <div class="valid-number">Validation {{selectedDataset.valid_index.length}}</div>
+                      <div class="train-number">
+                        Train {{ selectedDataset.train_index.length }}
+                      </div>
+                      <div class="valid-number">
+                        Validation {{ selectedDataset.valid_index.length }}
+                      </div>
                     </div>
                   </div>
 
                   <div class="train-ratio-block flex">
-                    <div class="label">All {{selectedDataset.train_index.length+selectedDataset.valid_index.length}}</div>
+                    <div class="label">
+                      All {{ selectedDataset.train_index.length+selectedDataset.valid_index.length }}
+                    </div>
                     <div class="values flex">
                       <div class="train-ratio-bar flex">
-                        <div class="bar-item train"
-                          v-bind:style="{ 'flex-grow': selectedDataset.train_index.length }"></div>
-                        <div class="bar-item validation"
-                          v-bind:style="{ 'flex-grow': selectedDataset.valid_index.length }"></div>
+                        <div
+                          class="bar-item train"
+                          :style="{ 'flex-grow': selectedDataset.train_index.length }"
+                        />
+                        <div
+                          class="bar-item validation"
+                          :style="{ 'flex-grow': selectedDataset.valid_index.length }"
+                        />
                       </div>
                     </div>
                   </div>
@@ -66,12 +121,18 @@
               </div> <!-- dataset detail column -->
 
               <div class="column">
-                <div class="label">Histogram</div>
+                <div class="label">
+                  Histogram
+                </div>
                 <div class="histogram-area flex">
-                  <div :id="'train-test-histogram'+index" class="histogram-plot"
-                    v-for="(data, index) in selectedDataset.target_train">
+                  <div
+                    v-for="(data, index) in selectedDataset.target_train"
+                    :id="'train-test-histogram'+index"
+                    :key="index"
+                    class="histogram-plot"
+                  >
                     <div class="target-name">
-                      {{selectedDataset.labels[selectedDataset.target_column_ids[index]]}}
+                      {{ selectedDataset.labels[selectedDataset.target_column_ids[index]] }}
                     </div>
                   </div>
                 </div>
@@ -82,7 +143,10 @@
       </div>
     </div>
 
-    <ModalDataset v-if="show_modal" @hide="show_modal = false"></ModalDataset>
+    <ModalDataset
+      v-if="show_modal"
+      @hide="show_modal = false"
+    />
   </div>
 </template>
 

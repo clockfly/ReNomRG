@@ -6,23 +6,34 @@
       </div>
 
       <div class="panel-content features-content flex">
-        <div class="target-feature-list" v-if="selectedDataset">
-          <div class="feature-type">Target Features</div>
+        <div
+          v-if="selectedDataset"
+          class="target-feature-list"
+        >
+          <div class="feature-type">
+            Target Features
+          </div>
 
-          <div class="feature-item"
-            v-for="(l,index) in selectedDataset.labels"
-            v-if="selectedDataset.target_column_ids.indexOf(index) !== -1">
+          <div
+            v-for="(l,index) in target_labels"
+            :key="index"
+            class="feature-item"
+          >
             {{ l }}
           </div>
         </div>
 
         <div class="explanatory-feature-list">
-          <div class="feature-type">Explanatory Features</div>
+          <div class="feature-type">
+            Explanatory Features
+          </div>
 
           <div class="feature-list flex">
-            <div class="feature-item"
-              v-for="(l,index) in selectedDataset.labels"
-              v-if="selectedDataset.target_column_ids.indexOf(index) === -1">
+            <div
+              v-for="(l,index) in explanatory_labels"
+              :key="index"
+              class="feature-item"
+            >
               {{ l }}
             </div>
           </div>
@@ -37,7 +48,31 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Features',
-  computed: mapGetters(['selectedDataset'])
+  computed: {
+    ...mapGetters(['selectedDataset']),
+    target_labels: function () {
+      const target_column_ids = this.selectedDataset.target_column_ids
+
+      let filtered = []
+      if (this.selectedDataset && this.selectedDataset.labels) {
+        filtered = this.selectedDataset.labels.filter(function (element, index, array) {
+          return target_column_ids.indexOf(index) !== -1
+        })
+      }
+      return filtered
+    },
+    explanatory_labels: function () {
+      const target_column_ids = this.selectedDataset.target_column_ids
+
+      let filtered = []
+      if (this.selectedDataset && this.selectedDataset.labels) {
+        filtered = this.selectedDataset.labels.filter(function (element, index, array) {
+          return target_column_ids.indexOf(index) === -1
+        })
+      }
+      return filtered
+    }
+  }
 }
 </script>
 

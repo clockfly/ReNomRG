@@ -1,9 +1,14 @@
 <template>
-  <div id="page" class="flex">
-
+  <div
+    id="page"
+    class="flex"
+  >
     <div class="model-detail-area">
       <div class="start-button-area">
-        <button class="start-button" @click="runPrediction">
+        <button
+          class="start-button"
+          @click="runPrediction"
+        >
           > Prediction Start
         </button>
       </div>
@@ -16,53 +21,97 @@
         <div class="panel-content model-detail-content">
           <div v-if="deployedModel">
             <div class="label-value flex">
-              <div class="label">Selected Model ID</div>
-              <div class="value">{{deployedModel.model_id}}</div>
+              <div class="label">
+                Selected Model ID
+              </div>
+              <div class="value">
+                {{ deployedModel.model_id }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">Dataset</div>
-              <div class="value">{{deployedDataset.name}}</div>
+              <div class="label">
+                Dataset
+              </div>
+              <div class="value">
+                {{ deployedDataset.name }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">Algorithm</div>
-              <div class="value">{{algorithms[deployedModel.algorithm]}}</div>
+              <div class="label">
+                Algorithm
+              </div>
+              <div class="value">
+                {{ algorithms[deployedModel.algorithm] }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">Total Epoch</div>
-              <div class="value">{{deployedModel.epoch}}</div>
+              <div class="label">
+                Total Epoch
+              </div>
+              <div class="value">
+                {{ deployedModel.epoch }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">Batch Size</div>
-              <div class="value">{{deployedModel.batch_size}}</div>
+              <div class="label">
+                Batch Size
+              </div>
+              <div class="value">
+                {{ deployedModel.batch_size }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">Validation Loss</div>
-              <div class="value">{{round(deployedModel.best_epoch_valid_loss)}}</div>
+              <div class="label">
+                Validation Loss
+              </div>
+              <div class="value">
+                {{ round(deployedModel.best_epoch_valid_loss) }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">RMSE</div>
-              <div class="value">{{round(deployedModel.best_epoch_rmse)}}</div>
+              <div class="label">
+                RMSE
+              </div>
+              <div class="value">
+                {{ round(deployedModel.best_epoch_rmse) }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">Max Absolute Error</div>
-              <div class="value">{{round(deployedModel.best_epoch_max_abs_error)}}</div>
+              <div class="label">
+                Max Absolute Error
+              </div>
+              <div class="value">
+                {{ round(deployedModel.best_epoch_max_abs_error) }}
+              </div>
             </div>
             <div class="label-value flex">
-              <div class="label">R2 Score</div>
-              <div class="value">{{round(deployedModel.best_epoch_r2)}}</div>
+              <div class="label">
+                R2 Score
+              </div>
+              <div class="value">
+                {{ round(deployedModel.best_epoch_r2) }}
+              </div>
             </div>
 
             <div class="label-value">
-              <div class="label">Graph Comvolution Params</div>
+              <div class="label">
+                Graph Comvolution Params
+              </div>
             </div>
 
             <div class="label-value flex">
-              <div class="label">Number of Neighbors</div>
-              <div class="value">{{deployedModel.algorithm_params.num_neighbors}}</div>
+              <div class="label">
+                Number of Neighbors
+              </div>
+              <div class="value">
+                {{ deployedModel.algorithm_params.num_neighbors }}
+              </div>
             </div>
           </div>
 
-          <div v-if="!deployedModel">Model is not Deployed.</div>
+          <div v-if="!deployedModel">
+            Model is not Deployed.
+          </div>
         </div>
       </div>
     </div> <!-- model detail -->
@@ -74,95 +123,146 @@
         </div>
 
         <div class="panel-content plot-area">
-
-          <div class="prediction-plot-area flex" v-if="deployedDataset">
-
-            <div id="pred-y-hist" class="column">
-              <div class="plot-name">Predicted Y Histogram</div>
+          <div
+            v-if="deployedDataset"
+            class="prediction-plot-area flex"
+          >
+            <div
+              id="pred-y-hist"
+              class="column"
+            >
+              <div class="plot-name">
+                Predicted Y Histogram
+              </div>
             </div>
-            <div id="xy-plot" class="column">
-              <div class="plot-name">XY Plot</div>
+            <div
+              id="xy-plot"
+              class="column"
+            >
+              <div class="plot-name">
+                XY Plot
+              </div>
 
               <div class="axis-y flex">
-                <div class="axis-label">Y</div>
+                <div class="axis-label">
+                  Y
+                </div>
                 <div class="axis-selector">
-                  <select class="small" v-model="plot_y_index">
-                    <option :value="i"
-                      v-for="(l, i) in deployedDataset.target_column_ids">
-                      {{deployedDataset.labels[l]}}
+                  <select
+                    v-model="plot_y_index"
+                    class="small"
+                  >
+                    <option
+                      v-for="(l, i) in deployedDataset.target_column_ids"
+                      :key="i"
+                      :value="i"
+                    >
+                      {{ deployedDataset.labels[l] }}
                     </option>
                   </select>
                 </div>
               </div>
 
               <div class="axis-x flex">
-                <div class="axis-label">X</div>
+                <div class="axis-label">
+                  X
+                </div>
                 <div class="axis-selector">
-                  <select class="small" v-model="plot_x_index">
-                    <option :value="i"
-                      v-if="deployedDataset.target_column_ids.indexOf(i) === -1"
-                      v-for="(l, i) in deployedDataset.labels">
-                      {{l}}
+                  <select
+                    v-model="plot_x_index"
+                    class="small"
+                  >
+                    <option
+                      v-for="(l, i) in target_labels"
+                      :key="i"
+                      :value="i"
+                    >
+                      {{ l }}
                     </option>
                   </select>
                 </div>
               </div>
-
             </div>
           </div>
 
-          <div class="prediction-table-area flex" v-if="deployedDataset">
-
+          <div
+            v-if="deployedDataset"
+            class="prediction-table-area flex"
+          >
             <table>
               <thead>
                 <tr>
-                  <th v-for="(l, i) in deployedDataset.target_column_ids"
-                    v-bind:class="{ active: l === sort_index }"
-                    @click="sortPredY(i)">
-                    {{deployedDataset.labels[l]}}
-                    <span class="icon" v-if="desc"
-                      v-bind:class="{ active: l === sort_index }">
+                  <th
+                    v-for="(l, i) in deployedDataset.target_column_ids"
+                    :key="i"
+                    :class="{ active: l === sort_index }"
+                    @click="sortPredY(i)"
+                  >
+                    {{ deployedDataset.labels[l] }}
+                    <span
+                      v-if="desc"
+                      class="icon"
+                      :class="{ active: l === sort_index }"
+                    >
                       ▼
                     </span>
-                    <span class="icon" v-else
-                      v-bind:class="{ active: l === sort_index }">
+                    <span
+                      v-else
+                      class="icon"
+                      :class="{ active: l === sort_index }"
+                    >
                       ▲
                     </span>
                   </th>
 
-                  <th v-for="(l, i) in deployedDataset.labels"
-                    v-if="deployedDataset.target_column_ids.indexOf(i) === -1"
-                    v-bind:class="{ active: i === sort_index }"
-                    @click="sortPredX(i)">
-                    {{l}}
-                    <span class="icon" v-if="desc"
-                      v-bind:class="{ active: i === sort_index }">
+                  <th
+                    v-for="(l, i) in explanatory_labels"
+                    :key="i"
+                    :class="{ active: i === sort_index }"
+                    @click="sortPredX(i)"
+                  >
+                    {{ l }}
+                    <span
+                      v-if="desc"
+                      class="icon"
+                      :class="{ active: i === sort_index }"
+                    >
                       ▼
                     </span>
-                    <span class="icon" v-else
-                      v-bind:class="{ active: i === sort_index }">
+                    <span
+                      v-else
+                      class="icon"
+                      :class="{ active: i === sort_index }"
+                    >
                       ▲
                     </span>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(data, i) in pred_y" :key="i">
-                  <td v-for="(d, j) in data">
+                <tr
+                  v-for="(data, i) in pred_y"
+                  :key="i"
+                >
+                  <td
+                    v-for="(d, j) in data"
+                    :key="j"
+                  >
                     {{ round(d) }}
                   </td>
-                  <td v-for="(d, j) in pred_x[i]">
+                  <td
+                    v-for="(d, j) in pred_x[i]"
+                    :key="j"
+                  >
                     {{ round(d) }}
                   </td>
                 </tr>
               </tbody>
             </table>
-
           </div>
         </div>
       </div>
     </div> <!-- prediction results -->
-
   </div>
 </template>
 
@@ -188,7 +288,29 @@ export default {
   },
   computed: {
     ...mapState(['algorithms', 'pred_x', 'pred_y']),
-    ...mapGetters(['deployedModel', 'deployedDataset'])
+    ...mapGetters(['deployedModel', 'deployedDataset']),
+    target_labels: function () {
+      const target_column_ids = this.deployedDataset.target_column_ids
+
+      let filtered = []
+      if (this.deployedDataset && this.deployedDataset.labels) {
+        filtered = this.deployedDataset.labels.filter(function (element, index, array) {
+          return target_column_ids.indexOf(index) !== -1
+        })
+      }
+      return filtered
+    },
+    explanatory_labels: function () {
+      const target_column_ids = this.deployedDataset.target_column_ids
+
+      let filtered = []
+      if (this.deployedDataset && this.deployedDataset.labels) {
+        filtered = this.deployedDataset.labels.filter(function (element, index, array) {
+          return target_column_ids.indexOf(index) === -1
+        })
+      }
+      return filtered
+    }
   },
   watch: {
     plot_x_index: function () {
