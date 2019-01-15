@@ -41,7 +41,7 @@ const webpackConfig = merge(baseWebpackConfig, {
   plugins: [
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({
-        filename: '[name].[hash].css',
+        filename: 'static/css/[name].[hash].css',
       }),
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
