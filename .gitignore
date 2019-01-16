@@ -168,4 +168,4 @@ storage/*
 datasrc/*
 renom_rg/server/.build/*
 scripts/*
-renom_rg/db/*
+renom_rg/db/storage/*
