@@ -142,6 +142,7 @@ export default {
     fd.append('valid_index', JSON.stringify(context.state.valid_index))
     fd.append('target_train', JSON.stringify(context.state.target_train))
     fd.append('target_valid', JSON.stringify(context.state.target_valid))
+    fd.append('true_histogram', JSON.stringify(context.state.true_histogram))
 
     const url = '/api/renom_rg/datasets'
     return axios.post(url, fd)

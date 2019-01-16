@@ -118,6 +118,9 @@ def _dataset_to_dict(ds):
         "target_column_ids": pickle.loads(ds.target_column_ids),
         "labels": pickle.loads(ds.labels),
         "train_ratio": ds.train_ratio,
+        "train_index": pickle.loads(ds.train_index),
+        "valid_index": pickle.loads(ds.valid_index),
+        "true_histogram": pickle.loads(ds.true_histogram),
         "created": ds.created.isoformat()
     }
     return ret
@@ -180,13 +183,15 @@ def create_dataset():
     train_ratio = float(request.params.train_ratio)
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
-
+    true_histogram = json.loads(request.params.true_histogram)
+    print(true_histogram)
     dataset = db.DatasetDef(name=name, description=description,
                             target_column_ids=pickle.dumps(target_column_ids),
                             labels=pickle.dumps(labels),
                             train_ratio=train_ratio,
                             train_index=pickle.dumps(train_index),
-                            valid_index=pickle.dumps(valid_index))
+                            valid_index=pickle.dumps(valid_index),
+                            true_histogram=pickle.dumps(true_histogram))
     session = db.session()
     session.add(dataset)
     session.commit()

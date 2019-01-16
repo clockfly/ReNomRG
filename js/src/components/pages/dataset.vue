@@ -126,7 +126,7 @@
                 </div>
                 <div class="histogram-area flex">
                   <div
-                    v-for="(data, index) in selectedDataset.target_train"
+                    v-for="(data, index) in selectedDataset.true_histogram"
                     :id="'train-test-histogram'+index"
                     :key="index"
                     class="histogram-plot"
@@ -190,30 +190,24 @@ export default {
   methods: {
     drawHistograms: function () {
       if (!this.selectedDataset) return
-      for (let i in this.selectedDataset.target_train) {
+      for (let i in this.selectedDataset.true_histogram) {
         const id = '#train-test-histogram' + i
+        const hist = this.selectedDataset.true_histogram[i]
         removeSvg(id)
-        this.drawHistogram(id, this.selectedDataset.target_train[i], this.selectedDataset.target_valid[i])
+        this.drawHistogram(id, hist.train, hist.valid)
       }
     },
-    drawHistogram: function (id, train, valid) {
+    drawHistogram: function (id, train_hist, valid_hist) {
       const width = 150
       const height = 150
       const margin = { 'left': 20, 'top': 20, 'right': 20, 'bottom': 20 }
-
-      const target_train = train
-      const target_valid = valid
-      const train_max = max(target_train)
-      const train_min = min(target_train)
-      const valid_max = max(target_valid)
-      const valid_min = min(target_valid)
 
       const svg = d3.select(id)
         .append('svg')
         .attr('width', width)
         .attr('height', height)
 
-      const x_scale = getScale([min([train_min, valid_min]), max([train_max, valid_max])], [margin.left, width - margin.right])
+      const x_scale = getScale([min(train_hist.bins), max(train_hist.bins)], [margin.left, width - margin.right])
       // draw x axis
       const x_axis_define = d3.axisBottom(x_scale)
         .tickSizeInner(-(height - margin.top - margin.bottom))
@@ -226,58 +220,46 @@ export default {
       styleAxis(x_axis)
 
       // calc histogram
-      const histogram = this.getHistgram(x_scale, 10)
-      const train_bins = histogram(target_train)
-      const valid_bins = histogram(target_valid)
-      const hist_max = this.getHistgramSizeMax(train_bins)
-
+      const hist_max = max(train_hist.counts)
       const y_scale = getScale([0, hist_max], [height - margin.bottom, margin.top])
+
       // draw y axis
-      const y_axis_define = d3.axisLeft(y_scale)
-        .tickSizeInner(-(width - margin.left - margin.right))
-        .tickSizeOuter(0)
-        .ticks(5)
-        .tickPadding(10)
-      const y_axis = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
-        .call(y_axis_define)
-      styleAxis(y_axis)
+      // const y_axis_define = d3.axisLeft(y_scale)
+      //   .tickSizeInner(-(width - margin.left - margin.right))
+      //   .tickSizeOuter(0)
+      //   .ticks(5)
+      //   .tickPadding(10)
+      // const y_axis = svg.append('g')
+      //   .attr('transform', 'translate(' + margin.left + ',' + 0 + ')')
+      //   .call(y_axis_define)
+      // styleAxis(y_axis)
 
       // draw cardinal area chart
       svg.append('path')
-        .datum(train_bins)
+        .datum(train_hist.counts)
         .attr('fill', train_color)
         .attr('opacity', 0.2)
         .attr('stroke', train_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
-          .y1(function (d) { return y_scale(d.length) })
+          .x(function (d, index) { return x_scale((train_hist.bins[index] + train_hist.bins[index + 1]) / 2) })
+          .y1(function (d) { return y_scale(d) })
           .y0(function (d) { return y_scale(0) })
           .curve(d3.curveCardinal)
         )
 
       svg.append('path')
-        .datum(valid_bins)
+        .datum(valid_hist.counts)
         .attr('fill', valid_color)
         .attr('opacity', 0.2)
         .attr('stroke', valid_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return x_scale((d.x0 + d.x1) / 2) })
-          .y1(function (d) { return y_scale(d.length) })
+          .x(function (d, index) { return x_scale((valid_hist.bins[index] + valid_hist.bins[index + 1]) / 2) })
+          .y1(function (d) { return y_scale(d) })
           .y0(function (d) { return y_scale(0) })
           .curve(d3.curveCardinal)
         )
-    },
-    getHistgram: function (scale, ticks) {
-      return d3.histogram()
-        .value(function (d) { return d })
-        .domain(scale.domain())
-        .thresholds(scale.ticks(ticks))
-    },
-    getHistgramSizeMax: function (hist) {
-      return max(hist.map(function (d) { return d.length }))
     }
   }
 }
