@@ -79,7 +79,7 @@ For the command renom_rg, you can give following arguments.
 
 If the server starts, you will see a message like below.
 
-<img src='./js/static/image/server_start.png' width='60%'/>
+<img src='./js/static/img/server_start.png' width='60%'/>
 
 Then 'datasrc' directory will be created in your current directory.
 Please set pickle data according to `Where to put your data` description.
