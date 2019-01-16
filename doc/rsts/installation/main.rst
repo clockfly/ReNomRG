@@ -35,7 +35,7 @@ The Wheel package is provided at:
 
     https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-VERSION-py3-none-any.whl
 
-Install 0.1.0b(beta version) is follow.
+Install 0.1.0b0(beta version) is follow.
 
   .. code-block:: shell
 

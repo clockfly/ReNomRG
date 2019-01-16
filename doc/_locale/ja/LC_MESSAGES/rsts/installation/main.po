@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG beta\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-15 11:37+0900\n"
+"POT-Creation-Date: 2019-01-16 13:25+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,9 @@ msgstr "ReNomRGを使用するにはReNomが必要です。"
 msgid ""
 "If you haven't install ReNom, please install ReNom from  "
 "https://github.com/ReNom-dev-team/ReNom.git."
-msgstr "ReNomをインストールしていない場合は、 https://github.com/ReNom-dev-team/ReNom.git. こちらからReNomをインストールしてください。"
+msgstr ""
+"ReNomをインストールしていない場合は、 https://github.com/ReNom-dev-team/ReNom.git. "
+"こちらからReNomをインストールしてください。"
 
 #: ../../rsts/installation/main.rst:24
 msgid ""
@@ -88,8 +90,8 @@ msgid "The Wheel package is provided at:"
 msgstr "Wheelパッケージは以下のようなリンクからインストールすることが可能です。"
 
 #: ../../rsts/installation/main.rst:38
-msgid "Install 0.1.0b(beta version) is follow."
-msgstr "以下のように、0.1.0b(βバージョン)をインストールすることができます。"
+msgid "Install 0.1.0b0(beta version) is follow."
+msgstr "以下のように、0.1.0b0(ベータバージョン)をインストールすることができます。"
 
 #: ../../rsts/installation/main.rst:47
 msgid ""

@@ -120,7 +120,7 @@ https://www.renom.jp/packages/renomrg/rsts/how_to_use.html
 
 ## Change log
 
-### 0.0b => 0.1.0b
+### v0.0beta => v0.1.0b
 
 - GraphCNN is possible with GPU.
 - Enabled install with wheel.
