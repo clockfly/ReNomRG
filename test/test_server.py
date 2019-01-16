@@ -54,7 +54,11 @@ def test_create_dataset(app):
         'train_index': json.dumps([5, 6]),
         'valid_index': json.dumps([7, 8]),
         'target_train': json.dumps([1, 2]),
-        'target_valid': json.dumps([1, 2])
+        'target_valid': json.dumps([1, 2]),
+        'true_histogram': json.dumps([{'train': {'counts': [1, 2],
+                                                 'bins': [1, 2]},
+                                       'valid': {'counts': [1, 2],
+                                                 'bins': [1, 2]}}])
     })
 
     assert resp.status_int == 200
@@ -73,7 +77,11 @@ def _add_dataset():
                        train_index=pickle.dumps(list(range(1, 405))),
                        valid_index=pickle.dumps(list(range(405, 500))),
                        target_train=pickle.dumps([1, 2]),
-                       target_valid=pickle.dumps([1, 2]))
+                       target_valid=pickle.dumps([1, 2]),
+                       true_histogram=pickle.dumps([{'train': {'counts': [1, 2],
+                                                               'bins': [1, 2]},
+                                                     'valid': {'counts': [1, 2],
+                                                               'bins': [1, 2]}}]))
 
     session = db.session()
     session.add(ds)
