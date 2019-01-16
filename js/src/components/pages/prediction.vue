@@ -173,7 +173,7 @@
                     class="small"
                   >
                     <option
-                      v-for="(l, i) in target_labels"
+                      v-for="(l, i) in explanatory_labels"
                       :key="i"
                       :value="i"
                     >
