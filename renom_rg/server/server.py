@@ -184,7 +184,7 @@ def create_dataset():
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
     true_histogram = json.loads(request.params.true_histogram)
-    print(true_histogram)
+
     dataset = db.DatasetDef(name=name, description=description,
                             target_column_ids=pickle.dumps(target_column_ids),
                             labels=pickle.dumps(labels),
