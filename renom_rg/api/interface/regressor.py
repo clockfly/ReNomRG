@@ -63,6 +63,7 @@ class Regressor(object):
                                 neighbors=int(params["num_neighbors"]),
                                 channels=[int(u) for u in params["channels"]])
 
+        self._model.load(filename)
         self._model_info = {
             "model_id": ret["model_id"],
             "dataset_id": ret["dataset_id"],
