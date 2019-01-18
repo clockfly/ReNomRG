@@ -45,6 +45,8 @@ export default {
   computed: mapGetters(['selectedModel']),
   watch: {
     selectedModel: function () {
+      const id = '#curve-canvas'
+      removeSvg(id)
       this.drawCurve()
     }
   },
@@ -56,8 +58,6 @@ export default {
       if (!this.selectedModel || !this.selectedModel.train_loss_list || !this.selectedModel.valid_loss_list) return
 
       const id = '#curve-canvas'
-      removeSvg(id)
-
       const train_list = this.selectedModel.train_loss_list
       const valid_list = this.selectedModel.valid_loss_list
 
