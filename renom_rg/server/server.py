@@ -452,8 +452,7 @@ def predict_model(model_id, target_column, labels):
         filename = 'model' + str(model_id) + '_{0:%Y%m%d%H%M%S}'.format(now) + '.csv'
         filepath = os.path.join(CSV_DIR, filename)
 
-        row = []
-        row.append(target_column)
+        row = target_column.split(',')
         labels_l = labels.split(',')
         row2 = row + labels_l
         np_xy = np.round(np.c_[result, data], 3)

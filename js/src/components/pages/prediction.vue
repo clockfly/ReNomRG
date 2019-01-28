@@ -344,17 +344,22 @@ export default {
     },
     runPrediction: function () {
       let labels_data = []
+      let target_column = []
       let i = 0
       for (let d of this.deployedDataset.labels) {
-        if(i != this.deployedDataset.target_column_ids){
+        if(this.deployedDataset.target_column_ids.indexOf(i) == -1){
           labels_data.push(d)
         }
         i++
       }
+      for (let d of this.deployedDataset.target_column_ids) {
+        target_column.push(this.deployedDataset.labels[d])
+      }
+
       this.$store.dispatch('runPrediction',
       {
         'model_id': this.deployedModel.model_id,
-        'target_column': this.deployedDataset.labels[this.deployedDataset.target_column_ids],
+        'target_column': target_column,
         'labels': labels_data
       })
     },
