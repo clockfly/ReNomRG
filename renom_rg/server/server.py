@@ -26,7 +26,7 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sqlalchemy.sql import exists
 
-from renom_img.server import DATASRC_PREDICTION_OUT
+from renom_rg.server import DATASRC_PREDICTION_OUT
 
 import renom as rm
 import renom.cuda
