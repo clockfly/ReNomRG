@@ -116,6 +116,7 @@ export default {
   setPredResult (state, payload) {
     state.pred_x = payload.data.pred_x
     state.pred_y = payload.data.pred_y
+    state.pred_csv = payload.data.pred_csv
   },
   resetPred (state, payload) {
     state.pred_x = undefined

@@ -15,6 +15,8 @@ import numpy as np
 import pickle
 import uuid
 import shutil
+import csv
+import datetime
 
 from bottle import HTTPResponse, default_app, route, request, error, abort, static_file
 from concurrent.futures import ThreadPoolExecutor as Executor
@@ -23,6 +25,8 @@ from concurrent.futures import CancelledError
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sqlalchemy.sql import exists
+
+from renom_img.server import DATASRC_PREDICTION_OUT
 
 import renom as rm
 import renom.cuda
@@ -424,8 +428,8 @@ def stop_model(model_id):
         return create_response({"error_msg": str(e)})
 
 
-@route("/api/renom_rg/models/<model_id:int>/predict", method="GET")
-def predict_model(model_id):
+@route("/api/renom_rg/models/<model_id:int>/predict/<target_column>/<labels>", method="GET")
+def predict_model(model_id, target_column, labels):
     model = db.session().query(db.Model).get(model_id)
     if not model:
         return create_response({}, 404, err='model not found')
@@ -440,10 +444,29 @@ def predict_model(model_id):
     f = submit_task(executor, pred_task.prediction, model.id, data)
     try:
         result = f.result()
+
+        CSV_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'csv')
+        if not os.path.isdir(CSV_DIR):
+            os.makedirs(CSV_DIR)
+        now = datetime.datetime.now()
+        filename = 'model' + str(model_id) + '_{0:%Y%m%d%H%M%S}'.format(now) + '.csv'
+        filepath = os.path.join(CSV_DIR, filename)
+
+        row = []
+        row.append(target_column)
+        labels_l = labels.split(',')
+        row2 = row + labels_l
+        np_xy = np.round(np.c_[result, data], 3)
+        pred_x_y = pd.DataFrame(np_xy)
+        pred_x_y.columns = row2
+        pred_x_y.to_csv(filepath, index=False)
+
         body = {
             'pred_x': data.tolist(),
-            'pred_y': result.tolist()
+            'pred_y': result.tolist(),
+            'pred_csv': filename
         }
+
         return create_response(body)
 
     except Exception as e:
@@ -453,6 +476,18 @@ def predict_model(model_id):
     finally:
         if renom.cuda.has_cuda():
             release_mem_pool()
+
+
+@route("/api/renom_rg/models/predict/csv/<filename>", method="GET")
+def predict_csv(filename):
+    CSV_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'csv')
+    try:
+        return static_file(filename, root=CSV_DIR, download=True)
+    except Exception as e:
+        traceback.print_exc()
+        body = json.dumps({"error_msg": e.args[0]})
+        ret = create_response(body)
+        return ret
 
 
 @route("/api/renom_rg/deployed_model", method="GET")
