@@ -31,7 +31,7 @@
                   Target
                 </div>
                 <div class="value">
-                  {{ selectedDataset.labels[selectedDataset.target_column_ids[index]] }}
+                  {{ deployedDataset.labels[deployedDataset.target_column_ids[index]] }}
                 </div>
               </div>
               <div
@@ -106,7 +106,7 @@ export default {
   name: 'PreictionResult',
   computed: {
     ...mapState(['dataset_list']),
-    ...mapGetters(['deployedModel', 'selectedModel', 'selectedDataset'])
+    ...mapGetters(['deployedModel', 'deployedDataset', 'selectedModel', 'selectedDataset'])
   },
   watch: {
     selectedModel: function () {
