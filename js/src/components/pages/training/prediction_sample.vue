@@ -211,8 +211,22 @@ export default {
             if (index === confidence_data.length - 1) return x_scale(plot_max)
             return x_scale(plot_min + (chunk * (index - 1)) + (chunk * 0.5))
           })
-          .y1(function (d, index) { return y_scale(min([plot_max, d[4]])) })
-          .y0(function (d, index) { return y_scale(max([plot_min, d[0]])) })
+          .y1(function (d, index) {
+            let y_1 = d[4]
+            let sd = d[4] - d[0]
+            let gh = y_max - y_min
+            if (0 != sd && sd < gh / 25) y_1 = y_1 + gh / 50
+            if (y_1 < y_min) y_1 = y_min
+            return y_scale(min([y_max, y_1]))
+          })
+          .y0(function (d, index) {
+            let y_0 = d[0]
+            let sd = d[4] - d[0]
+            let gh = y_max - y_min
+            if (0 != sd && sd < gh / 25) y_0 = y_0 - gh / 50
+            if (y_0 > y_max) y_0 = y_max
+            return y_scale(max([y_min, y_0]))
+          })
           .curve(d3.curveCardinal)
         )
       svg.append('path')
@@ -225,8 +239,22 @@ export default {
             if (index === confidence_data.length - 1) return x_scale(plot_max)
             return x_scale(plot_min + (chunk * (index - 1)) + (chunk * 0.5))
           })
-          .y1(function (d, index) { return y_scale(min([plot_max, d[3]])) })
-          .y0(function (d, index) { return y_scale(max([plot_min, d[1]])) })
+          .y1(function (d, index) {
+            let y_1 = d[3]
+            let sd = d[3] - d[1]
+            let gh = y_max - y_min
+            if (0 != sd && sd < gh / 50) y_1 = y_1 + gh / 100
+            if (y_1 < y_min) y_1 = y_min
+            return y_scale(min([y_max, y_1]))
+          })
+          .y0(function (d, index) {
+            let y_0 = d[1]
+            let sd = d[3] - d[1]
+            let gh = y_max - y_min
+            if (0 != sd && sd < gh / 50) y_0 = y_0 - gh / 100
+            if (y_0 > y_max) y_0 = y_max
+            return y_scale(max([y_min, y_0]))
+          })
           .curve(d3.curveCardinal)
         )
 
