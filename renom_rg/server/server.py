@@ -22,6 +22,7 @@ from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import CancelledError
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
 from sqlalchemy.sql import exists
 
 import renom as rm
@@ -86,6 +87,19 @@ def split_target(data, ids):
     return X, y
 
 
+def zscore(pd_x):
+    ss = preprocessing.StandardScaler()
+    np_result = ss.fit_transform(pd_x)
+    result = pd.DataFrame(np_result)
+    return result
+
+def min_max(pd_x):
+    mm = preprocessing.MinMaxScaler()
+    np_result = mm.fit_transform(pd_x)
+    result = pd.DataFrame(np_result)
+    return result
+
+
 @route("/")
 def index():
     return _get_resource('', 'index.html')
@@ -121,6 +135,7 @@ def _dataset_to_dict(ds):
         "train_index": pickle.loads(ds.train_index),
         "valid_index": pickle.loads(ds.valid_index),
         "true_histogram": pickle.loads(ds.true_histogram),
+        "selected_scaling": ds.selected_scaling,
         "created": ds.created.isoformat()
     }
     return ret
@@ -146,11 +161,20 @@ def get_dataset(dataset_id):
 def confirm_dataset():
     target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
+    selected_scaling = float(request.params.selected_scaling)
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
     X, y = split_target(data, target_column_ids)
+
+    if selected_scaling == 2:
+        y = zscore(y)
+        X = zscore(X)
+    elif selected_scaling == 3:
+        y = min_max(y)
+        X = min_max(X)
+
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
     num_bin = 10
@@ -179,6 +203,7 @@ def create_dataset():
     name = request.params.name
     description = request.params.description
     target_column_ids = json.loads(request.params.target_column_ids)
+    selected_scaling = float(request.params.selected_scaling)
     labels = json.loads(request.params.labels)
     train_ratio = float(request.params.train_ratio)
     train_index = json.loads(request.params.train_index)
@@ -191,7 +216,8 @@ def create_dataset():
                             train_ratio=train_ratio,
                             train_index=pickle.dumps(train_index),
                             valid_index=pickle.dumps(valid_index),
-                            true_histogram=pickle.dumps(true_histogram))
+                            true_histogram=pickle.dumps(true_histogram),
+                            selected_scaling=selected_scaling)
     session = db.session()
     session.add(dataset)
     session.commit()

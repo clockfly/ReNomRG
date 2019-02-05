@@ -50,6 +50,23 @@
 
         <div class="sub-block flex">
           <div class="label">
+            Feature Scaling
+          </div>
+          <div class="input-value">
+            <select v-model="selected_scaling">
+              <option
+                v-for="(scaling, index) in $store.state.scalings"
+                :key="index"
+                :value="index"
+              >
+                {{ scaling }}
+              </option>
+            </select>
+          </div>
+        </div>  <!-- sub block -->
+
+        <div class="sub-block flex">
+          <div class="label">
             Target Valiables
           </div>
           <div class="input-value">
@@ -185,7 +202,8 @@ export default {
       'description': '',
       'train_ratio': 0.8,
       'train_ratio_list': [0.7, 0.8, 0.9],
-      'target_column_ids': []
+      'target_column_ids': [],
+      'selected_scaling': 1
     }
   },
   computed: {
@@ -208,7 +226,8 @@ export default {
         'name': this.name,
         'description': this.description,
         'train_ratio': this.train_ratio,
-        'target_column_ids': this.target_column_ids
+        'target_column_ids': this.target_column_ids,
+        'selected_scaling': this.selected_scaling
       }
     },
     drawHistogram: function (id, train_hist, valid_hist) {

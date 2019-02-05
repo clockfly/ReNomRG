@@ -4,6 +4,7 @@ import os
 import time
 import numpy as np
 from sklearn.metrics import r2_score
+from sklearn import preprocessing
 import pickle
 import threading
 
@@ -132,6 +133,17 @@ def train(taskstate, model_id):
         session.commit()
 
 
+def zscore(np_x):
+    ss = preprocessing.StandardScaler()
+    result = ss.fit_transform(np_x)
+    return result
+
+def min_max(np_x):
+    mm = preprocessing.MinMaxScaler()
+    result = mm.fit_transform(np_x)
+    return result
+
+
 def _train(session, taskstate, model_id):
     modeldef = session.query(db.Model).get(model_id)
 
@@ -145,15 +157,13 @@ def _train(session, taskstate, model_id):
 
     X, y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
-    # TODO: normalize, standardize
-    # standardize
-    # X_mean = np.mean(X, axis=0)
-    # X_std = np.std(X, axis=0)
-    # X = (X - X_mean) / X_std
-    #
-    # y_mean = np.mean(y)
-    # y_std = np.std(y)
-    # y = (y - y_mean) / y_std
+    selected_scaling = modeldef.dataset.selected_scaling
+    if selected_scaling == 2:
+        y = zscore(y)
+        X = zscore(X)
+    elif selected_scaling == 3:
+        y = min_max(y)
+        X = min_max(X)
 
     X_train = X[pickle.loads(modeldef.dataset.train_index)]
     X_valid = X[pickle.loads(modeldef.dataset.valid_index)]

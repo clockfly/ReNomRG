@@ -42,6 +42,11 @@ export default {
   train_index: [],
   valid_index: [],
   true_histogram: [],
+  scalings: {
+    1: 'None scaling',
+    2: 'Standardization',
+    3: 'Normalization'
+  },
 
   /**
   * prediction

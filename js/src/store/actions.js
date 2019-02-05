@@ -121,6 +121,7 @@ export default {
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
     fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
+    fd.append('selected_scaling', payload.selected_scaling)
 
     const url = '/api/renom_rg/datasets/confirm'
     return axios.post(url, fd)
@@ -137,6 +138,7 @@ export default {
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
     fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
+    fd.append('selected_scaling', payload.selected_scaling)
     fd.append('labels', JSON.stringify(context.state.labels))
     fd.append('train_index', JSON.stringify(context.state.train_index))
     fd.append('valid_index', JSON.stringify(context.state.valid_index))
