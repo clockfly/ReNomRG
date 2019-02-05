@@ -161,7 +161,7 @@ def get_dataset(dataset_id):
 def confirm_dataset():
     target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
-    selected_scaling = float(request.params.selected_scaling)
+    selected_scaling = int(request.params.selected_scaling)
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
@@ -203,7 +203,7 @@ def create_dataset():
     name = request.params.name
     description = request.params.description
     target_column_ids = json.loads(request.params.target_column_ids)
-    selected_scaling = float(request.params.selected_scaling)
+    selected_scaling = int(request.params.selected_scaling)
     labels = json.loads(request.params.labels)
     train_ratio = float(request.params.train_ratio)
     train_index = json.loads(request.params.train_index)
