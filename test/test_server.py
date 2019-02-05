@@ -73,6 +73,7 @@ def _add_dataset():
     name = str(random.random())
     ds = db.DatasetDef(name=name, description='description',
                        target_column_ids=pickle.dumps([0]),
+                       selected_scaling=2,
                        labels=pickle.dumps([1, 2, 3]),
                        train_ratio=0.1,
                        train_index=pickle.dumps(list(range(1, 405))),
