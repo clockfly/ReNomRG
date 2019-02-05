@@ -10,6 +10,7 @@ USER_DEFINED = 0xffffffff
 # Directories
 DATASRC_DIR = "datasrc"
 DATASRC_PREDICTION = os.path.join(DATASRC_DIR, "prediction_set")
+DATASRC_PREDICTION_OUT = os.path.join(DATASRC_DIR, "prediction_set", "output")
 SCRIPT_DIR = "scripts"
 
 # DB directories

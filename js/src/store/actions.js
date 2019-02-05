@@ -155,12 +155,18 @@ export default {
   },
 
   runPrediction (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
+    const url = '/api/renom_rg/models/' + payload.model_id + '/predict/' + payload.target_column + '/' + payload.labels
     axios.get(url)
       .then(function (response) {
         context.commit('setPredResult', { 'data': response.data })
       }).catch(function (error) {
         commitError(context, error)
       })
+  },
+
+  exportCSV (context, payload) {
+    let url = '/api/renom_rg/models/predict/csv/' + payload.pred_csv
+    window.open(url, '__blank')
+
   }
 }

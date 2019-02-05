@@ -107,6 +107,14 @@
                 {{ deployedModel.algorithm_params.num_neighbors }}
               </div>
             </div>
+
+            <br>
+            <div v-if="this.$store.state.pred_x">
+              <button @click="exportCSV">
+                CSV DL
+              </button>
+            </div>
+
           </div>
 
           <div v-if="!deployedModel">
@@ -287,7 +295,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['algorithms', 'pred_x', 'pred_y']),
+    ...mapState(['algorithms', 'pred_x', 'pred_y', 'pred_csv']),
     ...mapGetters(['deployedModel', 'deployedDataset']),
     target_labels: function () {
       const target_column_ids = this.deployedDataset.target_column_ids
@@ -335,7 +343,28 @@ export default {
       return round(v, 1000)
     },
     runPrediction: function () {
-      this.$store.dispatch('runPrediction', { 'model_id': this.deployedModel.model_id })
+      let labels_data = []
+      let target_column = []
+      let i = 0
+      for (let d of this.deployedDataset.labels) {
+        if(this.deployedDataset.target_column_ids.indexOf(i) == -1){
+          labels_data.push(d)
+        }
+        i++
+      }
+      for (let d of this.deployedDataset.target_column_ids) {
+        target_column.push(this.deployedDataset.labels[d])
+      }
+
+      this.$store.dispatch('runPrediction',
+      {
+        'model_id': this.deployedModel.model_id,
+        'target_column': target_column,
+        'labels': labels_data
+      })
+    },
+    exportCSV: function () {
+      this.$store.dispatch('exportCSV', {'pred_csv': this.pred_csv})
     },
     shapeX: function () {
       let data = []

@@ -47,5 +47,6 @@ export default {
   * prediction
   */
   pred_x: undefined,
-  pred_y: undefined
+  pred_y: undefined,
+  pred_csv: undefined
 }
