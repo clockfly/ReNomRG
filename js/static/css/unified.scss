@@ -251,6 +251,8 @@ $panel-title-height: 32px;
 /**
 * table
 */
+$th-td-width: 120px;
+
 .table-wrapper {
   overflow: scroll;
 }
@@ -268,27 +270,14 @@ td, th {
   color: $gray;
   text-align: center;
   white-space: nowrap;
+  background: $white;
 }
 th {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: $white;
 }
-th:first-of-type {
-  position: sticky;
-  left: 0;
-  border-bottom: $border-width-regular solid $light-gray;
-  text-align: left;
-  background-color: $white;
-  z-index: 3;
-}
-tbody tr td:first-of-type {
-  position: sticky;
-  left: 0;
-  text-align: left;
-  background-color: $white;
-}
+
 /**
 * flex
 */

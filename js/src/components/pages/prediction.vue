@@ -202,11 +202,12 @@
                 <tr>
                   <th
                     v-for="(l, i) in deployedDataset.target_column_ids"
+                    :style="'position: sticky;top: 0px;left: ' + i * sticky_width + 'px;z-index: 4;'"
                     :key="i"
                     :class="{ active: l === sort_index }"
                     @click="sortPredY(i)"
                   >
-                    {{ deployedDataset.labels[l] }}
+                    {{ deployedDataset.labels[l] | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
@@ -229,7 +230,7 @@
                     :class="{ active: i === sort_index }"
                     @click="sortPredX(i)"
                   >
-                    {{ l }}
+                    {{ l | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
@@ -255,6 +256,7 @@
                   <td
                     v-for="(d, j) in data"
                     :key="j"
+                    :style="'position: sticky;left: ' + j * sticky_width + 'px;z-index: 3;'"
                   >
                     {{ round(d) }}
                   </td>
@@ -291,7 +293,9 @@ export default {
       'plot_x_index': 0,
       'plot_y_index': 0,
       'desc': false,
-      'sort_index': -1
+      'sort_index': -1,
+      'sticky_width': 120,
+      'truncate_l': 8
     }
   },
   computed: {
@@ -529,6 +533,18 @@ export default {
       this.sort_index = this.deployedDataset.target_column_ids[value]
       this.$store.commit('sortPredY', {'key': value, 'desc': this.desc})
     }
+  },
+  filters: {
+    truncate: function(value, length, omission) {
+      var length = length ? parseInt(length, 10) : 20;
+      var ommision = omission ? omission.toString() : '...';
+      if(value.length <= length) {
+        return value;
+      }
+      else {
+        return value.substring(0, length) + ommision;
+      }
+    }
   }
 }
 </script>
@@ -597,6 +613,14 @@ export default {
       }
       .active {
         color: $blue;
+      }
+      th{
+        width: $th-td-width;
+        min-width: $th-td-width;
+      }
+      td{
+        width: $th-td-width;
+        min-width: $th-td-width;
       }
     }
     #xy-plot, #pred-y-hist {
