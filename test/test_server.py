@@ -49,7 +49,7 @@ def test_create_dataset(app):
         'name': 'test_create_dataset_1',
         'description': 'description',
         'target_column_ids': json.dumps([1, 2]),
-        'selected_scaling': 2,
+        'selected_scaling': 1,
         'labels': json.dumps([1, 2, 3, 4]),
         'train_ratio': 0.1,
         'train_index': json.dumps([5, 6]),
@@ -73,7 +73,7 @@ def _add_dataset():
     name = str(random.random())
     ds = db.DatasetDef(name=name, description='description',
                        target_column_ids=pickle.dumps([0]),
-                       selected_scaling=2,
+                       selected_scaling=1,
                        labels=pickle.dumps([1, 2, 3]),
                        train_ratio=0.1,
                        train_index=pickle.dumps(list(range(1, 405))),
@@ -168,7 +168,7 @@ def test_confirm(app, data_pickle):
     resp = app.post('/api/renom_rg/datasets/confirm', {
         'target_column_ids': '[]',
         'train_ratio': 0.8,
-        'selected_scaling': 2})
+        'selected_scaling': 1})
 
     assert resp.status_code == 200
     print(resp.json)
