@@ -49,6 +49,7 @@ def test_create_dataset(app):
         'name': 'test_create_dataset_1',
         'description': 'description',
         'target_column_ids': json.dumps([1, 2]),
+        'selected_scaling': 2,
         'labels': json.dumps([1, 2, 3, 4]),
         'train_ratio': 0.1,
         'train_index': json.dumps([5, 6]),
@@ -133,13 +134,13 @@ def _add_searcher():
     return searcher
 
 DEFAULT_ALGORITHM_PARAMS = {'train_count': 5, 'valid_count': 5,
-    'target_train': [], 'target_valid': [], 'train_index':[1,2,3,4,5],
-    'valid_index': [6,7,8,9,10],
-    'num_neighbors': 5,
-    'fc_unit': [100, 50],
-    'channels': [10, 20, 20],
-    'script_file_name': 'userdefmodel.py'
-}
+                            'target_train': [], 'target_valid': [], 'train_index': [1, 2, 3, 4, 5],
+                            'valid_index': [6, 7, 8, 9, 10],
+                            'num_neighbors': 5,
+                            'fc_unit': [100, 50],
+                            'channels': [10, 20, 20],
+                            'script_file_name': 'userdefmodel.py'
+                            }
 
 
 def _add_model(algorithm=1, algorithm_params=dict(DEFAULT_ALGORITHM_PARAMS), dataset=None, searcher=None):
@@ -165,7 +166,8 @@ def test_confirm(app, data_pickle):
     ds = _add_dataset()
     resp = app.post('/api/renom_rg/datasets/confirm', {
         'target_column_ids': '[]',
-        'train_ratio': 0.8})
+        'train_ratio': 0.8,
+        'selected_scaling': 2})
 
     assert resp.status_code == 200
     print(resp.json)
