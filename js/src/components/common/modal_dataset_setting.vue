@@ -207,12 +207,12 @@ export default {
     }
   },
   computed: {
-    targetTrain: function () {
-      return this.$store.state.target_train
+    trainIndex: function () {
+      return this.$store.state.train_index
     }
   },
   watch: {
-    targetTrain: function () {
+    trainIndex: function () {
       const id = '#train-test-histogram'
       removeSvg(id)
       for (let hist of this.$store.state.true_histogram) {
