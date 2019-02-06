@@ -12,13 +12,24 @@
               Deploy Model
             </div>
             <div class="label">
-              Model ID
+              Model ID：
             </div>
             <div
               v-if="deployedModel"
               class="value"
             >
               {{ deployedModel.model_id }}
+            </div>
+          </div>
+          <div class="label-value flex">
+            <div class="label">
+              Feature Scaling：
+            </div>
+            <div
+              v-if="deployedModel"
+              class="value"
+            >
+              {{ $store.state.scalings[deployedDataset.selected_scaling] }}
             </div>
           </div>
           <div v-if="deployedModel">
@@ -28,7 +39,7 @@
             >
               <div class="label-value flex">
                 <div class="label">
-                  Target
+                  Target：
                 </div>
                 <div class="value">
                   {{ deployedDataset.labels[deployedDataset.target_column_ids[index]] }}
@@ -55,13 +66,24 @@
               Select Model
             </div>
             <div class="label">
-              Model ID
+              Model ID：
             </div>
             <div
               v-if="selectedModel"
               class="value"
             >
               {{ selectedModel.model_id }}
+            </div>
+          </div>
+          <div class="label-value flex">
+            <div class="label">
+              Feature Scaling：
+            </div>
+            <div
+              v-if="selectedModel"
+              class="value"
+            >
+              {{ $store.state.scalings[selectedDataset.selected_scaling] }}
             </div>
           </div>
           <div v-if="selectedModel">
@@ -71,7 +93,7 @@
             >
               <div class="label-value flex">
                 <div class="label">
-                  Target
+                  Target：
                 </div>
                 <div class="value">
                   {{ selectedDataset.labels[selectedDataset.target_column_ids[index]] }}
