@@ -215,6 +215,9 @@ export default {
             let y_1 = d[4]
             let sd = d[4] - d[0]
             let gh = y_max - y_min
+            // データが存在し(データが1つでもあれば0にならない処理を「train_task.py」ファイル内で追加している)、
+            // かつ、標準偏差が極端に低い場合はグラフが線のようになってしまうため、
+            // y_1の値に少し幅をもたせる(y_0も同様)
             if (0 != sd && sd < gh / 25) y_1 = y_1 + gh / 50
             if (y_1 < y_min) y_1 = y_min
             return y_scale(min([y_max, y_1]))
@@ -243,6 +246,9 @@ export default {
             let y_1 = d[3]
             let sd = d[3] - d[1]
             let gh = y_max - y_min
+            // データが存在し(データが1つでもあれば0にならない処理を「train_task.py」ファイル内で追加している)、
+            // かつ、標準偏差が極端に低い場合はグラフが線のようになってしまうため、
+            // y_1の値に少し幅をもたせる(y_0も同様)
             if (0 != sd && sd < gh / 50) y_1 = y_1 + gh / 100
             if (y_1 < y_min) y_1 = y_min
             return y_scale(min([y_max, y_1]))
