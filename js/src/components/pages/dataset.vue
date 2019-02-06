@@ -74,6 +74,11 @@
             </div>
             <div class="dataset-detail flex">
               <div class="column">
+                <div class="selected-scaling-area">
+                  <div class="label">
+                    Feature Scaling ： {{ $store.state.scalings[selectedDataset.selected_scaling] }}
+                  </div>
+                </div> <!-- dataset description area -->
                 <div class="dataset-description-area">
                   <div class="label">
                     Description
@@ -84,7 +89,6 @@
                     disabled
                   />
                 </div> <!-- dataset description area -->
-
                 <div class="train-ratio-area">
                   <div class="train-ratio-block flex">
                     <div class="label">

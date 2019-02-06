@@ -107,6 +107,14 @@
                 {{ deployedModel.algorithm_params.num_neighbors }}
               </div>
             </div>
+
+            <br>
+            <div v-if="this.$store.state.pred_x">
+              <button @click="exportCSV">
+                CSV DL
+              </button>
+            </div>
+
           </div>
 
           <div v-if="!deployedModel">
@@ -194,11 +202,12 @@
                 <tr>
                   <th
                     v-for="(l, i) in deployedDataset.target_column_ids"
+                    :style="'position: sticky;top: 0px;left: ' + i * sticky_width + 'px;z-index: 4;'"
                     :key="i"
                     :class="{ active: l === sort_index }"
                     @click="sortPredY(i)"
                   >
-                    {{ deployedDataset.labels[l] }}
+                    {{ deployedDataset.labels[l] | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
@@ -221,7 +230,7 @@
                     :class="{ active: i === sort_index }"
                     @click="sortPredX(i)"
                   >
-                    {{ l }}
+                    {{ l | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
@@ -247,6 +256,7 @@
                   <td
                     v-for="(d, j) in data"
                     :key="j"
+                    :style="'position: sticky;left: ' + j * sticky_width + 'px;z-index: 3;'"
                   >
                     {{ round(d) }}
                   </td>
@@ -283,11 +293,13 @@ export default {
       'plot_x_index': 0,
       'plot_y_index': 0,
       'desc': false,
-      'sort_index': -1
+      'sort_index': -1,
+      'sticky_width': 120,
+      'truncate_l': 8
     }
   },
   computed: {
-    ...mapState(['algorithms', 'pred_x', 'pred_y']),
+    ...mapState(['algorithms', 'pred_x', 'pred_y', 'pred_csv']),
     ...mapGetters(['deployedModel', 'deployedDataset']),
     target_labels: function () {
       const target_column_ids = this.deployedDataset.target_column_ids
@@ -335,7 +347,28 @@ export default {
       return round(v, 1000)
     },
     runPrediction: function () {
-      this.$store.dispatch('runPrediction', { 'model_id': this.deployedModel.model_id })
+      let labels_data = []
+      let target_column = []
+      let i = 0
+      for (let d of this.deployedDataset.labels) {
+        if(this.deployedDataset.target_column_ids.indexOf(i) == -1){
+          labels_data.push(d)
+        }
+        i++
+      }
+      for (let d of this.deployedDataset.target_column_ids) {
+        target_column.push(this.deployedDataset.labels[d])
+      }
+
+      this.$store.dispatch('runPrediction',
+      {
+        'model_id': this.deployedModel.model_id,
+        'target_column': target_column,
+        'labels': labels_data
+      })
+    },
+    exportCSV: function () {
+      this.$store.dispatch('exportCSV', {'pred_csv': this.pred_csv})
     },
     shapeX: function () {
       let data = []
@@ -500,6 +533,18 @@ export default {
       this.sort_index = this.deployedDataset.target_column_ids[value]
       this.$store.commit('sortPredY', {'key': value, 'desc': this.desc})
     }
+  },
+  filters: {
+    truncate: function(value, length, omission) {
+      var length = length ? parseInt(length, 10) : 20;
+      var ommision = omission ? omission.toString() : '...';
+      if(value.length <= length) {
+        return value;
+      }
+      else {
+        return value.substring(0, length) + ommision;
+      }
+    }
   }
 }
 </script>
@@ -568,6 +613,14 @@ export default {
       }
       .active {
         color: $blue;
+      }
+      th{
+        width: $th-td-width;
+        min-width: $th-td-width;
+      }
+      td{
+        width: $th-td-width;
+        min-width: $th-td-width;
       }
     }
     #xy-plot, #pred-y-hist {

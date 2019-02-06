@@ -15,6 +15,8 @@ import numpy as np
 import pickle
 import uuid
 import shutil
+import csv
+import datetime
 
 from bottle import HTTPResponse, default_app, route, request, error, abort, static_file
 from concurrent.futures import ThreadPoolExecutor as Executor
@@ -22,7 +24,10 @@ from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import CancelledError
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
 from sqlalchemy.sql import exists
+
+from renom_rg.server import DATASRC_PREDICTION_OUT
 
 import renom as rm
 import renom.cuda
@@ -86,6 +91,19 @@ def split_target(data, ids):
     return X, y
 
 
+def zscore(pd_x):
+    ss = preprocessing.StandardScaler()
+    np_result = ss.fit_transform(pd_x)
+    result = pd.DataFrame(np_result)
+    return result
+
+def min_max(pd_x):
+    mm = preprocessing.MinMaxScaler()
+    np_result = mm.fit_transform(pd_x)
+    result = pd.DataFrame(np_result)
+    return result
+
+
 @route("/")
 def index():
     return _get_resource('', 'index.html')
@@ -121,6 +139,7 @@ def _dataset_to_dict(ds):
         "train_index": pickle.loads(ds.train_index),
         "valid_index": pickle.loads(ds.valid_index),
         "true_histogram": pickle.loads(ds.true_histogram),
+        "selected_scaling": ds.selected_scaling,
         "created": ds.created.isoformat()
     }
     return ret
@@ -146,11 +165,20 @@ def get_dataset(dataset_id):
 def confirm_dataset():
     target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
+    selected_scaling = int(request.params.selected_scaling)
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
     X, y = split_target(data, target_column_ids)
+
+    if selected_scaling == 2:
+        y = zscore(y)
+        X = zscore(X)
+    elif selected_scaling == 3:
+        y = min_max(y)
+        X = min_max(X)
+
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
     num_bin = 10
@@ -179,6 +207,7 @@ def create_dataset():
     name = request.params.name
     description = request.params.description
     target_column_ids = json.loads(request.params.target_column_ids)
+    selected_scaling = int(request.params.selected_scaling)
     labels = json.loads(request.params.labels)
     train_ratio = float(request.params.train_ratio)
     train_index = json.loads(request.params.train_index)
@@ -191,7 +220,8 @@ def create_dataset():
                             train_ratio=train_ratio,
                             train_index=pickle.dumps(train_index),
                             valid_index=pickle.dumps(valid_index),
-                            true_histogram=pickle.dumps(true_histogram))
+                            true_histogram=pickle.dumps(true_histogram),
+                            selected_scaling=selected_scaling)
     session = db.session()
     session.add(dataset)
     session.commit()
@@ -424,8 +454,8 @@ def stop_model(model_id):
         return create_response({"error_msg": str(e)})
 
 
-@route("/api/renom_rg/models/<model_id:int>/predict", method="GET")
-def predict_model(model_id):
+@route("/api/renom_rg/models/<model_id:int>/predict/<target_column>/<labels>", method="GET")
+def predict_model(model_id, target_column, labels):
     model = db.session().query(db.Model).get(model_id)
     if not model:
         return create_response({}, 404, err='model not found')
@@ -440,10 +470,28 @@ def predict_model(model_id):
     f = submit_task(executor, pred_task.prediction, model.id, data)
     try:
         result = f.result()
+
+        CSV_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'csv')
+        if not os.path.isdir(CSV_DIR):
+            os.makedirs(CSV_DIR)
+        now = datetime.datetime.now()
+        filename = 'model' + str(model_id) + '_{0:%Y%m%d%H%M%S}'.format(now) + '.csv'
+        filepath = os.path.join(CSV_DIR, filename)
+
+        row = target_column.split(',')
+        labels_l = labels.split(',')
+        row2 = row + labels_l
+        np_xy = np.round(np.c_[result, data], 3)
+        pred_x_y = pd.DataFrame(np_xy)
+        pred_x_y.columns = row2
+        pred_x_y.to_csv(filepath, index=False)
+
         body = {
             'pred_x': data.tolist(),
-            'pred_y': result.tolist()
+            'pred_y': result.tolist(),
+            'pred_csv': filename
         }
+
         return create_response(body)
 
     except Exception as e:
@@ -453,6 +501,18 @@ def predict_model(model_id):
     finally:
         if renom.cuda.has_cuda():
             release_mem_pool()
+
+
+@route("/api/renom_rg/models/predict/csv/<filename>", method="GET")
+def predict_csv(filename):
+    CSV_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'csv')
+    try:
+        return static_file(filename, root=CSV_DIR, download=True)
+    except Exception as e:
+        traceback.print_exc()
+        body = json.dumps({"error_msg": e.args[0]})
+        ret = create_response(body)
+        return ret
 
 
 @route("/api/renom_rg/deployed_model", method="GET")

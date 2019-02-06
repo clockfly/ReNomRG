@@ -121,6 +121,7 @@ export default {
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
     fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
+    fd.append('selected_scaling', payload.selected_scaling)
 
     const url = '/api/renom_rg/datasets/confirm'
     return axios.post(url, fd)
@@ -137,6 +138,7 @@ export default {
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
     fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
+    fd.append('selected_scaling', payload.selected_scaling)
     fd.append('labels', JSON.stringify(context.state.labels))
     fd.append('train_index', JSON.stringify(context.state.train_index))
     fd.append('valid_index', JSON.stringify(context.state.valid_index))
@@ -155,12 +157,18 @@ export default {
   },
 
   runPrediction (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
+    const url = '/api/renom_rg/models/' + payload.model_id + '/predict/' + payload.target_column + '/' + payload.labels
     axios.get(url)
       .then(function (response) {
         context.commit('setPredResult', { 'data': response.data })
       }).catch(function (error) {
         commitError(context, error)
       })
+  },
+
+  exportCSV (context, payload) {
+    let url = '/api/renom_rg/models/predict/csv/' + payload.pred_csv
+    window.open(url, '__blank')
+
   }
 }

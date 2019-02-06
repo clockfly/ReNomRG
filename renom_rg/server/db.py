@@ -30,6 +30,7 @@ class DatasetDef(Base):
     target_train = Column(BLOB)
     target_valid = Column(BLOB)
     true_histogram = Column(BLOB)
+    selected_scaling = Column(Integer)
     created = Column(DateTime, default=datetime.datetime.utcnow)
     updated = Column(DateTime, default=datetime.datetime.utcnow,
                      onupdate=datetime.datetime.utcnow)
