@@ -48,6 +48,7 @@ def test_create_dataset(app):
     resp = app.post('/api/renom_rg/datasets', {
         'name': 'test_create_dataset_1',
         'description': 'description',
+        'explanatory_column_ids': json.dumps([3, 4, 5, 6, 7, 8]),
         'target_column_ids': json.dumps([1, 2]),
         'selected_scaling': 1,
         'labels': json.dumps([1, 2, 3, 4]),
@@ -72,6 +73,7 @@ def test_create_dataset(app):
 def _add_dataset():
     name = str(random.random())
     ds = db.DatasetDef(name=name, description='description',
+                       explanatory_column_ids=pickle.dumps([1, 2, 3, 4, 5, 6]),
                        target_column_ids=pickle.dumps([0]),
                        selected_scaling=1,
                        labels=pickle.dumps([1, 2, 3]),
@@ -166,6 +168,7 @@ def _add_model(algorithm=1, algorithm_params=dict(DEFAULT_ALGORITHM_PARAMS), dat
 def test_confirm(app, data_pickle):
     ds = _add_dataset()
     resp = app.post('/api/renom_rg/datasets/confirm', {
+        'explanatory_column_ids': '[]',
         'target_column_ids': '[]',
         'train_ratio': 0.8,
         'selected_scaling': 1})
