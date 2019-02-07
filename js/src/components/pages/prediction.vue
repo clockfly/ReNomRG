@@ -162,7 +162,7 @@
                   >
                     <option
                       v-for="(l, i) in deployedDataset.target_column_ids"
-                      :key="i"
+                      :key="`y_${i}`"
                       :value="i"
                     >
                       {{ deployedDataset.labels[l] }}
@@ -182,7 +182,7 @@
                   >
                     <option
                       v-for="(l, i) in deployedDataset.explanatory_column_ids"
-                      :key="i"
+                      :key="`X_${i}`"
                       :value="i"
                     >
                       {{ deployedDataset.labels[l] }}
@@ -203,7 +203,7 @@
                   <th
                     v-for="(l, i) in deployedDataset.target_column_ids"
                     :style="'position: sticky;top: 0px;left: ' + i * sticky_width + 'px;z-index: 4;'"
-                    :key="i"
+                    :key="`y_${i}`"
                     :class="{ active: l === sort_index }"
                     @click="sortPredY(i)"
                   >
@@ -226,7 +226,7 @@
 
                   <th
                     v-for="(l, i) in deployedDataset.explanatory_column_ids"
-                    :key="i"
+                    :key="`X_${i}`"
                     :class="{ active: i === sort_index }"
                     @click="sortPredX(i)"
                   >
@@ -255,14 +255,14 @@
                 >
                   <td
                     v-for="(d, j) in data"
-                    :key="j"
+                    :key="`y_${j}`"
                     :style="'position: sticky;left: ' + j * sticky_width + 'px;z-index: 3;'"
                   >
                     {{ round(d) }}
                   </td>
                   <td
                     v-for="(d, j) in pred_x[i]"
-                    :key="j"
+                    :key="`X_${j}`"
                   >
                     {{ round(d) }}
                   </td>
