@@ -181,11 +181,11 @@
                     class="small"
                   >
                     <option
-                      v-for="(l, i) in explanatory_labels"
+                      v-for="(l, i) in deployedDataset.explanatory_column_ids"
                       :key="i"
                       :value="i"
                     >
-                      {{ l }}
+                      {{ deployedDataset.labels[l] }}
                     </option>
                   </select>
                 </div>
@@ -225,12 +225,12 @@
                   </th>
 
                   <th
-                    v-for="(l, i) in explanatory_labels"
+                    v-for="(l, i) in deployedDataset.explanatory_column_ids"
                     :key="i"
                     :class="{ active: i === sort_index }"
                     @click="sortPredX(i)"
                   >
-                    {{ l | truncate(truncate_l, '…') }}
+                    {{ deployedDataset.labels[l] | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
@@ -348,6 +348,7 @@ export default {
     },
     runPrediction: function () {
       let labels_data = []
+      let explanatory_column = []
       let target_column = []
       let i = 0
       for (let d of this.deployedDataset.labels) {
@@ -356,6 +357,9 @@ export default {
         }
         i++
       }
+      for (let d of this.deployedDataset.explanatory_column_ids) {
+        explanatory_column.push(this.deployedDataset.labels[d])
+      }
       for (let d of this.deployedDataset.target_column_ids) {
         target_column.push(this.deployedDataset.labels[d])
       }
@@ -363,6 +367,7 @@ export default {
       this.$store.dispatch('runPrediction',
       {
         'model_id': this.deployedModel.model_id,
+        'explanatory_column': explanatory_column,
         'target_column': target_column,
         'labels': labels_data
       })

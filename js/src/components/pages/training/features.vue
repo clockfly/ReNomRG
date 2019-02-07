@@ -63,9 +63,9 @@ export default {
     explanatory_labels: function () {
       let filtered = []
       if (this.selectedDataset && this.selectedDataset.labels) {
-        const target_column_ids = this.selectedDataset.target_column_ids
+        const explanatory_column_ids = this.selectedDataset.explanatory_column_ids
         filtered = this.selectedDataset.labels.filter(function (element, index, array) {
-          return target_column_ids.indexOf(index) === -1
+          return explanatory_column_ids.indexOf(index) !== -1
         })
       }
       return filtered

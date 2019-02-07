@@ -133,6 +133,7 @@ def _dataset_to_dict(ds):
         "dataset_id": ds.id,
         "name": ds.name,
         "description": ds.description,
+        "explanatory_column_ids": pickle.loads(ds.explanatory_column_ids),
         "target_column_ids": pickle.loads(ds.target_column_ids),
         "labels": pickle.loads(ds.labels),
         "train_ratio": ds.train_ratio,
@@ -163,6 +164,7 @@ def get_dataset(dataset_id):
 
 @route('/api/renom_rg/datasets/confirm', method='POST')
 def confirm_dataset():
+    explanatory_column_ids = json.loads(request.params.explanatory_column_ids)
     target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
     selected_scaling = int(request.params.selected_scaling)
@@ -170,7 +172,9 @@ def confirm_dataset():
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
+    X_e, y_e = split_target(data, explanatory_column_ids)
     X, y = split_target(data, target_column_ids)
+    X = y_e
 
     if selected_scaling == 2:
         y = zscore(y)
@@ -206,6 +210,7 @@ def confirm_dataset():
 def create_dataset():
     name = request.params.name
     description = request.params.description
+    explanatory_column_ids = json.loads(request.params.explanatory_column_ids)
     target_column_ids = json.loads(request.params.target_column_ids)
     selected_scaling = int(request.params.selected_scaling)
     labels = json.loads(request.params.labels)
@@ -215,6 +220,7 @@ def create_dataset():
     true_histogram = json.loads(request.params.true_histogram)
 
     dataset = db.DatasetDef(name=name, description=description,
+                            explanatory_column_ids=pickle.dumps(explanatory_column_ids),
                             target_column_ids=pickle.dumps(target_column_ids),
                             labels=pickle.dumps(labels),
                             train_ratio=train_ratio,

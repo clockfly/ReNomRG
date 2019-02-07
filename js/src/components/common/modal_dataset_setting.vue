@@ -65,17 +65,36 @@
           </div>
         </div>  <!-- sub block -->
 
-        <div class="sub-block flex">
+        <div class="sub-block">
           <div class="label">
-            Target Valiables
+            Valiables
           </div>
-          <div class="input-value">
-            <div
-              v-for="id in target_column_ids"
-              :key="id"
-              class="target-variable-name"
-            >
-              {{ $store.state.labels[id] }}
+          <div class="flex">
+            <div class="selected-label">
+              [Explanatory]
+            </div>
+            <div class="selected-label">
+              [Target]
+            </div>
+          </div>
+          <div class="flex">
+            <div class="selected-scroll-area">
+              <div
+                v-for="id in explanatory_column_ids"
+                :key="id"
+                class="target-variable-name"
+              >
+                {{ $store.state.labels[id] }}
+              </div>
+            </div>
+            <div class="selected-scroll-area">
+              <div
+                v-for="id in target_column_ids"
+                :key="id"
+                class="target-variable-name"
+              >
+                {{ $store.state.labels[id] }}
+              </div>
             </div>
           </div>
         </div>  <!-- sub block -->
@@ -83,7 +102,7 @@
 
       <div class="button-area">
         <button
-          :disabled="name === '' || target_column_ids.length > 4 || target_column_ids.length === 0"
+          :disabled="name === '' || target_column_ids.length > 4 || target_column_ids.length === 0 || explanatory_column_ids.length === 0"
           @click="confirmDataset"
         >
           Confirm
@@ -103,22 +122,60 @@
     >
       <div class="variable-scroll-area">
         <div class="setting-type">
-          Target Valiables
+          Valiables
+        </div>
+
+        <div class="table-row flex">
+          <div class="table-item-cb">
+            Explanatory
+          </div>
+          <div class="table-item-cb">
+            Target
+          </div>
+          <div class="table-item-tx">
+            Valiable Name
+          </div>
         </div>
         <div
           v-for="(label, index) in $store.state.labels"
           :key="index"
-          class="variable-item"
+          class="table-row flex"
         >
-          <input
-            :id="index"
-            v-model="target_column_ids"
-            type="checkbox"
-            :value="index"
-          >
-          <label :for="index">
+          <div class="table-item-cb">
+            <input
+              :id="index"
+              v-model="explanatory_column_ids"
+              type="checkbox"
+              :value="index"
+              @click="select_explanatory(index)"
+            >
+          </div>
+          <div class="table-item-cb">
+            <input
+              :id="index"
+              v-model="target_column_ids"
+              type="checkbox"
+              :value="index"
+              @click="select_target(index)"
+            >
+          </div>
+          <div class="table-item-tx">
             {{ label }}
-          </label>
+          </div>
+        </div>
+        <div class="table-row flex">
+          <div class="table-item-cb">
+            Check All
+            <input
+              type="checkbox"
+              :checked="isAllSelected"
+              @click="selectAll"
+            >
+          </div>
+          <div class="table-item-cb">
+          </div>
+          <div class="table-item-tx">
+          </div>
         </div>
       </div>
     </div> <!-- column before confirm -->
@@ -196,12 +253,18 @@ import { max, min, getScale, removeSvg, styleAxis } from '@/utils'
 export default {
   name: 'ModalDataset',
   data: function () {
+    let labels_array = [];
+    for( let key in this.$store.state.labels ) {
+      labels_array.push(Number(key));
+    }
     return {
       'is_confirm': false,
       'name': '',
       'description': '',
       'train_ratio': 0.8,
       'train_ratio_list': [0.7, 0.8, 0.9],
+      'explanatory_column_ids': labels_array,
+      'isAllSelected': false,
       'target_column_ids': [],
       'selected_scaling': 1
     }
@@ -221,11 +284,42 @@ export default {
     }
   },
   methods: {
+    select_target: function (val) {
+      let e_columns = this.explanatory_column_ids;
+      let idx = e_columns.indexOf(val);
+      if(idx >= 0){
+        e_columns.splice(idx, 1);
+      }
+      this.explanatory_column_ids = e_columns;
+    },
+    select_explanatory: function (val) {
+      let t_columns = this.target_column_ids;
+      let idx = t_columns.indexOf(val);
+      if(idx >= 0){
+        t_columns.splice(idx, 1);
+      }
+      this.target_column_ids = t_columns;
+    },
+    selectAll: function () {
+      let labels_array = [];
+      for( let key in this.$store.state.labels ) {
+        labels_array.push(Number(key));
+      }
+      if (this.isAllSelected) {
+        this.explanatory_column_ids = [];
+        this.isAllSelected = false;
+      } else {
+        this.explanatory_column_ids = labels_array;
+        this.target_column_ids = [];
+        this.isAllSelected = true;
+      }
+    },
     params: function () {
       return {
         'name': this.name,
         'description': this.description,
         'train_ratio': this.train_ratio,
+        'explanatory_column_ids': this.explanatory_column_ids,
         'target_column_ids': this.target_column_ids,
         'selected_scaling': this.selected_scaling
       }
@@ -319,7 +413,7 @@ export default {
       margin-top: $margin-middle;
       margin-left: $margin-middle;
 
-      .label, .input-value, .values, .target-variable-name, .train-number, .valid-number {
+      .label, .input-value, .values, .target-variable-name, .train-number, .valid-number, .selected-label {
         width: 50%;
         height: $text-height-small;
         line-height: $text-height-small;
@@ -334,6 +428,9 @@ export default {
           margin-left: auto;
         }
       }
+      .selected-label {
+        padding-left: $padding-middle;
+      }
     }
     .setting-type, .label {
       color: $gray;
@@ -344,19 +441,43 @@ export default {
       bottom: 0px;
       right: 0px;
     }
+    .selected-scroll-area {
+      overflow-y: auto;
+      width: 50%;
+      height: 140px;
+      line-height: $text-height-small;
+      font-size: $fs-small;
+      color: $gray;
+      padding-left: $padding-middle;
+    }
+
     .variable-scroll-area {
       overflow-y: scroll;
       height: 90%;
-      padding: 0 $padding-large;
-      .variable-item {
-        padding-left: $padding-large;
+
+      .table-row {
+        width: 97%;
+        margin: 0 auto;
+        border-bottom: $border-width-regular solid $light-gray;
+        .table-item-cb {
+          width: 30%;
+          height: $text-height-regular;
+          line-height: $text-height-regular;
+          text-align: center;
+          font-size: $fs-small;
+          color: $gray;
+        }
+        .table-item-tx {
+          width: 40%;
+          height: $text-height-regular;
+          line-height: $text-height-regular;
+          text-align: center;
+          font-size: $fs-small;
+          color: $gray;
+        }
       }
-      .variable-item, .variable-item label {
-        height: $text-height-regular;
-        line-height: $text-height-regular;
-        font-size: $fs-small;
-        color: $gray;
-      }
+
+
     }
   }
 
