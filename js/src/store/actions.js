@@ -159,8 +159,13 @@ export default {
   },
 
   runPrediction (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id + '/predict/' + payload.target_column + '/' + payload.labels
-    axios.get(url)
+    let fd = new FormData()
+    fd.append('explanatory_column', payload.explanatory_column)
+    fd.append('target_column', payload.target_column)
+    fd.append('explanatory_column_ids', JSON.stringify(payload.explanatory_column_ids))
+
+    const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
+    axios.post(url, fd)
       .then(function (response) {
         context.commit('setPredResult', { 'data': response.data })
       }).catch(function (error) {

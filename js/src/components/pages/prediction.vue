@@ -347,16 +347,8 @@ export default {
       return round(v, 1000)
     },
     runPrediction: function () {
-      let labels_data = []
       let explanatory_column = []
       let target_column = []
-      let i = 0
-      for (let d of this.deployedDataset.labels) {
-        if(this.deployedDataset.target_column_ids.indexOf(i) == -1){
-          labels_data.push(d)
-        }
-        i++
-      }
       for (let d of this.deployedDataset.explanatory_column_ids) {
         explanatory_column.push(this.deployedDataset.labels[d])
       }
@@ -369,7 +361,7 @@ export default {
         'model_id': this.deployedModel.model_id,
         'explanatory_column': explanatory_column,
         'target_column': target_column,
-        'labels': labels_data
+        'explanatory_column_ids': this.deployedDataset.explanatory_column_ids
       })
     },
     exportCSV: function () {
