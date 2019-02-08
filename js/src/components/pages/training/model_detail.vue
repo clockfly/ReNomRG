@@ -40,6 +40,24 @@
         >
           <div class="label-value flex">
             <div class="label">
+              Dataset
+            </div>
+            <div class="value">
+              {{ selectedDataset.name }}
+            </div>
+          </div>
+
+          <div class="label-value flex">
+            <div class="label">
+              Feature Scaling
+            </div>
+            <div class="value">
+              {{ $store.state.scalings[selectedDataset.selected_scaling] }}
+            </div>
+          </div>
+
+          <div class="label-value flex">
+            <div class="label">
               Algorithm
             </div>
             <div class="value">
@@ -178,7 +196,7 @@ export default {
       'undeploy_model': undefined
     }
   },
-  computed: mapGetters(['selectedModel']),
+  computed: mapGetters(['selectedModel', 'selectedDataset']),
   methods: {
     round: function (v) {
       return round(v, 1000)
