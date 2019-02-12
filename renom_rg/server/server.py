@@ -91,11 +91,21 @@ def split_target(data, ids):
     return X, y
 
 
-def zscore(pd_x):
+def zscore(pd_x, type):
     ss = preprocessing.StandardScaler()
     np_result = ss.fit_transform(pd_x)
     result = pd.DataFrame(np_result)
-    return result
+
+    SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
+    if not os.path.isdir(SCALING_DIR):
+        os.makedirs(SCALING_DIR)
+    now = datetime.datetime.now()
+    filename = 'ss_' + type + '_{0:%Y%m%d%H%M%S}'.format(now) + '.pickle'
+    filepath = os.path.join(SCALING_DIR, filename)
+    with open(filepath, mode='wb') as f:
+        pickle.dump(ss, f)
+
+    return result, filename
 
 def min_max(pd_x):
     mm = preprocessing.MinMaxScaler()
@@ -140,6 +150,8 @@ def _dataset_to_dict(ds):
         "valid_index": pickle.loads(ds.valid_index),
         "true_histogram": pickle.loads(ds.true_histogram),
         "selected_scaling": ds.selected_scaling,
+        "filename_y": ds.filename_y,
+        "filename_X": ds.filename_X,
         "created": ds.created.isoformat()
     }
     return ret
@@ -173,8 +185,8 @@ def confirm_dataset():
     X, y = split_target(data, target_column_ids)
 
     if selected_scaling == 2:
-        y = zscore(y)
-        X = zscore(X)
+        y, filename_y = zscore(y, type='y')
+        X, filename_X = zscore(X, type='X')
     elif selected_scaling == 3:
         y = min_max(y)
         X = min_max(X)
@@ -196,7 +208,9 @@ def confirm_dataset():
         "valid_count": y_valid.shape[0],
         "train_index": np.array(y_train.index).tolist(),
         "valid_index": np.array(y_valid.index).tolist(),
-        "true_histogram": true_histogram
+        "true_histogram": true_histogram,
+        "filename_y": filename_y,
+        "filename_X": filename_X
     }
     r = create_response(body)
     return r
@@ -213,6 +227,8 @@ def create_dataset():
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
     true_histogram = json.loads(request.params.true_histogram)
+    filename_y = json.loads(request.params.filename_y)
+    filename_X = json.loads(request.params.filename_X)
 
     dataset = db.DatasetDef(name=name, description=description,
                             target_column_ids=pickle.dumps(target_column_ids),
@@ -221,7 +237,9 @@ def create_dataset():
                             train_index=pickle.dumps(train_index),
                             valid_index=pickle.dumps(valid_index),
                             true_histogram=pickle.dumps(true_histogram),
-                            selected_scaling=selected_scaling)
+                            selected_scaling=selected_scaling,
+                            filename_y=filename_y,
+                            filename_X=filename_X)
     session = db.session()
     session.add(dataset)
     session.commit()

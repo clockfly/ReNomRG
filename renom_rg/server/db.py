@@ -31,6 +31,8 @@ class DatasetDef(Base):
     target_valid = Column(BLOB)
     true_histogram = Column(BLOB)
     selected_scaling = Column(Integer)
+    filename_y = Column(TEXT)
+    filename_X = Column(TEXT)
     created = Column(DateTime, default=datetime.datetime.utcnow)
     updated = Column(DateTime, default=datetime.datetime.utcnow,
                      onupdate=datetime.datetime.utcnow)
