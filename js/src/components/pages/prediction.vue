@@ -38,6 +38,14 @@
             </div>
             <div class="label-value flex">
               <div class="label">
+                Feature Scaling
+              </div>
+              <div class="value">
+                {{ $store.state.scalings[deployedDataset.selected_scaling] }}
+              </div>
+            </div>
+            <div class="label-value flex">
+              <div class="label">
                 Algorithm
               </div>
               <div class="value">
