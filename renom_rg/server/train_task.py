@@ -140,12 +140,12 @@ def train(taskstate, model_id):
         session.commit()
 
 
-def scaling(np_x, filename):
+def scaling_again(np_yx, filename):
     SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
     filepath = os.path.join(SCALING_DIR, filename)
     with open(filepath, mode='rb') as f:
         scaler = pickle.load(f)
-        result = scaler.transform(np_x)
+    result = scaler.transform(np_yx)
     return result
 
 
@@ -167,8 +167,8 @@ def _train(session, taskstate, model_id):
     if selected_scaling != 1:
         filename_y = modeldef.dataset.filename_y
         filename_X = modeldef.dataset.filename_X
-        y = scaling(y, filename_y)
-        X = scaling(X, filename_X)
+        y = scaling_again(y, filename_y)
+        X = scaling_again(X, filename_X)
 
     X_train = X[pickle.loads(modeldef.dataset.train_index)]
     X_valid = X[pickle.loads(modeldef.dataset.valid_index)]

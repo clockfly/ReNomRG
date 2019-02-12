@@ -14,6 +14,7 @@
             <input
               v-model="name"
               type="text"
+              :disabled="is_confirm"
             >
           </div>
         </div>  <!-- sub block -->
@@ -27,6 +28,7 @@
               v-model="description"
               name="description"
               rows="3"
+              :disabled="is_confirm"
             />
           </div>
         </div>  <!-- sub block -->
@@ -36,7 +38,10 @@
             Ratio of training data
           </div>
           <div class="input-value">
-            <select v-model="train_ratio">
+            <select
+              v-model="train_ratio"
+              :disabled="is_confirm"
+            >
               <option
                 v-for="ratio in train_ratio_list"
                 :key="ratio"
@@ -53,7 +58,10 @@
             Feature Scaling
           </div>
           <div class="input-value">
-            <select v-model="selected_scaling">
+            <select
+              v-model="selected_scaling"
+              :disabled="is_confirm"
+            >
               <option
                 v-for="(scaling, index) in $store.state.scalings"
                 :key="index"
