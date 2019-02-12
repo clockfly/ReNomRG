@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ReNomRG \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-11 10:07+0900\n"
+"POT-Creation-Date: 2019-02-12 13:51+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgid "Bases: :class:`renom.layers.function.conv2d.Conv2d`"
 msgstr ""
 
 #: of renom_rg.api.regression.gcnn.GraphCNN:1
-msgid "Graph Comvolution Layer."
+msgid "Graph convolution Layer."
 msgstr "グラフコンボリューションのレイヤー"
 
 #: of renom_rg.api.regression.gcnn.GraphCNN:3
@@ -35,7 +35,7 @@ msgstr "出力チャンネル数"
 
 #: of renom_rg.api.regression.gcnn.GCNet:4
 #: renom_rg.api.regression.gcnn.GraphCNN:5
-msgid "Array of indexes for comvolution."
+msgid "Array of indexes for convolution."
 msgstr "畳み込みに使用するインデックス行列"
 
 #: of renom_rg.api.regression.gcnn.GraphCNN:7
@@ -46,15 +46,51 @@ msgstr "畳み込みに使用する近傍数"
 #: renom_rg.api.regression.gcnn.GCNet.forward:14
 #: renom_rg.api.regression.gcnn.GCNet.predict:13
 #: renom_rg.api.regression.gcnn.GraphCNN:12
+#: renom_rg.api.regression.gcnn.GraphCNN.forward:14
 msgid "Example"
 msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:25
+msgid "References"
+msgstr "参照"
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:26
+msgid "Yotam Hechtlinger, Purvasha Chakravarti & Jining Qin"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:27
+msgid "A Generalization of Convolutional Neural Networks to Graph-Structured Data"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GraphCNN:28
+msgid "https://arxiv.org/abs/1704.08165"
+msgstr ""
+
+#: of renom_rg.api.regression.gcnn.GCNet.forward:1
+#: renom_rg.api.regression.gcnn.GraphCNN.forward:1
+msgid ""
+"Performs forward propagation. This function can be called using "
+"``__call__`` method. See following example of method usage."
+msgstr "順伝播を実行します。この関数は__call__メソッドにより呼ばれます。メソッドの利用例については以下を参照してください。"
+
+#: of renom_rg.api.regression.gcnn.GCNet.forward:5
+#: renom_rg.api.regression.gcnn.GCNet.predict:4
+#: renom_rg.api.regression.gcnn.GraphCNN.forward:5
+msgid "Input data as ndarray."
+msgstr "ndarrayの入力データ"
+
+#: of renom_rg.api.regression.gcnn.GCNet.forward:9
+#: renom_rg.api.regression.gcnn.GCNet.predict:8
+#: renom_rg.api.regression.gcnn.GraphCNN.forward:9
+msgid "predicted values for input ndarray."
+msgstr "入力したndarrayに対する予測値"
 
 #: of renom_rg.api.regression.gcnn.GCNet:1
 msgid "Bases: :class:`renom.layers.function.parameterized.Model`"
 msgstr ""
 
 #: of renom_rg.api.regression.gcnn.GCNet:2
-msgid "Graph Comvolution Network."
+msgid "Sample of Graph Convolution Network."
 msgstr "GraphCNNを用いたサンプルネットワーク"
 
 #: of renom_rg.api.regression.gcnn.GCNet:2
@@ -62,7 +98,6 @@ msgid "This network has 3 GraphCNN layer and 2 FC layer and 1 output layer."
 msgstr "このネットワークはGraphCNN3層、全結合層2層、そして出力層というネットワークになっています。"
 
 #: of renom_rg.api.regression.gcnn.GCNet:6
-#, fuzzy
 msgid "Number of unit size of output layer."
 msgstr "全結合層のユニットサイズのタブル"
 
@@ -77,22 +112,6 @@ msgstr "畳み込みに使用する近傍の数"
 #: of renom_rg.api.regression.gcnn.GCNet:12
 msgid "Tuple of channel size of convolution layers."
 msgstr "畳み込みに使用するチャンネル数のタプル"
-
-#: of renom_rg.api.regression.gcnn.GCNet.forward:1
-msgid ""
-"Performs forward propagation. This function can be called using "
-"``__call__`` method. See following example of method usage."
-msgstr "順伝播を実行します。この関数は__call__メソッドにより呼ばれます。メソッドの利用例については以下を参照してください。"
-
-#: of renom_rg.api.regression.gcnn.GCNet.forward:5
-#: renom_rg.api.regression.gcnn.GCNet.predict:4
-msgid "Input data as ndarray."
-msgstr "ndarrayの入力データ"
-
-#: of renom_rg.api.regression.gcnn.GCNet.forward:9
-#: renom_rg.api.regression.gcnn.GCNet.predict:8
-msgid "predicted values for input ndarray."
-msgstr "入力したndarrayに対する予測値"
 
 #: of renom_rg.api.regression.gcnn.GCNet.predict:1
 msgid "Perform prediction. Execute forward function in inference mode."
