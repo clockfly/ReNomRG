@@ -76,12 +76,12 @@
               <div class="column">
                 <div class="selected-scaling-area">
                   <div class="label">
-                    Feature Scaling ： {{ $store.state.scalings[selectedDataset.selected_scaling] }}
+                    Feature Scaling : {{ $store.state.scalings[selectedDataset.selected_scaling] }}
                   </div>
-                </div> <!-- dataset description area -->
+                </div> <!-- selected scaling area -->
                 <div class="dataset-description-area">
                   <div class="label">
-                    Description
+                    Description :
                   </div>
                   <textarea
                     class="description-text"
@@ -92,7 +92,7 @@
                 <div class="train-ratio-area">
                   <div class="train-ratio-block flex">
                     <div class="label">
-                      Number of data size
+                      Number of data size :
                     </div>
                     <div class="values flex">
                       <div class="train-number">
@@ -105,7 +105,7 @@
                   </div>
 
                   <div class="train-ratio-block flex">
-                    <div class="label">
+                    <div class="all-size">
                       All {{ selectedDataset.train_index.length+selectedDataset.valid_index.length }}
                     </div>
                     <div class="values flex">
@@ -121,12 +121,25 @@
                       </div>
                     </div>
                   </div>
+                  <br>
+                  <div class="selected-explanatory-area">
+                    <div class="label">
+                      Explanatory Valiables :
+                    </div>
+                    <div
+                      v-for="(data, index) in selectedDataset.explanatory_column_ids"
+                      :key="index"
+                      class="explanatory-name"
+                    >
+                      {{ selectedDataset.labels[data] }}
+                    </div>
+                  </div> <!-- selected explanatory area -->
                 </div> <!-- dataset train valid ratio area -->
               </div> <!-- dataset detail column -->
 
               <div class="column">
                 <div class="label">
-                  Histogram
+                  Histogram of Target Valiables :
                 </div>
                 <div class="histogram-area flex">
                   <div
@@ -339,11 +352,20 @@ export default {
       .train-ratio-area {
         margin-top: $margin-large;
       }
-      .label, .train-number, .valid-number, .target-name {
+      .label, .train-number, .valid-number, .target-name, .all-size, .explanatory-name {
         height: $text-height-small;
         line-height: $text-height-small;
         font-size: $fs-small;
         color: $gray;
+      }
+      .all-size, .explanatory-name, .target-name {
+        padding-left: $padding-small;
+        width: 50%;
+      }
+      .selected-explanatory-area {
+        overflow-y: auto;
+        width: 100%;
+        height: 300px;
       }
       .description-text {
         width: 100%;

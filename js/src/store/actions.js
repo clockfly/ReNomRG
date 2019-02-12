@@ -120,6 +120,7 @@ export default {
     fd.append('name', payload.name)
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
+    fd.append('explanatory_column_ids', JSON.stringify(payload.explanatory_column_ids))
     fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
     fd.append('selected_scaling', payload.selected_scaling)
 
@@ -137,6 +138,7 @@ export default {
     fd.append('name', payload.name)
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
+    fd.append('explanatory_column_ids', JSON.stringify(payload.explanatory_column_ids))
     fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
     fd.append('selected_scaling', payload.selected_scaling)
     fd.append('labels', JSON.stringify(context.state.labels))
@@ -159,8 +161,13 @@ export default {
   },
 
   runPrediction (context, payload) {
-    const url = '/api/renom_rg/models/' + payload.model_id + '/predict/' + payload.target_column + '/' + payload.labels
-    axios.get(url)
+    let fd = new FormData()
+    fd.append('explanatory_column', payload.explanatory_column)
+    fd.append('target_column', payload.target_column)
+    fd.append('explanatory_column_ids', JSON.stringify(payload.explanatory_column_ids))
+
+    const url = '/api/renom_rg/models/' + payload.model_id + '/predict'
+    axios.post(url, fd)
       .then(function (response) {
         context.commit('setPredResult', { 'data': response.data })
       }).catch(function (error) {

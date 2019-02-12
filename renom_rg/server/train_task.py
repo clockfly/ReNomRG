@@ -87,11 +87,8 @@ class TaskState:
 
 
 def split_target(data, ids):
-    indexes = np.ones(data.shape[1], dtype=bool)
-    indexes[ids] = False
-    X = data[:, indexes]
-    y = data[:, ids]
-    return X, y
+    split_data = data[:, ids]
+    return split_data
 
 
 def calc_confidence_area(true_data, pred_data):
@@ -101,16 +98,25 @@ def calc_confidence_area(true_data, pred_data):
         hist, bins = np.histogram(d, bins=num_bin)
 
         confidence_data = None
+        m = []
+        l_i = 0
         for i in range(num_bin):
             true_data_index = np.logical_and(bins[i] < d, d < bins[i + 1])
             pred_data_in_bin = pred_data[j][true_data_index]
 
             if len(pred_data_in_bin) > 0:
-                m = np.mean(pred_data_in_bin)
-                sd = np.sqrt(np.sum((pred_data_in_bin - m)**2) / len(pred_data_in_bin))
-                c = np.array([m - sd * 2, m - sd, m, m + sd, m + sd * 2]).reshape(1, -1)
+                m.append(np.mean(pred_data_in_bin))
+                sd = np.sqrt(np.sum((pred_data_in_bin - m[i])**2) / len(pred_data_in_bin))
+                if sd == 0:
+                    sd = 0.0000001
+                c = np.array([m[i] - sd * 2, m[i] - sd, m[i], m[i] + sd, m[i] + sd * 2]).reshape(1, -1)
+                l_i = i
             else:
-                c = np.array([0, 0, 0, 0, 0]).reshape(1, -1)
+                if l_i == 0:
+                    m.append(0)
+                else:
+                    m.append(m[l_i])
+                    c = np.array([m[i], m[i], m[i], m[i], m[i]]).reshape(1, -1)
 
             if confidence_data is None:
                 # append histogram x_min data
@@ -154,7 +160,8 @@ def _train(session, taskstate, model_id):
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
-    X, y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
+    X = split_target(np.array(data), pickle.loads(modeldef.dataset.explanatory_column_ids))
+    y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
     selected_scaling = modeldef.dataset.selected_scaling
     if selected_scaling != 1:

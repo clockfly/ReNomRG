@@ -22,6 +22,7 @@ class DatasetDef(Base):
     name = Column(TEXT)
     description = Column(TEXT)
     target_column_id = Column(Integer)
+    explanatory_column_ids = Column(BLOB)
     target_column_ids = Column(BLOB)
     labels = Column(BLOB)
     train_ratio = Column(FLOAT)
