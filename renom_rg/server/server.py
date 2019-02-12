@@ -245,8 +245,8 @@ def create_dataset():
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
     true_histogram = json.loads(request.params.true_histogram)
-    filename_y = json.loads(request.params.filename_y)
-    filename_X = json.loads(request.params.filename_X)
+    filename_y = request.params.filename_y
+    filename_X = request.params.filename_X
 
     dataset = db.DatasetDef(name=name, description=description,
                             explanatory_column_ids=pickle.dumps(explanatory_column_ids),
