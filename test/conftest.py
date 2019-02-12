@@ -90,4 +90,3 @@ def userscript(sitedir):
     srcfile = os.path.join(os.path.split(__file__)[0], 'userdefmodel.py')
     with open(srcfile) as f:
         datasrc.join('userdefmodel.py').write(f.read())
-
