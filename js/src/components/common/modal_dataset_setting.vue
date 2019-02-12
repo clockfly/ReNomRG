@@ -172,10 +172,8 @@
               @click="selectAll"
             >
           </div>
-          <div class="table-item-cb">
-          </div>
-          <div class="table-item-tx">
-          </div>
+          <div class="table-item-cb" />
+          <div class="table-item-tx" />
         </div>
       </div>
     </div> <!-- column before confirm -->
@@ -227,7 +225,10 @@
             Histogram
           </div>
         </div>
-        <div id="train-test-histogram" key="test-histogram" />
+        <div
+          id="train-test-histogram"
+          key="test-histogram"
+        />
       </div> <!-- setting block -->
 
       <div class="button-area">

@@ -114,9 +114,7 @@
                 CSV DL
               </button>
             </div>
-
           </div>
-
           <div v-if="!deployedModel">
             Model is not Deployed.
           </div>
@@ -202,8 +200,8 @@
                 <tr>
                   <th
                     v-for="(l, i) in deployedDataset.target_column_ids"
-                    :style="'position: sticky;top: 0px;left: ' + i * sticky_width + 'px;z-index: 4;'"
                     :key="`y_${i}`"
+                    :style="'position: sticky;top: 0px;left: ' + i * sticky_width + 'px;z-index: 4;'"
                     :class="{ active: l === sort_index }"
                     @click="sortPredY(i)"
                   >
@@ -288,6 +286,18 @@ const margin = { 'left': 20, 'top': 10, 'right': 0, 'bottom': 20 }
 
 export default {
   name: 'PredictionPage',
+  filters: {
+    truncate: function(value, length, omission) {
+      var length = length ? parseInt(length, 10) : 20;
+      var ommision = omission ? omission.toString() : '...';
+      if(value.length <= length) {
+        return value;
+      }
+      else {
+        return value.substring(0, length) + ommision;
+      }
+    }
+  },
   data: function () {
     return {
       'plot_x_index': 0,
@@ -529,18 +539,6 @@ export default {
       }
       this.sort_index = this.deployedDataset.target_column_ids[value]
       this.$store.commit('sortPredY', {'key': value, 'desc': this.desc})
-    }
-  },
-  filters: {
-    truncate: function(value, length, omission) {
-      var length = length ? parseInt(length, 10) : 20;
-      var ommision = omission ? omission.toString() : '...';
-      if(value.length <= length) {
-        return value;
-      }
-      else {
-        return value.substring(0, length) + ommision;
-      }
     }
   }
 }

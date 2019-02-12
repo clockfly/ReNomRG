@@ -128,6 +128,7 @@
                     </div>
                     <div
                       v-for="(data, index) in selectedDataset.explanatory_column_ids"
+                      :key="index"
                       class="explanatory-name"
                     >
                       {{ selectedDataset.labels[data] }}
