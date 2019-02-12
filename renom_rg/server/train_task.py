@@ -86,11 +86,8 @@ class TaskState:
 
 
 def split_target(data, ids):
-    indexes = np.ones(data.shape[1], dtype=bool)
-    indexes[ids] = False
-    X = data[:, indexes]
-    y = data[:, ids]
-    return X, y
+    split_data = data[:, ids]
+    return split_data
 
 
 def calc_confidence_area(true_data, pred_data):
@@ -155,7 +152,8 @@ def _train(session, taskstate, model_id):
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
-    X, y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
+    X = split_target(np.array(data), pickle.loads(modeldef.dataset.explanatory_column_ids))
+    y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
     selected_scaling = modeldef.dataset.selected_scaling
     if selected_scaling == 2:

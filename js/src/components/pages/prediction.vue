@@ -114,9 +114,7 @@
                 CSV DL
               </button>
             </div>
-
           </div>
-
           <div v-if="!deployedModel">
             Model is not Deployed.
           </div>
@@ -162,7 +160,7 @@
                   >
                     <option
                       v-for="(l, i) in deployedDataset.target_column_ids"
-                      :key="i"
+                      :key="`y_${i}`"
                       :value="i"
                     >
                       {{ deployedDataset.labels[l] }}
@@ -181,11 +179,11 @@
                     class="small"
                   >
                     <option
-                      v-for="(l, i) in explanatory_labels"
-                      :key="i"
+                      v-for="(l, i) in deployedDataset.explanatory_column_ids"
+                      :key="`X_${i}`"
                       :value="i"
                     >
-                      {{ l }}
+                      {{ deployedDataset.labels[l] }}
                     </option>
                   </select>
                 </div>
@@ -202,8 +200,8 @@
                 <tr>
                   <th
                     v-for="(l, i) in deployedDataset.target_column_ids"
+                    :key="`y_${i}`"
                     :style="'position: sticky;top: 0px;left: ' + i * sticky_width + 'px;z-index: 4;'"
-                    :key="i"
                     :class="{ active: l === sort_index }"
                     @click="sortPredY(i)"
                   >
@@ -225,12 +223,12 @@
                   </th>
 
                   <th
-                    v-for="(l, i) in explanatory_labels"
-                    :key="i"
+                    v-for="(l, i) in deployedDataset.explanatory_column_ids"
+                    :key="`X_${i}`"
                     :class="{ active: i === sort_index }"
                     @click="sortPredX(i)"
                   >
-                    {{ l | truncate(truncate_l, '…') }}
+                    {{ deployedDataset.labels[l] | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
@@ -255,14 +253,14 @@
                 >
                   <td
                     v-for="(d, j) in data"
-                    :key="j"
+                    :key="`y_${j}`"
                     :style="'position: sticky;left: ' + j * sticky_width + 'px;z-index: 3;'"
                   >
                     {{ round(d) }}
                   </td>
                   <td
                     v-for="(d, j) in pred_x[i]"
-                    :key="j"
+                    :key="`X_${j}`"
                   >
                     {{ round(d) }}
                   </td>
@@ -288,6 +286,18 @@ const margin = { 'left': 20, 'top': 10, 'right': 0, 'bottom': 20 }
 
 export default {
   name: 'PredictionPage',
+  filters: {
+    truncate: function(value, length, omission) {
+      var length = length ? parseInt(length, 10) : 20;
+      var ommision = omission ? omission.toString() : '...';
+      if(value.length <= length) {
+        return value;
+      }
+      else {
+        return value.substring(0, length) + ommision;
+      }
+    }
+  },
   data: function () {
     return {
       'plot_x_index': 0,
@@ -347,14 +357,10 @@ export default {
       return round(v, 1000)
     },
     runPrediction: function () {
-      let labels_data = []
+      let explanatory_column = []
       let target_column = []
-      let i = 0
-      for (let d of this.deployedDataset.labels) {
-        if(this.deployedDataset.target_column_ids.indexOf(i) == -1){
-          labels_data.push(d)
-        }
-        i++
+      for (let d of this.deployedDataset.explanatory_column_ids) {
+        explanatory_column.push(this.deployedDataset.labels[d])
       }
       for (let d of this.deployedDataset.target_column_ids) {
         target_column.push(this.deployedDataset.labels[d])
@@ -363,8 +369,9 @@ export default {
       this.$store.dispatch('runPrediction',
       {
         'model_id': this.deployedModel.model_id,
+        'explanatory_column': explanatory_column,
         'target_column': target_column,
-        'labels': labels_data
+        'explanatory_column_ids': this.deployedDataset.explanatory_column_ids
       })
     },
     exportCSV: function () {
@@ -532,18 +539,6 @@ export default {
       }
       this.sort_index = this.deployedDataset.target_column_ids[value]
       this.$store.commit('sortPredY', {'key': value, 'desc': this.desc})
-    }
-  },
-  filters: {
-    truncate: function(value, length, omission) {
-      var length = length ? parseInt(length, 10) : 20;
-      var ommision = omission ? omission.toString() : '...';
-      if(value.length <= length) {
-        return value;
-      }
-      else {
-        return value.substring(0, length) + ommision;
-      }
     }
   }
 }

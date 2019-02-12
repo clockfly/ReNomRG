@@ -86,9 +86,8 @@ def _get_resource(path, filename):
 def split_target(data, ids):
     indexes = np.ones(data.shape[1], dtype=bool)
     indexes[ids] = False
-    X = data.loc[:, indexes]
-    y = data.loc[:, ~indexes]
-    return X, y
+    split_data = data.loc[:, ~indexes]
+    return split_data
 
 
 def zscore(pd_x):
@@ -133,6 +132,7 @@ def _dataset_to_dict(ds):
         "dataset_id": ds.id,
         "name": ds.name,
         "description": ds.description,
+        "explanatory_column_ids": pickle.loads(ds.explanatory_column_ids),
         "target_column_ids": pickle.loads(ds.target_column_ids),
         "labels": pickle.loads(ds.labels),
         "train_ratio": ds.train_ratio,
@@ -163,6 +163,7 @@ def get_dataset(dataset_id):
 
 @route('/api/renom_rg/datasets/confirm', method='POST')
 def confirm_dataset():
+    explanatory_column_ids = json.loads(request.params.explanatory_column_ids)
     target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
     selected_scaling = int(request.params.selected_scaling)
@@ -170,7 +171,8 @@ def confirm_dataset():
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
-    X, y = split_target(data, target_column_ids)
+    X = split_target(data, explanatory_column_ids)
+    y = split_target(data, target_column_ids)
 
     if selected_scaling == 2:
         y = zscore(y)
@@ -206,6 +208,7 @@ def confirm_dataset():
 def create_dataset():
     name = request.params.name
     description = request.params.description
+    explanatory_column_ids = json.loads(request.params.explanatory_column_ids)
     target_column_ids = json.loads(request.params.target_column_ids)
     selected_scaling = int(request.params.selected_scaling)
     labels = json.loads(request.params.labels)
@@ -215,6 +218,7 @@ def create_dataset():
     true_histogram = json.loads(request.params.true_histogram)
 
     dataset = db.DatasetDef(name=name, description=description,
+                            explanatory_column_ids=pickle.dumps(explanatory_column_ids),
                             target_column_ids=pickle.dumps(target_column_ids),
                             labels=pickle.dumps(labels),
                             train_ratio=train_ratio,
@@ -454,20 +458,29 @@ def stop_model(model_id):
         return create_response({"error_msg": str(e)})
 
 
-@route("/api/renom_rg/models/<model_id:int>/predict/<target_column>/<labels>", method="GET")
-def predict_model(model_id, target_column, labels):
+@route("/api/renom_rg/models/<model_id:int>/predict", method="POST")
+def predict_model(model_id):
+    explanatory_column = request.params.explanatory_column
+    target_column = request.params.target_column
+    explanatory_column_ids = json.loads(request.params.explanatory_column_ids)
+
     model = db.session().query(db.Model).get(model_id)
     if not model:
         return create_response({}, 404, err='model not found')
 
     try:
         with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
-            data = np.array(pickle.load(f))
+            p_all_data = pickle.load(f)
+
+            #ToDo:データセットの前処理のスケーラーを使ってスケールとリスケールを行う。
+
+            p_X = split_target(p_all_data, explanatory_column_ids)
+            n_X = np.array(p_X)
     except Exception as e:
         traceback.print_exc()
         return create_response({}, 404, err=str(e))
 
-    f = submit_task(executor, pred_task.prediction, model.id, data)
+    f = submit_task(executor, pred_task.prediction, model.id, n_X)
     try:
         result = f.result()
 
@@ -478,16 +491,16 @@ def predict_model(model_id, target_column, labels):
         filename = 'model' + str(model_id) + '_{0:%Y%m%d%H%M%S}'.format(now) + '.csv'
         filepath = os.path.join(CSV_DIR, filename)
 
-        row = target_column.split(',')
-        labels_l = labels.split(',')
-        row2 = row + labels_l
-        np_xy = np.round(np.c_[result, data], 3)
+        target_labels = target_column.split(',')
+        explanatory_labels = explanatory_column.split(',')
+        labels = target_labels + explanatory_labels
+        np_xy = np.round(np.c_[result, n_X], 3)
         pred_x_y = pd.DataFrame(np_xy)
-        pred_x_y.columns = row2
+        pred_x_y.columns = labels
         pred_x_y.to_csv(filepath, index=False)
 
         body = {
-            'pred_x': data.tolist(),
+            'pred_x': n_X.tolist(),
             'pred_y': result.tolist(),
             'pred_csv': filename
         }
