@@ -3,11 +3,11 @@ from renom_rg.api.regression import Regression
 
 
 class GraphCNN(rm.Conv2d):
-    """ Graph Comvolution Layer.
+    """ Graph convolution Layer.
 
     Args:
         channel (int): The dimensionality of the output.
-        feature_graph (array): Array of indexes for comvolution.
+        feature_graph (array): Array of indexes for convolution.
         neighbors (int): Filter size of the convolution kernel.
 
     Example:
@@ -21,6 +21,13 @@ class GraphCNN(rm.Conv2d):
         >>> t = model(x)
         >>> t.shape
         (2, 15, 20, 1)
+
+    References:
+        | Yotam Hechtlinger, Purvasha Chakravarti & Jining Qin
+        | A Generalization of Convolutional Neural Networks to Graph-Structured Data
+        | https://arxiv.org/abs/1704.08165
+        |
+
     """
 
     def __init__(self, channel, feature_graph, neighbors=5):
@@ -55,11 +62,11 @@ class GraphCNN(rm.Conv2d):
 
 
 class GCNet(rm.Model):
-    """ Graph Comvolution Network.
+    """ Sample of Graph Convolution Network.
         This network has 3 GraphCNN layer and 2 FC layer and 1 output layer.
 
     Args:
-        feature_graph (array): Array of indexes for comvolution.
+        feature_graph (array): Array of indexes for convolution.
         num_target (int): Number of unit size of output layer.
         fc_unit (tuple): Tuple of unit size of dense layers.
         neighbors (int): Filter size of convolution layers.
