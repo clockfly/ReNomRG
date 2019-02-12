@@ -27,7 +27,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sqlalchemy.sql import exists
 
-from renom_rg.server import DATASRC_PREDICTION_OUT
+from renom_rg.server import DATASRC_PREDICTION_OUT, SCRIPT_DIR
 
 import renom as rm
 import renom.cuda
@@ -316,19 +316,38 @@ def create_model():
     batch_size = int(request.params.batch_size)
     epoch = int(request.params.epoch)
 
-    model = db.Model(dataset_id=dataset_id, algorithm=algorithm,
-                     algorithm_params=pickle.dumps(algorithm_params), batch_size=batch_size,
-                     epoch=epoch)
+    try:
+        # if user input file is not exists
+        if algorithm_params['script_file_name'] is not '':
+            script = algorithm_params['script_file_name']
+            scriptdir = os.path.abspath(SCRIPT_DIR)
+            if not scriptdir.endswith(os.path.sep):
+                scriptdir += os.path.sep
 
-    session.add(model)
-    session.commit()
+            scriptfile = os.path.abspath(os.path.join(scriptdir, script))
+            if not scriptfile.startswith(scriptdir):
+                raise ValueError('Invalid script name: %s' % scriptfile)
+            elif not os.path.exists(scriptfile):
+                raise ValueError('Invalid script name: %s' % scriptfile)
 
-    if searcher:
-        searchermodel = db.ParamSearcherModel(searcher=searcher, model=model)
-        session.add(searchermodel)
+        print(algorithm_params['script_file_name'])
+
+        model = db.Model(dataset_id=dataset_id, algorithm=algorithm,
+                         algorithm_params=pickle.dumps(algorithm_params), batch_size=batch_size,
+                         epoch=epoch)
+
+        session.add(model)
         session.commit()
 
-    return create_response(_model_to_dict(model))
+        if searcher:
+            searchermodel = db.ParamSearcherModel(searcher=searcher, model=model)
+            session.add(searchermodel)
+            session.commit()
+
+        return create_response(_model_to_dict(model))
+    except Exception as e:
+        traceback.print_exc()
+        return create_response({}, 500, err=str(e))
 
 
 def _taskstate_to_dict(taskstate):

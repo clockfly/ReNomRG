@@ -11,6 +11,8 @@ def _load_usermodel(algorithm_params):
     scriptfile = os.path.abspath(os.path.join(scriptdir, script))
     if not scriptfile.startswith(scriptdir):
         raise ValueError('Invalid script name: %s' % scriptfile)
+    elif not os.path.exists(scriptfile):
+        raise ValueError('Invalid script name: %s' % scriptfile)
 
     scr = open(scriptfile).read()
     d = {}

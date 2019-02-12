@@ -37,7 +37,10 @@ export default {
     fd.append('epoch', payload.epoch)
 
     const url = '/api/renom_rg/models'
-    return axios.post(url, fd).catch(function (error) { commitError(context, error) })
+    return axios.post(url, fd).catch(function (error) {
+      commitError(context, error)
+      return error.response
+    })
   },
 
   async runModel (context, payload) {
@@ -47,6 +50,7 @@ export default {
 
   async addModel (context, payload) {
     let response = await context.dispatch('createModel', payload)
+    if (response.data.err) return
 
     const model_id = response.data.model_id
     await context.dispatch('runModel', { 'model_id': model_id })
