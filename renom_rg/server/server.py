@@ -91,27 +91,25 @@ def split_target(data, ids):
     return X, y
 
 
-def zscore(pd_x, type):
-    ss = preprocessing.StandardScaler()
-    np_result = ss.fit_transform(pd_x)
+def scaling(pd_x, selected_scaling, type):
+    if selected_scaling == 2:
+        scaler = preprocessing.StandardScaler()
+        ss = 'standardization'
+    elif selected_scaling == 3:
+        scaler = preprocessing.MinMaxScaler()
+        ss = 'normalization'
+    np_result = scaler.fit_transform(pd_x)
     result = pd.DataFrame(np_result)
 
     SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
     if not os.path.isdir(SCALING_DIR):
         os.makedirs(SCALING_DIR)
     now = datetime.datetime.now()
-    filename = 'ss_' + type + '_{0:%Y%m%d%H%M%S}'.format(now) + '.pickle'
+    filename = 'scaler_{0:%Y%m%d%H%M%S}_'.format(now) + type + '_' + ss + '.pickle'
     filepath = os.path.join(SCALING_DIR, filename)
     with open(filepath, mode='wb') as f:
-        pickle.dump(ss, f)
-
+        pickle.dump(scaler, f)
     return result, filename
-
-def min_max(pd_x):
-    mm = preprocessing.MinMaxScaler()
-    np_result = mm.fit_transform(pd_x)
-    result = pd.DataFrame(np_result)
-    return result
 
 
 @route("/")
@@ -181,15 +179,11 @@ def confirm_dataset():
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
-
     X, y = split_target(data, target_column_ids)
 
-    if selected_scaling == 2:
-        y, filename_y = zscore(y, type='y')
-        X, filename_X = zscore(X, type='X')
-    elif selected_scaling == 3:
-        y = min_max(y)
-        X = min_max(X)
+    if selected_scaling != 1:
+        y, filename_y = scaling(y, selected_scaling, type='y')
+        X, filename_X = scaling(X, selected_scaling, type='X')
 
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 

@@ -16,6 +16,7 @@ from renom.utility.distributor.distributor import NdarrayDistributor
 from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED,
                              DB_DIR_TRAINED_WEIGHT, DATASRC_DIR, SCRIPT_DIR)
 from renom_rg.server.custom_util import _load_usermodel
+from renom_rg.server import DATASRC_PREDICTION_OUT
 
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
@@ -133,14 +134,12 @@ def train(taskstate, model_id):
         session.commit()
 
 
-def zscore(np_x):
-    ss = preprocessing.StandardScaler()
-    result = ss.fit_transform(np_x)
-    return result
-
-def min_max(np_x):
-    mm = preprocessing.MinMaxScaler()
-    result = mm.fit_transform(np_x)
+def scaling(np_x, filename):
+    SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
+    filepath = os.path.join(SCALING_DIR, filename)
+    with open(filepath, mode='rb') as f:
+        scaler = pickle.load(f)
+        result = scaler.transform(np_x)
     return result
 
 
@@ -158,12 +157,11 @@ def _train(session, taskstate, model_id):
     X, y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
     selected_scaling = modeldef.dataset.selected_scaling
-    if selected_scaling == 2:
-        y = zscore(y)
-        X = zscore(X)
-    elif selected_scaling == 3:
-        y = min_max(y)
-        X = min_max(X)
+    if selected_scaling != 1:
+        filename_y = modeldef.dataset.filename_y
+        filename_X = modeldef.dataset.filename_X
+        y = scaling(y, filename_y)
+        X = scaling(X, filename_X)
 
     X_train = X[pickle.loads(modeldef.dataset.train_index)]
     X_valid = X[pickle.loads(modeldef.dataset.valid_index)]
