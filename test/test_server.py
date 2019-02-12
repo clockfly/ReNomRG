@@ -182,7 +182,7 @@ def test_create_model(app):
     resp = app.post('/api/renom_rg/models', {
         'dataset_id': ds.id,
         'algorithm': 1,
-        'algorithm_params': json.dumps({'a': 1}),
+        'algorithm_params': json.dumps({'a': 1, 'script_file_name': ''}),
         'batch_size': 10,
         'epoch': 10,
         'searcher_id': searcher.id
