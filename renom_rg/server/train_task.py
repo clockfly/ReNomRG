@@ -109,8 +109,8 @@ def calc_confidence_area(true_data, pred_data):
                 sd = np.sqrt(np.sum((pred_data_in_bin - m[i])**2) / len(pred_data_in_bin))
                 if sd == 0:
                     sd = 0.0000001
-                c = np.array([m[i] - sd * 2, m[i] - sd, m[i], m[i] +
-                              sd, m[i] + sd * 2]).reshape(1, -1)
+                c = np.array([m[i] - sd * 2, m[i] - sd, m[i], m[i] + sd,
+                              m[i] + sd * 2]).reshape(1, -1)
                 l_i = i
             else:
                 if l_i == 0:
