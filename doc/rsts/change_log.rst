@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+v0.1beta => v0.2.0b
+-------------------
+
+- Explanatory variables and target variables can be selected when creating a dataset.
+- Feature Scaling can be selected when creating a dataset.
+- The prediction result can be saved as CSV data.
+
+
 v0.0beta => v0.1.0b
 -------------------
 

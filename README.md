@@ -1,4 +1,4 @@
-# ReNomRG 0.1b
+# ReNomRG 0.2b
 
 ReNom RG is model developing tool for regression using Graph CNN.
 
@@ -29,11 +29,11 @@ The Wheel package is provided at:
 
 `https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-VERSION-py3-none-any.whl`
 
-(VERSION is stands for actual version number e.g. 0.0.1, 0.1.1b(beta version))
+(VERSION is stands for actual version number e.g. 0.0.1, 0.1.1b(beta version), 0.2.0b(beta version))
 
 You can install the wheel package with pip command::
 
-`pip install https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-0.1.1b0-py3-none-any.whl`
+`pip install https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-0.2.0b0-py3-none-any.whl`
 
 ### Install from source
 For installing ReNomRG, download the repository from following url.
@@ -119,6 +119,12 @@ The detail of how to use is refer follow.
 https://www.renom.jp/packages/renomrg/rsts/how_to_use.html
 
 ## Change log
+
+### v0.1beta => v0.2b
+
+- Explanatory variables and target variables can be selected when creating a dataset.
+- Feature Scaling can be selected when creating a dataset.
+- The prediction result can be saved as CSV data.
 
 ### v0.0beta => v0.1b
 

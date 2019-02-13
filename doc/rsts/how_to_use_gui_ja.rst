@@ -90,7 +90,7 @@ Newボタンを押してください。
 
 .. image:: /_static/image/setting_dataset.png
 
-データセット名、説明、学習データの比率を選択することができます。
+データセット名、説明、学習データの比率、前処理方法、説明・目的変数を選択することができます。
 フォームを入力し、confirmボタンを押すと、データセットの確認画面が表示されます。
 
 .. image:: /_static/image/setting_dataset_confirm.png
