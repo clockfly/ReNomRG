@@ -47,6 +47,8 @@ export default {
     2: 'Standardization',
     3: 'Normalization'
   },
+  filename_y: undefined,
+  filename_X: undefined,
 
   /**
   * prediction
