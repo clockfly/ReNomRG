@@ -90,16 +90,42 @@ def split_target(data, ids):
     return split_data
 
 
-def zscore(pd_x):
-    ss = preprocessing.StandardScaler()
-    np_result = ss.fit_transform(pd_x)
+def scaling(pd_yx, selected_scaling, name, type):
+    if selected_scaling == 2:
+        scaler = preprocessing.StandardScaler()
+        ss = 'standardization'
+    elif selected_scaling == 3:
+        scaler = preprocessing.MinMaxScaler()
+        ss = 'normalization'
+    np_result = scaler.fit_transform(pd_yx)
     result = pd.DataFrame(np_result)
+
+    SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
+    if not os.path.isdir(SCALING_DIR):
+        os.makedirs(SCALING_DIR)
+    now = datetime.datetime.now()
+    filename = 'scaler_' + name + '_' + type + '_' + ss + '_{0:%Y%m%d%H%M%S}.pickle'.format(now)
+    filepath = os.path.join(SCALING_DIR, filename)
+    with open(filepath, mode='wb') as f:
+        pickle.dump(scaler, f)
+    return result, filename
+
+
+def scaling_again(np_x, filename_X):
+    SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
+    filepath = os.path.join(SCALING_DIR, filename_X)
+    with open(filepath, mode='rb') as f:
+        scaler = pickle.load(f)
+    result = scaler.transform(np_x)
     return result
 
-def min_max(pd_x):
-    mm = preprocessing.MinMaxScaler()
-    np_result = mm.fit_transform(pd_x)
-    result = pd.DataFrame(np_result)
+
+def re_scaling(np_y, filename_y):
+    SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
+    filepath = os.path.join(SCALING_DIR, filename_y)
+    with open(filepath, mode='rb') as f:
+        scaler = pickle.load(f)
+    result = scaler.inverse_transform(np_y)
     return result
 
 
@@ -140,6 +166,8 @@ def _dataset_to_dict(ds):
         "valid_index": pickle.loads(ds.valid_index),
         "true_histogram": pickle.loads(ds.true_histogram),
         "selected_scaling": ds.selected_scaling,
+        "filename_y": ds.filename_y,
+        "filename_X": ds.filename_X,
         "created": ds.created.isoformat()
     }
     return ret
@@ -163,6 +191,7 @@ def get_dataset(dataset_id):
 
 @route('/api/renom_rg/datasets/confirm', method='POST')
 def confirm_dataset():
+    name = request.params.name
     explanatory_column_ids = json.loads(request.params.explanatory_column_ids)
     target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
@@ -170,16 +199,14 @@ def confirm_dataset():
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
-
     X = split_target(data, explanatory_column_ids)
     y = split_target(data, target_column_ids)
 
-    if selected_scaling == 2:
-        y = zscore(y)
-        X = zscore(X)
-    elif selected_scaling == 3:
-        y = min_max(y)
-        X = min_max(X)
+    filename_y = 'none_scaling'
+    filename_X = 'none_scaling'
+    if selected_scaling != 1:
+        y, filename_y = scaling(y, selected_scaling, name, type='y')
+        X, filename_X = scaling(X, selected_scaling, name, type='X')
 
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=(1 - train_ratio))
 
@@ -198,7 +225,9 @@ def confirm_dataset():
         "valid_count": y_valid.shape[0],
         "train_index": np.array(y_train.index).tolist(),
         "valid_index": np.array(y_valid.index).tolist(),
-        "true_histogram": true_histogram
+        "true_histogram": true_histogram,
+        "filename_y": filename_y,
+        "filename_X": filename_X
     }
     r = create_response(body)
     return r
@@ -216,6 +245,8 @@ def create_dataset():
     train_index = json.loads(request.params.train_index)
     valid_index = json.loads(request.params.valid_index)
     true_histogram = json.loads(request.params.true_histogram)
+    filename_y = request.params.filename_y
+    filename_X = request.params.filename_X
 
     dataset = db.DatasetDef(name=name, description=description,
                             explanatory_column_ids=pickle.dumps(explanatory_column_ids),
@@ -225,7 +256,9 @@ def create_dataset():
                             train_index=pickle.dumps(train_index),
                             valid_index=pickle.dumps(valid_index),
                             true_histogram=pickle.dumps(true_histogram),
-                            selected_scaling=selected_scaling)
+                            selected_scaling=selected_scaling,
+                            filename_y=filename_y,
+                            filename_X=filename_X)
     session = db.session()
     session.add(dataset)
     session.commit()
@@ -490,18 +523,24 @@ def predict_model(model_id):
     try:
         with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
             p_all_data = pickle.load(f)
-
-            #ToDo:データセットの前処理のスケーラーを使ってスケールとリスケールを行う。
-
-            p_X = split_target(p_all_data, explanatory_column_ids)
-            n_X = np.array(p_X)
+        p_X = split_target(p_all_data, explanatory_column_ids)
+        n_X = np.array(p_X)
+        selected_scaling = model.dataset.selected_scaling
+        if selected_scaling != 1:
+            filename_X = model.dataset.filename_X
+            n_X_scaling = scaling_again(n_X, filename_X)
+        else:
+            n_X_scaling = n_X
     except Exception as e:
         traceback.print_exc()
         return create_response({}, 404, err=str(e))
 
-    f = submit_task(executor, pred_task.prediction, model.id, n_X)
+    f = submit_task(executor, pred_task.prediction, model.id, n_X_scaling)
     try:
         result = f.result()
+        if selected_scaling != 1:
+            filename_y = model.dataset.filename_y
+            result = re_scaling(result, filename_y)
 
         CSV_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'csv')
         if not os.path.isdir(CSV_DIR):

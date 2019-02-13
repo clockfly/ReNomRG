@@ -100,6 +100,8 @@ export default {
     state.train_index = payload.data.train_index
     state.valid_index = payload.data.valid_index
     state.true_histogram = payload.data.true_histogram
+    state.filename_y = payload.data.filename_y
+    state.filename_X = payload.data.filename_X
   },
 
   setDatasetList (state, payload) {
