@@ -88,7 +88,7 @@ The following page will be appeared.
 
 .. image:: /_static/image/setting_dataset.png
 
-As you can see, you can specify the dataset name, ''description'' and ratio of training data.
+As you can see, you can specify the dataset name, ''description'', ratio of training data, feature scaling and Valiables.
 After filling all forms, push the confirm button to confirm the dataset.
 
 .. image:: /_static/image/setting_dataset_confirm.png

@@ -18,12 +18,11 @@ msgstr ""
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../index.rst:7
-msgid "ReNomRG 0.1.0b"
+msgid "ReNomRG 0.2.0b"
 msgstr ""
 
 #~ msgid "Welcome to api's documentation!"
 #~ msgstr ""
 
-#~ msgid "ReNomRG v0.1beta"
+#~ msgid "ReNomRG v0.2beta"
 #~ msgstr ""
-

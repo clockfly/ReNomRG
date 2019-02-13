@@ -22,26 +22,42 @@ msgid "Change Log"
 msgstr "変更履歴"
 
 #: ../../rsts/change_log.rst:5
+msgid "v0.1beta => v0.2.0b"
+msgstr "v0.1beta => 0.2.0b"
+
+#: ../../rsts/change_log.rst:7
+msgid "Explanatory variables and target variables can be selected when creating a dataset."
+msgstr "データセット作成時、説明変数と目的変数が選択可能になりました."
+
+#: ../../rsts/change_log.rst:8
+msgid "Feature Scaling can be selected when creating a dataset."
+msgstr "データセット作成時、前処理方法が選択可能になりました."
+
+#: ../../rsts/change_log.rst:9
+msgid "The prediction result can be saved as CSV data."
+msgstr "予測結果をCSVデータ形式で保存することが可能になりました."
+
+#: ../../rsts/change_log.rst:12
 msgid "v0.0beta => v0.1.0b"
 msgstr "v0.0beta => 0.1.0b"
 
-#: ../../rsts/change_log.rst:7
+#: ../../rsts/change_log.rst:14
 msgid "GraphCNN is possible with GPU."
 msgstr "GraphCNNをGPUで行うことが可能になりました."
 
-#: ../../rsts/change_log.rst:8
+#: ../../rsts/change_log.rst:15
 msgid "Enabled install with wheel."
 msgstr "wheelからインストールすることが可能になりました."
 
-#: ../../rsts/change_log.rst:9
+#: ../../rsts/change_log.rst:16
 msgid "Enabled starting server from current directory."
 msgstr "カレントディレクトリからサーバを起動することが可能になりました."
 
-#: ../../rsts/change_log.rst:10
+#: ../../rsts/change_log.rst:17
 msgid "Enabled training user defined model from GUI."
 msgstr "GUIでユーザが定義したモデルを用いて学習を行うことが可能になりました."
 
-#: ../../rsts/change_log.rst:11
+#: ../../rsts/change_log.rst:18
 msgid ""
 "Added regressor module that can pull model to python script from GUI "
 "server."
