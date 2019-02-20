@@ -7,7 +7,7 @@ from . import DB_DIR_ML_MODELS
 
 def random_forest(session, modeldef, n_estimators, max_depth,
                   X_train, y_train, X_valid, y_valid):
-    regr = RandomForestRegressor(n_estimators = n_estimators, max_depth = max_depth)
+    regr = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth)
     model = regr.fit(X_train, y_train)
 
     train_predicted = model.predict(X_train)

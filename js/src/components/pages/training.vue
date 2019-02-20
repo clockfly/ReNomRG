@@ -16,9 +16,7 @@
             <ModelDetail />
           </div>
           <div class="panel-right">
-            <LearningCurve
-              v-if="selectedModel && selectedModel.algorithm != 3"
-            />
+            <LearningCurve />
           </div>
         </div>
 

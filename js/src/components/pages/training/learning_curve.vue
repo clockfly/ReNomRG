@@ -6,7 +6,7 @@
       </div>
       <div
         id="curve-canvas"
-        class="panel-content"
+        :class="gray_back"
       >
         <div class="x-axis-name">
           Epoch
@@ -42,7 +42,16 @@ import { max, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'LerningCurve',
-  computed: mapGetters(['selectedModel']),
+  computed: {
+    ...mapGetters(['selectedModel']),
+    gray_back: function () {
+      if (this.selectedModel && this.selectedModel.algorithm == 3) {
+        return 'panel-content gray-back'
+      } else {
+        return 'panel-content'
+      }
+    }
+  },
   watch: {
     selectedModel: function () {
       const id = '#curve-canvas'
@@ -167,6 +176,10 @@ export default {
         }
       }
     }
+  }
+  .gray-back {
+    background-color: $grayout-back;
+    filter: grayscale(1);
   }
 }
 </style>
