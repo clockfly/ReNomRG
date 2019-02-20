@@ -8,24 +8,26 @@
         id="curve-canvas"
         :class="gray_back"
       >
-        <div class="x-axis-name">
-          Epoch
-        </div>
-        <div class="y-axis-name">
-          Loss [-]
-        </div>
-        <div class="bar-legends flex">
-          <div class="legend flex">
-            <div class="legend-color train" />
-            <div class="legend-name">
-              Train
-            </div>
+        <div v-if="selectedModel && selectedModel.algorithm != 3">
+          <div class="x-axis-name">
+            Epoch
           </div>
+          <div class="y-axis-name">
+            Loss [-]
+          </div>
+          <div class="bar-legends flex">
+            <div class="legend flex">
+              <div class="legend-color train" />
+              <div class="legend-name">
+                Train
+              </div>
+            </div>
 
-          <div class="legend flex">
-            <div class="legend-color validation" />
-            <div class="legend-name">
-              Validation
+            <div class="legend flex">
+              <div class="legend-color validation" />
+              <div class="legend-name">
+                Validation
+              </div>
             </div>
           </div>
         </div>
