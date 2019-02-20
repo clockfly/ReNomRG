@@ -8,5 +8,6 @@ export const valid_color = '#ef8200'
 export const algorithm_colors = {
   'C-GCNN': '#903e84',
   'Kernel-GCNN': '#423885',
-  'DBSCAN-GCNN': '#136eab'
+  'DBSCAN-GCNN': '#136eab',
+  'Random-Forest': '#1b6e00'
 }

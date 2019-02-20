@@ -37,7 +37,7 @@
 
         <div class="sub-block flex">
           <div class="label">
-            CNN Architecture
+            Architecture
           </div>
           <div class="input-value">
             <select v-model="algorithm">
@@ -65,7 +65,10 @@
         </div>  <!-- sub block -->
       </div>  <!-- setting block -->
 
-      <div class="setting-block">
+      <div
+        v-if="algorithm != 3"
+        class="setting-block"
+      >
         <div class="setting-type">
           Training Loop Setting
         </div>
@@ -97,7 +100,10 @@
     </div>  <!-- column -->
 
     <div class="column">
-      <div class="setting-block">
+      <div
+        v-if="algorithm != 3"
+        class="setting-block"
+      >
         <div class="setting-type">
           Graph Comvolution Params
         </div>
@@ -109,6 +115,39 @@
           <div class="input-value">
             <input
               v-model="algorithm_params['num_neighbors']"
+              type="text"
+            >
+          </div>
+        </div>  <!-- sub block -->
+      </div>  <!-- setting block -->
+
+      <div
+        v-else-if="algorithm == 3"
+        class="setting-block"
+      >
+        <div class="setting-type">
+          Random Forest Params
+        </div>
+
+        <div class="sub-block flex">
+          <div class="label">
+            Number of trees
+          </div>
+          <div class="input-value">
+            <input
+              v-model="algorithm_params['n_estimators']"
+              type="text"
+            >
+          </div>
+        </div>  <!-- sub block -->
+        <div class="sub-block flex">
+          <div class="label">
+            Maximum Depth<br>
+            ("None" or integer)
+          </div>
+          <div class="input-value">
+            <input
+              v-model="algorithm_params['max_depth']"
               type="text"
             >
           </div>
@@ -135,15 +174,17 @@ export default {
   name: 'ModalParamsSetting',
   data: function () {
     return {
-      'algorithms': ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN', 'User defined'],
-      'algorithm_ids': [0, 1, 2, 0xffffffff],
+      'algorithms': ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN', 'Random Forest', 'User defined'],
+      'algorithm_ids': [0, 1, 2, 3, 0xffffffff],
       'dataset_index': 0,
       'algorithm': 0,
       'algorithm_params': {
         'script_file_name': '',
         'num_neighbors': 5,
         'fc_unit': [100, 50],
-        'channels': [10, 20, 20]
+        'channels': [10, 20, 20],
+        'n_estimators': 100,
+        'max_depth': 'None'
       },
       'batch_size': 16,
       'epoch': 10

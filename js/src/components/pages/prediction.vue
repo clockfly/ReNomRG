@@ -52,7 +52,10 @@
                 {{ algorithms[deployedModel.algorithm] }}
               </div>
             </div>
-            <div class="label-value flex">
+            <div
+              v-if="deployedModel.algorithm != 3"
+              class="label-value flex"
+            >
               <div class="label">
                 Total Epoch
               </div>
@@ -60,7 +63,10 @@
                 {{ deployedModel.epoch }}
               </div>
             </div>
-            <div class="label-value flex">
+            <div
+              v-if="deployedModel.algorithm != 3"
+              class="label-value flex"
+            >
               <div class="label">
                 Batch Size
               </div>
@@ -100,19 +106,44 @@
                 {{ round(deployedModel.best_epoch_r2) }}
               </div>
             </div>
+            <br>
 
-            <div class="label-value">
-              <div class="label">
-                Graph Comvolution Params
+            <div v-if="deployedModel.algorithm != 3">
+              <div class="label-value">
+                <div class="label">
+                  Graph Comvolution Params
+                </div>
+              </div>
+              <div class="label-value flex">
+                <div class="label">
+                  Number of Neighbors
+                </div>
+                <div class="value">
+                  {{ deployedModel.algorithm_params.num_neighbors }}
+                </div>
               </div>
             </div>
-
-            <div class="label-value flex">
-              <div class="label">
-                Number of Neighbors
+            <div v-else-if="deployedModel.algorithm == 3">
+              <div class="label-value">
+                <div class="label">
+                  Random Forest Params
+                </div>
               </div>
-              <div class="value">
-                {{ deployedModel.algorithm_params.num_neighbors }}
+              <div class="label-value flex">
+                <div class="label">
+                  Number of trees
+                </div>
+                <div class="value">
+                  {{ deployedModel.algorithm_params.n_estimators }}
+                </div>
+              </div>
+              <div class="label-value flex">
+                <div class="label">
+                  Maximum Depth
+                </div>
+                <div class="value">
+                  {{ deployedModel.algorithm_params.max_depth }}
+                </div>
               </div>
             </div>
 
@@ -123,7 +154,7 @@
               </button>
             </div>
           </div>
-          <div v-if="!deployedModel">
+          <div v-else>
             Model is not Deployed.
           </div>
         </div>

@@ -34,7 +34,7 @@ import renom.cuda
 from renom.cuda import set_cuda_active, release_mem_pool, use_device
 
 import renom_rg.db
-from renom_rg.server import DATASRC_DIR, DB_DIR_TRAINED_WEIGHT
+from renom_rg.server import DATASRC_DIR, DB_DIR_TRAINED_WEIGHT, DB_DIR_ML_MODELS
 from renom_rg.server import wsgi_server
 from . import *
 from . import db
@@ -310,6 +310,7 @@ def _model_to_dict(model):
         'pred_histogram': pickle.loads(model.pred_histogram),
         'confidence_data': pickle.loads(model.confidence_data),
         'weight': model.weight,
+        'model_pickle': model.model_pickle,
         'deployed': model.deployed,
         'created': model.created.isoformat(),
         'updated': model.updated.isoformat(),
@@ -590,8 +591,12 @@ def predict_csv(filename):
 def get_deployed_model_weight():
     model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
     if model:
-        file_name = model.weight
-        return static_file(file_name, root=DB_DIR_TRAINED_WEIGHT, download='deployed_model.h5')
+        if model.weight:
+            file_name = model.weight
+            return static_file(file_name, root=DB_DIR_TRAINED_WEIGHT, download='deployed_model.h5')
+        elif model.model_pickle:
+            m_file_name = model.model_pickle
+            return static_file(m_file_name, root=DB_DIR_ML_MODELS, download='deployed_model.pickle')
     else:
         return create_response({}, 404, err='model not found')
 
@@ -600,7 +605,9 @@ def get_deployed_model_weight():
 def get_deployed_model_info():
     model = db.session().query(db.Model).filter(db.Model.deployed == 1).one()
     if model:
-        return create_response(_model_to_dict(model))
+        model_dict = _model_to_dict(model)
+        model_dict["explanatory_column_ids"] = pickle.loads(model.dataset.explanatory_column_ids)
+        return create_response(model_dict)
     else:
         return create_response({}, 404, err='not found')
 

@@ -64,6 +64,7 @@ class Model(Base):
     pred_histogram = Column(BLOB, default=NONE_PICLKLES)
     confidence_data = Column(BLOB, default=NONE_PICLKLES)
     weight = Column(TEXT, nullable=True)
+    model_pickle = Column(TEXT, nullable=True)
     deployed = Column(Integer, default=0)
     created = Column(DateTime, default=datetime.datetime.utcnow)
     updated = Column(DateTime, default=datetime.datetime.utcnow,

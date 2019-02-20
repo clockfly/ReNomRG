@@ -11,7 +11,7 @@
           > Deploy Model
         </div>
         <div
-          v-if="selectedModel && selectedModel.deployed === 1"
+          v-else-if="selectedModel && selectedModel.deployed === 1"
           class="panel-title-button"
           @click="undeploy_model=selectedModel"
         >
@@ -65,7 +65,10 @@
             </div>
           </div>
 
-          <div class="label-value flex">
+          <div
+            v-if="selectedModel.algorithm != 3"
+            class="label-value flex"
+          >
             <div class="label">
               Total Epoch
             </div>
@@ -74,7 +77,10 @@
             </div>
           </div>
 
-          <div class="label-value flex">
+          <div
+            v-if="selectedModel.algorithm != 3"
+            class="label-value flex"
+          >
             <div class="label">
               Batch Size
             </div>
@@ -124,18 +130,42 @@
           v-if="selectedModel"
           class="column"
         >
-          <div class="label-value">
-            <div class="label">
-              Graph Comvolution Params
+          <div v-if="selectedModel.algorithm != 3">
+            <div class="label-value">
+              <div class="label">
+                Graph Comvolution Params
+              </div>
+            </div>
+            <div class="label-value flex">
+              <div class="label">
+                Number of Neighbors
+              </div>
+              <div class="value">
+                {{ selectedModel.algorithm_params.num_neighbors }}
+              </div>
             </div>
           </div>
-
-          <div class="label-value flex">
-            <div class="label">
-              Number of Neighbors
+          <div v-else-if="selectedModel.algorithm == 3">
+            <div class="label-value">
+              <div class="label">
+                Random Forest Params
+              </div>
             </div>
-            <div class="value">
-              {{ selectedModel.algorithm_params.num_neighbors }}
+            <div class="label-value flex">
+              <div class="label">
+                Number of trees
+              </div>
+              <div class="value">
+                {{ selectedModel.algorithm_params.n_estimators }}
+              </div>
+            </div>
+            <div class="label-value flex">
+              <div class="label">
+                Maximum Depth
+              </div>
+              <div class="value">
+                {{ selectedModel.algorithm_params.max_depth }}
+              </div>
             </div>
           </div>
         </div>

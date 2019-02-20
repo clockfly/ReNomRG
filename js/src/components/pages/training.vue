@@ -16,7 +16,9 @@
             <ModelDetail />
           </div>
           <div class="panel-right">
-            <LearningCurve />
+            <LearningCurve
+              v-if="selectedModel && selectedModel.algorithm != 3"
+            />
           </div>
         </div>
 
@@ -38,7 +40,7 @@
 
 <script>
 import axios from 'axios'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import ModalAdd from '@/components/common/modal_add_model'
 import Dashboard from '@/components/pages/training/dashboard'
 import Features from '@/components/pages/training/features'
@@ -60,7 +62,10 @@ export default {
     ModelMap,
     PredictionSample
   },
-  computed: mapState(['running_models']),
+  computed: {
+    ...mapState(['running_models']),
+    ...mapGetters(['selectedModel'])
+  },
   created: function () {
     this.$store.dispatch('loadLabels')
     this.$store.dispatch('loadDatasets')
