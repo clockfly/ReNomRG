@@ -38,7 +38,7 @@
 
 <script>
 import axios from 'axios'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import ModalAdd from '@/components/common/modal_add_model'
 import Dashboard from '@/components/pages/training/dashboard'
 import Features from '@/components/pages/training/features'
