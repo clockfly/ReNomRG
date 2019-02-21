@@ -60,10 +60,7 @@ export default {
     ModelMap,
     PredictionSample
   },
-  computed: {
-    ...mapState(['running_models']),
-    ...mapGetters(['selectedModel'])
-  },
+  computed: mapState(['running_models']),
   created: function () {
     this.$store.dispatch('loadLabels')
     this.$store.dispatch('loadDatasets')
