@@ -13,7 +13,7 @@ from renom.optimizer import Adam
 from renom.cuda import release_mem_pool, use_device
 from renom.utility.distributor.distributor import NdarrayDistributor
 
-from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED,
+from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, RANDOM_FOREST, USER_DEFINED,
                              DB_DIR_TRAINED_WEIGHT, DATASRC_DIR, SCRIPT_DIR)
 from renom_rg.server.custom_util import _load_usermodel
 from renom_rg.server import DATASRC_PREDICTION_OUT
@@ -21,7 +21,7 @@ from renom_rg.server import DATASRC_PREDICTION_OUT
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
 from . import db
-
+from . import random_forest_task
 
 class RunningState(enum.Enum):
     TRAINING = 0
@@ -115,6 +115,7 @@ def calc_confidence_area(true_data, pred_data):
             else:
                 if l_i == 0:
                     m.append(0)
+                    c = np.array([0, 0, 0, 0, 0]).reshape(1, -1)
                 else:
                     m.append(m[l_i])
                     c = np.array([m[i], m[i], m[i], m[i], m[i]]).reshape(1, -1)
@@ -131,6 +132,67 @@ def calc_confidence_area(true_data, pred_data):
     return np.array(confidence_area)
 
 
+def scaling_again(np_yx, filename):
+    SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
+    filepath = os.path.join(SCALING_DIR, filename)
+    with open(filepath, mode='rb') as f:
+        scaler = pickle.load(f)
+    result = scaler.transform(np_yx)
+    return result
+
+
+def prediction_sample_graph(modeldef, valid_predicted, valid_true, train_predicted_list, train_true_list):
+    # sampled scatter plot
+    SAMPLING_SIZE = 100
+    sampled_valid_pred = valid_predicted[:SAMPLING_SIZE]
+    sampled_valid_true = valid_true[:SAMPLING_SIZE]
+    modeldef.valid_predicted = pickle.dumps(sampled_valid_pred.T.tolist())
+    modeldef.valid_true = pickle.dumps(sampled_valid_true.T.tolist())
+    sampled_train_pred = train_predicted_list[:SAMPLING_SIZE]
+    sampled_train_true = train_true_list[:SAMPLING_SIZE]
+    modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
+    modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())
+
+    # histogram
+    true_histogram = []
+    pred_histogram = []
+    for i in range(valid_true.shape[1]):
+        # true histogram
+        counts, bins = np.histogram(train_true_list[:, i])
+        train_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+        counts, bins = np.histogram(valid_true[:, i])
+        valid_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+        true_histogram.append({"train": train_true_histogram, "valid": valid_true_histogram})
+        # pred histogram
+        counts, bins = np.histogram(train_predicted_list[:, i])
+        train_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+        counts, bins = np.histogram(valid_predicted[:, i])
+        valid_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
+        pred_histogram.append({"train": train_pred_histogram, "valid": valid_pred_histogram})
+    modeldef.true_histogram = pickle.dumps(true_histogram)
+    modeldef.pred_histogram = pickle.dumps(pred_histogram)
+
+    # calc train data confidence area
+    confidence_data_list = calc_confidence_area(train_true_list.T, train_predicted_list.T)
+    modeldef.confidence_data = pickle.dumps(confidence_data_list.tolist())
+
+    return modeldef
+
+
+def update_model(session, modeldef, valid_predicted, valid_true, e, valid_loss,
+                 filename, model_pickle):
+    modeldef.best_epoch = e
+    modeldef.best_epoch_valid_loss = float(valid_loss)
+    modeldef.best_epoch_rmse = float(np.sqrt(valid_loss))
+    modeldef.best_epoch_max_abs_error = float(np.max(np.abs(valid_true - valid_predicted)))
+    modeldef.best_epoch_r2 = float(r2_score(valid_true, valid_predicted))
+    modeldef.weight = filename
+    modeldef.model_pickle = model_pickle
+
+    session.add(modeldef)
+    session.commit()
+
+
 def train(taskstate, model_id):
     session = db.session()
     try:
@@ -139,15 +201,6 @@ def train(taskstate, model_id):
     finally:
         taskstate.signal()
         session.commit()
-
-
-def scaling_again(np_yx, filename):
-    SCALING_DIR = os.path.join(DATASRC_PREDICTION_OUT, 'dataset_scaling')
-    filepath = os.path.join(SCALING_DIR, filename)
-    with open(filepath, mode='rb') as f:
-        scaler = pickle.load(f)
-    result = scaler.transform(np_yx)
-    return result
 
 
 def _train(session, taskstate, model_id):
@@ -186,6 +239,22 @@ def _train(session, taskstate, model_id):
         feature_graph = get_corr_graph(X_train, num_neighbors)
         algorithm_params["feature_graph"] = feature_graph.tolist()
         model = _load_usermodel(algorithm_params)
+
+    elif modeldef.algorithm == RANDOM_FOREST:
+        n_estimators = int(algorithm_params["n_estimators"])
+        if algorithm_params["max_depth"] == "":
+            algorithm_params["max_depth"] = "None"
+        if algorithm_params["max_depth"] == "None":
+            max_depth = None
+        else:
+            max_depth = int(algorithm_params["max_depth"])
+        modeldef.algorithm_params = pickle.dumps(algorithm_params)
+        random_forest_task.random_forest(session, modeldef, n_estimators, max_depth,
+                                         X_train, y_train, X_valid, y_valid)
+        taskstate.state = RunningState.FINISHED
+        taskstate.signal()
+        return
+
     else:
         num_neighbors = int(algorithm_params["num_neighbors"])
         if modeldef.algorithm == C_GCNN:
@@ -300,41 +369,8 @@ def _train(session, taskstate, model_id):
         modeldef.train_loss_list = pickle.dumps(train_loss_list)
         modeldef.valid_loss_list = pickle.dumps(valid_loss_list)
 
-        SAMPLING_SIZE = 100
-
-        sampled_valid_pred = valid_predicted[:SAMPLING_SIZE]
-        sampled_valid_true = valid_true[:SAMPLING_SIZE]
-        modeldef.valid_predicted = pickle.dumps(sampled_valid_pred.T.tolist())
-        modeldef.valid_true = pickle.dumps(sampled_valid_true.T.tolist())
-
-        sampled_train_pred = train_predicted_list[:SAMPLING_SIZE]
-        sampled_train_true = train_true_list[:SAMPLING_SIZE]
-        modeldef.sampled_train_pred = pickle.dumps(sampled_train_pred.T.tolist())
-        modeldef.sampled_train_true = pickle.dumps(sampled_train_true.T.tolist())
-
-        # true histogram
-        true_histogram = []
-        pred_histogram = []
-        for i in range(y_valid.shape[1]):
-            counts, bins = np.histogram(train_true_list[:, i])
-            train_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
-            counts, bins = np.histogram(y_valid[:, i])
-            valid_true_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
-            true_histogram.append({"train": train_true_histogram, "valid": valid_true_histogram})
-
-            # pred histogram
-            counts, bins = np.histogram(train_predicted_list[:, i])
-            train_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
-            counts, bins = np.histogram(valid_predicted[:, i])
-            valid_pred_histogram = {"counts": counts.tolist(), "bins": bins.tolist()}
-            pred_histogram.append({"train": train_pred_histogram, "valid": valid_pred_histogram})
-
-        modeldef.true_histogram = pickle.dumps(true_histogram)
-        modeldef.pred_histogram = pickle.dumps(pred_histogram)
-
-        # calc train data confidence area
-        confidence_data_list = calc_confidence_area(train_true_list.T, train_predicted_list.T)
-        modeldef.confidence_data = pickle.dumps(confidence_data_list.tolist())
+        modeldef = prediction_sample_graph(modeldef, valid_predicted, valid_true,
+                                           train_predicted_list, train_true_list)
 
         session.add(modeldef)
         session.commit()
@@ -345,17 +381,8 @@ def _train(session, taskstate, model_id):
         # update best loss model info
         if best_loss is None or best_loss > valid_loss:
             model.save(os.path.join(DB_DIR_TRAINED_WEIGHT, filename))
-
-            modeldef.best_epoch = e
-            modeldef.best_epoch_valid_loss = float(valid_loss)
-            modeldef.best_epoch_rmse = float(np.sqrt(valid_loss))
-            modeldef.best_epoch_max_abs_error = float(np.max(np.abs(valid_true - valid_predicted)))
-            modeldef.best_epoch_r2 = float(r2_score(valid_true, valid_predicted))
-            modeldef.weight = filename
-
-            session.add(modeldef)
-            session.commit()
-
+            update_model(session, modeldef, valid_predicted, valid_true, e,
+                         valid_loss, filename, None)
             best_loss = valid_loss
 
     # TODO:

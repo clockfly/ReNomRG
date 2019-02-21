@@ -1,7 +1,9 @@
 import requests
 import os
-from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED,
-                             DB_DIR_TRAINED_WEIGHT, DATASRC_DIR, SCRIPT_DIR)
+import pickle
+import numpy as np
+from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED, RANDOM_FOREST,
+                             DB_DIR_TRAINED_WEIGHT, DB_DIR_ML_MODELS, DATASRC_DIR, SCRIPT_DIR)
 from renom_rg.server.custom_util import _load_usermodel
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.download import download
@@ -43,32 +45,46 @@ class Regressor(object):
 
         ret = requests.get(download_param_api).json()
         params = ret["algorithm_params"]
-        filename = ret["weight"]
-        if not os.path.exists(filename):
-            download(download_weight_api, filename)
+        if ret["algorithm"] != RANDOM_FOREST:
+            filename = ret["weight"]
+            if not os.path.exists(filename):
+                download(download_weight_api, filename)
 
-        if ret["algorithm"] == USER_DEFINED:
-            self._model = _load_usermodel(params)
-        else:
-            if ret["algorithm"] == C_GCNN:
-                self._alg_name = "C_GCNN"
-            elif ret["algorithm"] == Kernel_GCNN:
-                self._alg_name = "Kernel_GCNN"
-            elif ret["algorithm"] == DBSCAN_GCNN:
-                self._alg_name = "DBSCAN_GCNN"
+            if ret["algorithm"] == USER_DEFINED:
+                self._model = _load_usermodel(params)
+            else:
+                if ret["algorithm"] == C_GCNN:
+                    self._alg_name = "C_GCNN"
+                elif ret["algorithm"] == Kernel_GCNN:
+                    self._alg_name = "Kernel_GCNN"
+                elif ret["algorithm"] == DBSCAN_GCNN:
+                    self._alg_name = "DBSCAN_GCNN"
 
-            self._model = GCNet(list(params["feature_graph"]),
-                                num_target=int(params["num_target"]),
-                                fc_unit=[int(u) for u in params["fc_unit"]],
-                                neighbors=int(params["num_neighbors"]),
-                                channels=[int(u) for u in params["channels"]])
+                self._model = GCNet(list(params["feature_graph"]),
+                                    num_target=int(params["num_target"]),
+                                    fc_unit=[int(u) for u in params["fc_unit"]],
+                                    neighbors=int(params["num_neighbors"]),
+                                    channels=[int(u) for u in params["channels"]])
+                del params["script_file_name"]
 
-        self._model.load(filename)
+            self._model.load(filename)
+
+        elif ret["algorithm"] == RANDOM_FOREST:
+            m_filename = ret["model_pickle"]
+            if not os.path.exists(m_filename):
+                download(download_weight_api, m_filename)
+            with open(m_filename, mode='rb') as f:
+                self._model = pickle.load(f)
+            self._alg_name = "Random_Forest"
+
+            del params["script_file_name"], params["num_neighbors"], params["fc_unit"], params["channels"]
+
         self._model_info = {
             "model_id": ret["model_id"],
             "dataset_id": ret["dataset_id"],
             "algorithm": self._alg_name,
-            "algorithm_params": params
+            "algorithm_params": params,
+            "explanatory_column_ids": ret["explanatory_column_ids"]
         }
 
     def predict(self, X):
@@ -92,7 +108,17 @@ class Regressor(object):
 
         """
         assert self._model
-        return self._model.predict(X)
+
+        if self._alg_name == "Random_Forest":
+            split_data = X[:, self._model_info["explanatory_column_ids"]]
+            pred = self._model.predict(split_data)
+            if len(pred.shape) == 1:
+                pred = pred.reshape(-1, 1)
+        else:
+            pred = self._model.predict(X)
+
+        return pred
+
 
     @property
     def model_info(self):

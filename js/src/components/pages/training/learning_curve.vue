@@ -6,26 +6,28 @@
       </div>
       <div
         id="curve-canvas"
-        class="panel-content"
+        :class="gray_back"
       >
-        <div class="x-axis-name">
-          Epoch
-        </div>
-        <div class="y-axis-name">
-          Loss [-]
-        </div>
-        <div class="bar-legends flex">
-          <div class="legend flex">
-            <div class="legend-color train" />
-            <div class="legend-name">
-              Train
-            </div>
+        <div v-if="selectedModel && selectedModel.algorithm != 3">
+          <div class="x-axis-name">
+            Epoch
           </div>
+          <div class="y-axis-name">
+            Loss [-]
+          </div>
+          <div class="bar-legends flex">
+            <div class="legend flex">
+              <div class="legend-color train" />
+              <div class="legend-name">
+                Train
+              </div>
+            </div>
 
-          <div class="legend flex">
-            <div class="legend-color validation" />
-            <div class="legend-name">
-              Validation
+            <div class="legend flex">
+              <div class="legend-color validation" />
+              <div class="legend-name">
+                Validation
+              </div>
             </div>
           </div>
         </div>
@@ -42,7 +44,16 @@ import { max, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'LerningCurve',
-  computed: mapGetters(['selectedModel']),
+  computed: {
+    ...mapGetters(['selectedModel']),
+    gray_back: function () {
+      if (this.selectedModel && this.selectedModel.algorithm == 3) {
+        return 'panel-content gray-back'
+      } else {
+        return 'panel-content'
+      }
+    }
+  },
   watch: {
     selectedModel: function () {
       const id = '#curve-canvas'
@@ -167,6 +178,10 @@ export default {
         }
       }
     }
+  }
+  .gray-back {
+    background-color: $grayout-back;
+    filter: grayscale(1);
   }
 }
 </style>
