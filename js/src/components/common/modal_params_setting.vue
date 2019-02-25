@@ -11,7 +11,10 @@
             Dataset Name
           </div>
           <div class="input-value">
-            <select v-model="dataset_index">
+            <select
+              v-model="dataset_index"
+              @change="changeDataset"
+            >
               <option
                 v-for="(dataset, index) in $store.state.dataset_list"
                 :key="index"
@@ -40,7 +43,10 @@
             Architecture
           </div>
           <div class="input-value">
-            <select v-model="algorithm">
+            <select
+              v-model="algorithm"
+              @change="changeAlgorithm"
+            >
               <option
                 v-for="(a, index) in algorithms"
                 :key="index"
@@ -66,7 +72,7 @@
       </div>  <!-- setting block -->
 
       <div
-        v-if="algorithm != 3"
+        v-if="![3, 4].includes(algorithm)"
         class="setting-block"
       >
         <div class="setting-type">
@@ -101,7 +107,7 @@
 
     <div class="column">
       <div
-        v-if="algorithm != 3"
+        v-if="![3, 4].includes(algorithm)"
         class="setting-block"
       >
         <div class="setting-type">
@@ -122,11 +128,20 @@
       </div>  <!-- setting block -->
 
       <div
-        v-else-if="algorithm == 3"
+        v-else
         class="setting-block"
       >
-        <div class="setting-type">
+        <div
+          v-if="algorithm == 3"
+          class="setting-type"
+        >
           Random Forest Params
+        </div>
+        <div
+          v-else-if="algorithm == 4"
+          class="setting-type"
+        >
+          XGBoost Params
         </div>
 
         <div class="sub-block flex">
@@ -142,8 +157,15 @@
         </div>  <!-- sub block -->
         <div class="sub-block flex">
           <div class="label">
-            Maximum Depth<br>
-            ("None" or integer)
+            <div class="label-in">
+              Maximum Depth
+            </div>
+            <div
+              v-if="algorithm == 3"
+              class="label-in"
+            >
+              ("None" or integer)
+            </div>
           </div>
           <div class="input-value">
             <input
@@ -174,8 +196,8 @@ export default {
   name: 'ModalParamsSetting',
   data: function () {
     return {
-      'algorithms': ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN', 'Random Forest', 'User defined'],
-      'algorithm_ids': [0, 1, 2, 3, 0xffffffff],
+      'algorithms': ['C-GCNN', 'Kernel-GCNN', 'DBSCAN-GCNN', 'Random Forest', 'XGBoost', 'User defined'],
+      'algorithm_ids': [0, 1, 2, 3, 4, 0xffffffff],
       'dataset_index': 0,
       'algorithm': 0,
       'algorithm_params': {
@@ -207,6 +229,25 @@ export default {
     },
     hideModal: function () {
       this.$store.commit('setAddModelModalShowFlag', {'flag': false})
+    },
+    changeAlgorithm: function () {
+      if (this.algorithm == 4) {
+        this.algorithm_params['max_depth'] = 6
+        this.singleTargetCheck()
+      } else {
+        this.algorithm_params['max_depth'] = 'None'
+      }
+    },
+    changeDataset: function () {
+      if (this.algorithm == 4) {
+        this.singleTargetCheck()
+      }
+    },
+    singleTargetCheck: function () {
+      if (this.$store.state.dataset_list[this.dataset_index].target_column_ids.length > 1) {
+        this.algorithm = 0
+        this.$store.state.error_msg = "XGBoost can only use dataset of one target variable"
+      }
     }
   }
 }
@@ -229,6 +270,7 @@ export default {
         height: $text-height-regular;
         line-height: $text-height-regular;
         font-size: $fs-regular;
+        color: $gray;
       }
     }
   }
@@ -241,11 +283,11 @@ export default {
       width: 50%;
       height: $text-height-small;
       line-height: $text-height-small;
+    }
+    .label, .label-in {
+      color: $gray;
       font-size: $fs-small;
     }
-  }
-  .setting-type, .label {
-    color: $gray;
   }
 
   .to-setting-dataset {
