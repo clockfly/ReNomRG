@@ -214,7 +214,8 @@ def _train(session, taskstate, model_id):
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
 
-    X = split_target(np.array(data), pickle.loads(modeldef.dataset.explanatory_column_ids))
+    explanatory_column_ids = pickle.loads(modeldef.dataset.explanatory_column_ids)
+    X = split_target(np.array(data), explanatory_column_ids)
     y = split_target(np.array(data), pickle.loads(modeldef.dataset.target_column_ids))
 
     selected_scaling = modeldef.dataset.selected_scaling
@@ -258,7 +259,7 @@ def _train(session, taskstate, model_id):
     else:
         num_neighbors = int(algorithm_params["num_neighbors"])
         if modeldef.algorithm == C_GCNN:
-            feature_graph = get_corr_graph(X_train, num_neighbors)
+            feature_graph = get_corr_graph(X_train, num_neighbors, explanatory_column_ids)
         elif modeldef.algorithm == Kernel_GCNN:
             feature_graph = get_kernel_graph(X_train, num_neighbors, 0.01)
         elif modeldef.algorithm == DBSCAN_GCNN:
