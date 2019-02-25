@@ -237,7 +237,7 @@ def _train(session, taskstate, model_id):
 
     if modeldef.algorithm == USER_DEFINED:
         num_neighbors = int(algorithm_params["num_neighbors"])
-        feature_graph = get_corr_graph(X_train, num_neighbors)
+        feature_graph = get_corr_graph(X_train, num_neighbors, explanatory_column_ids)
         algorithm_params["feature_graph"] = feature_graph.tolist()
         model = _load_usermodel(algorithm_params)
 
