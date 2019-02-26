@@ -83,10 +83,18 @@ def _get_resource(path, filename):
     return HTTPResponse(body, **headers)
 
 
-def split_target(data, ids):
-    indexes = np.ones(data.shape[1], dtype=bool)
-    indexes[ids] = False
-    split_data = data.loc[:, ~indexes]
+def split_target(data, labels, ids):
+    del_labels = []
+    for index, item in enumerate(labels):
+        if index not in ids:
+            if item in data.columns.values:
+                del_labels.append(item)
+        else:
+            if item not in data.columns.values:
+                raise ValueError('Explanatory variable "%s" of Dataset is not '\
+                                 'included in prediction data "pred.pickle"' % item)
+
+    split_data = data.drop(columns=del_labels)
     return split_data
 
 
@@ -192,6 +200,7 @@ def get_dataset(dataset_id):
 @route('/api/renom_rg/datasets/confirm', method='POST')
 def confirm_dataset():
     name = request.params.name
+    labels = json.loads(request.params.labels)
     explanatory_column_ids = json.loads(request.params.explanatory_column_ids)
     target_column_ids = json.loads(request.params.target_column_ids)
     train_ratio = float(request.params.train_ratio)
@@ -199,8 +208,8 @@ def confirm_dataset():
 
     with open(os.path.join(DATASRC_DIR, 'data.pickle'), mode='rb') as f:
         data = pickle.load(f)
-    X = split_target(data, explanatory_column_ids)
-    y = split_target(data, target_column_ids)
+    X = split_target(data, labels, explanatory_column_ids)
+    y = split_target(data, labels, target_column_ids)
 
     filename_y = 'none_scaling'
     filename_X = 'none_scaling'
@@ -524,7 +533,7 @@ def predict_model(model_id):
     try:
         with open(os.path.join(DATASRC_DIR, 'prediction_set', 'pred.pickle'), mode='rb') as f:
             p_all_data = pickle.load(f)
-        p_X = split_target(p_all_data, explanatory_column_ids)
+        p_X = split_target(p_all_data, pickle.loads(model.dataset.labels), explanatory_column_ids)
         n_X = np.array(p_X)
         selected_scaling = model.dataset.selected_scaling
         if selected_scaling != 1:
