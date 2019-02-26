@@ -57,11 +57,15 @@ msgstr ""
 msgid "SQLAlchemy==1.2.15"
 msgstr ""
 
-#: ../../rsts/installation/main.rst:20
+#: ../../rsts/installation/main.rst:19
+msgid "xgboost==0.81"
+msgstr ""
+
+#: ../../rsts/installation/main.rst:21
 msgid "And ReNomRG requires ReNom."
 msgstr "ReNomRGを使用するにはReNomが必要です。"
 
-#: ../../rsts/installation/main.rst:22
+#: ../../rsts/installation/main.rst:23
 msgid ""
 "If you haven't install ReNom, please install ReNom from  "
 "https://github.com/ReNom-dev-team/ReNom.git."
@@ -69,44 +73,44 @@ msgstr ""
 "ReNomをインストールしていない場合は、 https://github.com/ReNom-dev-team/ReNom.git. "
 "こちらからReNomをインストールしてください。"
 
-#: ../../rsts/installation/main.rst:24
+#: ../../rsts/installation/main.rst:25
 msgid ""
 "Please refer to the ReNom installation below. "
 "https://www.renom.jp/packages/renomdl/rsts/installation/installation.html"
 msgstr "ReNomのインストール方法は次のリンクを参照してください。https://www.renom.jp/packages/renomdl/rsts/installation/installation.html"
 
-#: ../../rsts/installation/main.rst:28
+#: ../../rsts/installation/main.rst:29
 msgid "Install by pip."
 msgstr "pipによるインストール"
 
-#: ../../rsts/installation/main.rst:30
+#: ../../rsts/installation/main.rst:31
 msgid ""
 "You can install ReNomRG by ``pip`` command. This is the simplest way for "
 "installation."
 msgstr "pipコマンドでReNomRGをインストールすることができます。これがもっとも簡単なインストール方法です。"
 
-#: ../../rsts/installation/main.rst:32
+#: ../../rsts/installation/main.rst:33
 msgid "The Wheel package is provided at:"
 msgstr "Wheelパッケージは以下のようなリンクからインストールすることが可能です。"
 
-#: ../../rsts/installation/main.rst:38
+#: ../../rsts/installation/main.rst:39
 msgid "Install 0.2.0b0(beta version) is follow."
 msgstr "以下のように、0.2.0b0(ベータバージョン)をインストールすることができます。"
 
-#: ../../rsts/installation/main.rst:47
+#: ../../rsts/installation/main.rst:48
 msgid ""
 "This is ``linux OS`` only. If your OS is windows or MAC, please install "
 "ReNomRG from binary code."
 msgstr "このコマンドはLinuxOSのみ可能です。もしWindowsやMacなどのOSを使用している場合はソースコードからインストールしてください。"
 
-#: ../../rsts/installation/main.rst:52
+#: ../../rsts/installation/main.rst:53
 msgid "Install from source."
 msgstr "ソースコードからのインストール"
 
-#: ../../rsts/installation/main.rst:54
+#: ../../rsts/installation/main.rst:55
 msgid "If you install ReNomRG from source, Node.js is required."
 msgstr "もしReNomRGをソースコードからインストールする場合は、Node.jsが必要になります。"
 
-#: ../../rsts/installation/main.rst:66
+#: ../../rsts/installation/main.rst:67
 msgid "This requires ``node.js``."
 msgstr "Node.jsが必要です。"

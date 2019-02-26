@@ -26,13 +26,13 @@
               Feature Scaling：
             </div>
             <div
-              v-if="deployedModel"
+              v-if="deployedModel && deployedDataset"
               class="value"
             >
               {{ $store.state.scalings[deployedDataset.selected_scaling] }}
             </div>
           </div>
-          <div v-if="deployedModel">
+          <div v-if="deployedModel && deployedDataset">
             <div
               v-for="(d, index) in deployedModel.valid_true"
               :key="index"
@@ -80,13 +80,13 @@
               Feature Scaling：
             </div>
             <div
-              v-if="selectedModel"
+              v-if="selectedModel && selectedDataset"
               class="value"
             >
               {{ $store.state.scalings[selectedDataset.selected_scaling] }}
             </div>
           </div>
-          <div v-if="selectedModel">
+          <div v-if="selectedModel && selectedDataset">
             <div
               v-for="(d, index) in selectedModel.valid_true"
               :key="index"
@@ -153,11 +153,12 @@ export default {
       // define svg element
       const width = 400
       const height = 420
+      const bins_end = 10
       const margin = { 'left': 60, 'top': 80, 'right': 80, 'bottom': 60, 'hist_inner': 20, 'hist_outer': 20 }
-      const plot_max = max([max(train_true), max(valid_true)])
-      const plot_min = min([min(train_true), min(valid_true)])
-      const y_max = max([plot_max, max(train_pred), max(valid_pred)])
-      const y_min = min([plot_min, min(train_pred), min(valid_pred)])
+      const plot_max = max([true_histogram.train.bins[bins_end], true_histogram.valid.bins[bins_end]])
+      const plot_min = min([true_histogram.train.bins[0], true_histogram.valid.bins[0]])
+      const y_max = max([plot_max, pred_histogram.train.bins[bins_end], pred_histogram.valid.bins[bins_end]])
+      const y_min = min([plot_min, pred_histogram.train.bins[0], pred_histogram.valid.bins[0]])
       const chunk = (plot_max - plot_min) / 10
       const svg = d3.select(id)
         .append('svg')
@@ -297,7 +298,15 @@ export default {
         .attr('stroke', train_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return x_scale((true_histogram.train.bins[index] + true_histogram.train.bins[index + 1]) / 2) })
+          .x(function (d, index) {
+            if (index == 0) {
+              return x_scale(true_histogram.train.bins[index])
+            } else if (index == bins_end - 1) {
+              return x_scale(true_histogram.train.bins[bins_end])
+            } else {
+              return x_scale((true_histogram.train.bins[index] + true_histogram.train.bins[index + 1]) / 2)
+            }
+          })
           .y1(function (d) { return histy_scale(plot_max + d) })
           .y0(function (d) { return histy_scale(plot_max) })
           .curve(d3.curveCardinal)
@@ -311,7 +320,15 @@ export default {
         .attr('stroke', valid_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x(function (d, index) { return x_scale((true_histogram.train.bins[index] + true_histogram.train.bins[index + 1]) / 2) })
+          .x(function (d, index) {
+            if (index == 0) {
+              return x_scale(true_histogram.valid.bins[index])
+            } else if (index == bins_end - 1) {
+              return x_scale(true_histogram.valid.bins[bins_end])
+            } else {
+              return x_scale((true_histogram.valid.bins[index] + true_histogram.valid.bins[index + 1]) / 2)
+            }
+          })
           .y1(function (d) { return histy_scale(plot_max + d) })
           .y0(function (d) { return histy_scale(plot_max) })
           .curve(d3.curveCardinal)
@@ -329,7 +346,15 @@ export default {
         .attr('d', d3.area()
           .x1(function (d) { return histx_scale(y_max + d) })
           .x0(function (d) { return histx_scale(y_max) })
-          .y(function (d, index) { return y_scale((pred_histogram.train.bins[index] + pred_histogram.train.bins[index + 1]) / 2) })
+          .y(function (d, index) {
+            if (index == 0) {
+              return y_scale(pred_histogram.train.bins[index])
+            } else if (index == bins_end - 1) {
+              return y_scale(pred_histogram.train.bins[bins_end])
+            } else {
+              return y_scale((pred_histogram.train.bins[index] + pred_histogram.train.bins[index + 1]) / 2)
+            }
+          })
           .curve(d3.curveCardinal)
         )
 
@@ -341,9 +366,17 @@ export default {
         .attr('stroke', valid_color)
         .attr('stroke-width', 2)
         .attr('d', d3.area()
-          .x1(function (d) { return histx_scale(plot_max + d) })
-          .x0(function (d) { return histx_scale(plot_max) })
-          .y(function (d, index) { return y_scale((pred_histogram.train.bins[index] + pred_histogram.train.bins[index + 1]) / 2) })
+          .x1(function (d) { return histx_scale(y_max + d) })
+          .x0(function (d) { return histx_scale(y_max) })
+          .y(function (d, index) {
+            if (index == 0) {
+              return y_scale(pred_histogram.valid.bins[index])
+            } else if (index == bins_end - 1) {
+              return y_scale(pred_histogram.valid.bins[bins_end])
+            } else {
+              return y_scale((pred_histogram.valid.bins[index] + pred_histogram.valid.bins[index + 1]) / 2)
+            }
+          })
           .curve(d3.curveCardinal)
         )
     },

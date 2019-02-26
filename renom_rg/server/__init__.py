@@ -6,6 +6,7 @@ C_GCNN = 0
 Kernel_GCNN = 1
 DBSCAN_GCNN = 2
 RANDOM_FOREST = 3
+XGBOOST = 4
 USER_DEFINED = 0xffffffff
 
 # Directories

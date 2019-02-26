@@ -2,7 +2,7 @@ import requests
 import os
 import pickle
 import numpy as np
-from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED, RANDOM_FOREST,
+from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED, RANDOM_FOREST, XGBOOST,
                              DB_DIR_TRAINED_WEIGHT, DB_DIR_ML_MODELS, DATASRC_DIR, SCRIPT_DIR)
 from renom_rg.server.custom_util import _load_usermodel
 from renom_rg.api.regression.gcnn import GCNet
@@ -45,7 +45,7 @@ class Regressor(object):
 
         ret = requests.get(download_param_api).json()
         params = ret["algorithm_params"]
-        if ret["algorithm"] != RANDOM_FOREST:
+        if ret["algorithm"] not in [RANDOM_FOREST, XGBOOST]:
             filename = ret["weight"]
             if not os.path.exists(filename):
                 download(download_weight_api, filename)
@@ -69,13 +69,17 @@ class Regressor(object):
 
             self._model.load(filename)
 
-        elif ret["algorithm"] == RANDOM_FOREST:
+        else:
             m_filename = ret["model_pickle"]
             if not os.path.exists(m_filename):
                 download(download_weight_api, m_filename)
             with open(m_filename, mode='rb') as f:
                 self._model = pickle.load(f)
-            self._alg_name = "Random_Forest"
+
+            if ret["algorithm"] == RANDOM_FOREST:
+                self._alg_name = "Random_Forest"
+            elif ret["algorithm"] == XGBOOST:
+                self._alg_name = "XGBoost"
 
             del params["script_file_name"], params["num_neighbors"], params["fc_unit"], params["channels"]
 
@@ -109,7 +113,7 @@ class Regressor(object):
         """
         assert self._model
 
-        if self._alg_name == "Random_Forest":
+        if self._alg_name in ["Random_Forest", "XGBoost"]:
             split_data = X[:, self._model_info["explanatory_column_ids"]]
             pred = self._model.predict(split_data)
             if len(pred.shape) == 1:
