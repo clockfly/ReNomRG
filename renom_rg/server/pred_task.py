@@ -2,7 +2,7 @@ import os
 import pickle
 import numpy as np
 
-from renom_rg.server import DB_DIR_TRAINED_WEIGHT, DB_DIR_ML_MODELS, USER_DEFINED, RANDOM_FOREST
+from renom_rg.server import DB_DIR_TRAINED_WEIGHT, DB_DIR_ML_MODELS, USER_DEFINED, RANDOM_FOREST, XGBOOST
 from renom_rg.server.custom_util import _load_usermodel
 
 from renom_rg.api.regression.gcnn import GCNet
@@ -24,7 +24,7 @@ def _prediction(session, model_id, data):
 
     if modeldef.algorithm == USER_DEFINED:
         model = _load_usermodel(algorithm_params)
-    elif modeldef.algorithm == RANDOM_FOREST:
+    elif modeldef.algorithm in [RANDOM_FOREST, XGBOOST]:
         mp_path = os.path.join(DB_DIR_ML_MODELS, modeldef.model_pickle)
         with open(mp_path, mode='rb') as f:
             model = pickle.load(f)
@@ -34,7 +34,7 @@ def _prediction(session, model_id, data):
                       neighbors=algorithm_params["num_neighbors"],
                       channels=algorithm_params["channels"])
 
-    if modeldef.algorithm == RANDOM_FOREST:
+    if modeldef.algorithm in [RANDOM_FOREST, XGBOOST]:
         pred = model.predict(data)
         if len(pred.shape) == 1:
             pred = pred.reshape(-1, 1)

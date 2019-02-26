@@ -35,7 +35,7 @@
         </div>
 
         <div
-          v-if="selectedModel"
+          v-if="selectedModel && selectedDataset"
           class="column"
         >
           <div class="label-value flex">
@@ -65,27 +65,23 @@
             </div>
           </div>
 
-          <div
-            v-if="selectedModel.algorithm != 3"
-            class="label-value flex"
-          >
-            <div class="label">
-              Total Epoch
+          <div v-if="![3, 4].includes(selectedModel.algorithm)">
+            <div class="label-value flex">
+              <div class="label">
+                Total Epoch
+              </div>
+              <div class="value">
+                {{ selectedModel.epoch }}
+              </div>
             </div>
-            <div class="value">
-              {{ selectedModel.epoch }}
-            </div>
-          </div>
 
-          <div
-            v-if="selectedModel.algorithm != 3"
-            class="label-value flex"
-          >
-            <div class="label">
-              Batch Size
-            </div>
-            <div class="value">
-              {{ selectedModel.batch_size }}
+            <div class="label-value flex">
+              <div class="label">
+                Batch Size
+              </div>
+              <div class="value">
+                {{ selectedModel.batch_size }}
+              </div>
             </div>
           </div>
 
@@ -130,7 +126,7 @@
           v-if="selectedModel"
           class="column"
         >
-          <div v-if="selectedModel.algorithm != 3">
+          <div v-if="![3, 4].includes(selectedModel.algorithm)">
             <div class="label-value">
               <div class="label">
                 Graph Comvolution Params
@@ -145,10 +141,19 @@
               </div>
             </div>
           </div>
-          <div v-else-if="selectedModel.algorithm == 3">
+          <div v-else>
             <div class="label-value">
-              <div class="label">
+              <div
+                v-if="selectedModel.algorithm == 3"
+                class="label"
+              >
                 Random Forest Params
+              </div>
+              <div
+                v-else-if="selectedModel.algorithm == 4"
+                class="label"
+              >
+                XGBoost Params
               </div>
             </div>
             <div class="label-value flex">

@@ -26,13 +26,13 @@
               Feature Scaling：
             </div>
             <div
-              v-if="deployedModel"
+              v-if="deployedModel && deployedDataset"
               class="value"
             >
               {{ $store.state.scalings[deployedDataset.selected_scaling] }}
             </div>
           </div>
-          <div v-if="deployedModel">
+          <div v-if="deployedModel && deployedDataset">
             <div
               v-for="(d, index) in deployedModel.valid_true"
               :key="index"
@@ -80,13 +80,13 @@
               Feature Scaling：
             </div>
             <div
-              v-if="selectedModel"
+              v-if="selectedModel && selectedDataset"
               class="value"
             >
               {{ $store.state.scalings[selectedDataset.selected_scaling] }}
             </div>
           </div>
-          <div v-if="selectedModel">
+          <div v-if="selectedModel && selectedDataset">
             <div
               v-for="(d, index) in selectedModel.valid_true"
               :key="index"

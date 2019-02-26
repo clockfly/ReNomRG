@@ -13,7 +13,7 @@ from renom.optimizer import Adam
 from renom.cuda import release_mem_pool, use_device
 from renom.utility.distributor.distributor import NdarrayDistributor
 
-from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, RANDOM_FOREST, USER_DEFINED,
+from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, RANDOM_FOREST, XGBOOST, USER_DEFINED,
                              DB_DIR_TRAINED_WEIGHT, DATASRC_DIR, SCRIPT_DIR)
 from renom_rg.server.custom_util import _load_usermodel
 from renom_rg.server import DATASRC_PREDICTION_OUT
@@ -21,7 +21,7 @@ from renom_rg.server import DATASRC_PREDICTION_OUT
 from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
 from . import db
-from . import random_forest_task
+from . import ml_task
 
 class RunningState(enum.Enum):
     TRAINING = 0
@@ -240,7 +240,7 @@ def _train(session, taskstate, model_id):
         algorithm_params["feature_graph"] = feature_graph.tolist()
         model = _load_usermodel(algorithm_params)
 
-    elif modeldef.algorithm == RANDOM_FOREST:
+    elif modeldef.algorithm in [RANDOM_FOREST, XGBOOST]:
         n_estimators = int(algorithm_params["n_estimators"])
         if algorithm_params["max_depth"] == "":
             algorithm_params["max_depth"] = "None"
@@ -249,8 +249,8 @@ def _train(session, taskstate, model_id):
         else:
             max_depth = int(algorithm_params["max_depth"])
         modeldef.algorithm_params = pickle.dumps(algorithm_params)
-        random_forest_task.random_forest(session, modeldef, n_estimators, max_depth,
-                                         X_train, y_train, X_valid, y_valid)
+        ml_task.random_forest(session, modeldef, n_estimators, max_depth,
+                              X_train, y_train, X_valid, y_valid)
         taskstate.state = RunningState.FINISHED
         taskstate.signal()
         return

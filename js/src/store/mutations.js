@@ -37,7 +37,8 @@ export default {
   // set  mode llist
   setModelList (state, payload) {
     state.model_list = []
-    state.model_counts_per_algorith = { 'C-GCNN': 0, 'Kernel-GCNN': 0, 'DBSCAN-GCNN': 0, 'Random-Forest': 0, 'user-defined': 0 }
+    state.model_counts_per_algorith = { 'C-GCNN': 0, 'Kernel-GCNN': 0, 'DBSCAN-GCNN': 0,
+                                        'Random-Forest': 0, 'XGBoost': 0, 'user-defined': 0 }
     for (let m of payload.model_list) {
       state.model_list.push(m)
 
@@ -56,6 +57,8 @@ export default {
         state.model_counts_per_algorith['DBSCAN-GCNN'] += 1
       } else if (m['algorithm'] === 3) {
         state.model_counts_per_algorith['Random-Forest'] += 1
+      } else if (m['algorithm'] === 4) {
+        state.model_counts_per_algorith['XGBoost'] += 1
       } else if (m['algorithm'] === 0xffffffff) {
         state.model_counts_per_algorith['user-defined'] += 1
       }
