@@ -324,9 +324,9 @@ import { mapState, mapGetters } from 'vuex'
 import { train_color } from '@/const'
 import { round, max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
-const width = 240
+const width = 320
 const height = 160
-const margin = { 'left': 20, 'top': 10, 'right': 0, 'bottom': 20 }
+const margin = { 'left': 50, 'top': 10, 'right': 50, 'bottom': 20 }
 
 export default {
   name: 'PredictionPage',
