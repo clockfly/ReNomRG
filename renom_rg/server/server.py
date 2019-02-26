@@ -91,8 +91,8 @@ def split_target(data, labels, ids):
                 del_labels.append(item)
         else:
             if item not in data.columns.values:
-                raise ValueError('Explanatory variable "%s" of Dataset is not '\
-                                 'included in prediction data "pred.pickle"' % item)
+                raise ValueError('Explanatory variable "%s" of dataset is not '
+                                 'included in prediction data "pred.pickle".' % item)
 
     split_data = data.drop(columns=del_labels)
     return split_data
