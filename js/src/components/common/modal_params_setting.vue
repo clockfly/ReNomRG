@@ -267,9 +267,9 @@ export default {
         const explanatory_len = this.$store.state.dataset_list[this.dataset_index].explanatory_column_ids.length
         if (explanatory_len < this.algorithm_params['num_neighbors']
             || this.algorithm_params['num_neighbors'] < 5) {
-          if (explanatory_len < 5) {
+          if (explanatory_len < 5 || explanatory_len < this.algorithm_params['num_neighbors']) {
             this.algorithm_params['num_neighbors'] = explanatory_len
-          } else if (5 <= explanatory_len) {
+          } else {
             this.algorithm_params['num_neighbors'] = 5
           }
         }
