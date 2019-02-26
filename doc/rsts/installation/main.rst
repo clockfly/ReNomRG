@@ -16,6 +16,7 @@ ReNomRG requires following python modules.
 - alembic==1.0.5
 - bottle==0.12.16
 - SQLAlchemy==1.2.15
+- xgboost==0.81
 
 And ReNomRG requires ReNom.
 

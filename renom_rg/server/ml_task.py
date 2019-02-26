@@ -1,14 +1,24 @@
 import pickle
 import os
 import renom as rm
+import xgboost as xgb
 from sklearn.ensemble import RandomForestRegressor
 from . import train_task
-from . import DB_DIR_ML_MODELS
+from . import DB_DIR_ML_MODELS, RANDOM_FOREST, XGBOOST
 
 def random_forest(session, modeldef, n_estimators, max_depth,
                   X_train, y_train, X_valid, y_valid):
-    regr = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth)
-    model = regr.fit(X_train, y_train)
+    if modeldef.algorithm == RANDOM_FOREST:
+        regr = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth)
+        filename = 'rf_' + str(modeldef.id) + '.pickle'
+    elif modeldef.algorithm == XGBOOST:
+        regr = xgb.XGBRegressor(n_estimators=n_estimators, max_depth=max_depth)
+        filename = 'xgb_' + str(modeldef.id) + '.pickle'
+
+    if y_train.shape[1] == 1:
+        model = regr.fit(X_train, y_train.ravel())
+    else:
+        model = regr.fit(X_train, y_train)
 
     train_predicted = model.predict(X_train)
     train_predicted = train_predicted.reshape(-1, y_train.shape[1])
@@ -19,7 +29,6 @@ def random_forest(session, modeldef, n_estimators, max_depth,
                                                   train_predicted, y_train)
     if not os.path.isdir(DB_DIR_ML_MODELS):
         os.makedirs(DB_DIR_ML_MODELS)
-    filename = 'rf_' + str(modeldef.id) + '.pickle'
     filepath = os.path.join(DB_DIR_ML_MODELS, filename)
     with open(filepath, mode='wb') as f:
         pickle.dump(model, f)

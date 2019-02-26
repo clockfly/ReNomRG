@@ -6,6 +6,7 @@ export default {
     1: 'Kernel-GCNN',
     2: 'DBSCAN-GCNN',
     3: 'Random-Forest',
+    4: 'XGBoost',
     0xffffffff: 'user-defined'
   },
 

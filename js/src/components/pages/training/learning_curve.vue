@@ -8,7 +8,7 @@
         id="curve-canvas"
         :class="gray_back"
       >
-        <div v-if="selectedModel && selectedModel.algorithm != 3">
+        <div v-if="selectedModel && ![3, 4].includes(selectedModel.algorithm)">
           <div class="x-axis-name">
             Epoch
           </div>
@@ -47,7 +47,7 @@ export default {
   computed: {
     ...mapGetters(['selectedModel']),
     gray_back: function () {
-      if (this.selectedModel && this.selectedModel.algorithm == 3) {
+      if (this.selectedModel && [3, 4].includes(this.selectedModel.algorithm)) {
         return 'panel-content gray-back'
       } else {
         return 'panel-content'
