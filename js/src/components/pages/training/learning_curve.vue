@@ -6,7 +6,7 @@
       </div>
       <div
         id="curve-canvas"
-        :class="gray_back"
+        class="panel-content"
       >
         <div v-if="selectedModel && ![3, 4].includes(selectedModel.algorithm)">
           <div class="x-axis-name">
@@ -31,6 +31,12 @@
             </div>
           </div>
         </div>
+        <div v-else>
+          <div class="ml-text">
+            Learning Curve is not displayed when
+            {{ $store.state.algorithms[selectedModel.algorithm] }} is selected.
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -45,14 +51,7 @@ import { max, getScale, removeSvg, styleAxis } from '@/utils'
 export default {
   name: 'LerningCurve',
   computed: {
-    ...mapGetters(['selectedModel']),
-    gray_back: function () {
-      if (this.selectedModel && [3, 4].includes(this.selectedModel.algorithm)) {
-        return 'panel-content gray-back'
-      } else {
-        return 'panel-content'
-      }
-    }
+    ...mapGetters(['selectedModel'])
   },
   watch: {
     selectedModel: function () {
@@ -178,10 +177,12 @@ export default {
         }
       }
     }
-  }
-  .gray-back {
-    background-color: $grayout-back;
-    filter: grayscale(1);
+    .ml-text {
+      padding: $padding-large;
+      line-height: $text-height-small;
+      font-size: $fs-small;
+      color: $gray;
+    }
   }
 }
 </style>
