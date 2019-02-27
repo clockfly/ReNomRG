@@ -297,6 +297,7 @@ def _model_to_dict(model):
         'epoch': model.epoch,
         'train_loss_list': pickle.loads(model.train_loss_list),
         'valid_loss_list': pickle.loads(model.valid_loss_list),
+        'importances': pickle.loads(model.importances),
         'best_epoch': model.best_epoch,
         'best_epoch_valid_loss': model.best_epoch_valid_loss,
         'best_epoch_rmse': model.best_epoch_rmse,
