@@ -347,6 +347,7 @@ def create_model():
     dataset_id = int(request.params.dataset_id)
     algorithm = int(request.params.algorithm)
     algorithm_params = json.loads(request.params.algorithm_params)
+    algorithm_params['num_neighbors'] = int(algorithm_params['num_neighbors'])
     batch_size = int(request.params.batch_size)
     epoch = int(request.params.epoch)
 
