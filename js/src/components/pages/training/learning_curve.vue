@@ -31,7 +31,7 @@
             </div>
           </div>
         </div>
-        <div v-else>
+        <div v-if="selectedModel && [3, 4].includes(selectedModel.algorithm)">
           <div class="ml-text">
             Learning Curve is not displayed when
             {{ $store.state.algorithms[selectedModel.algorithm] }} is selected.
