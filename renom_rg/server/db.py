@@ -51,6 +51,7 @@ class Model(Base):
     epoch = Column(Integer)
     train_loss_list = Column(BLOB, default=NONE_PICLKLES)
     valid_loss_list = Column(BLOB, default=NONE_PICLKLES)
+    importances = Column(BLOB, default=NONE_PICLKLES)
     best_epoch = Column(Integer, nullable=True)
     best_epoch_valid_loss = Column(FLOAT, nullable=True)
     best_epoch_rmse = Column(FLOAT, nullable=True)

@@ -61,7 +61,10 @@
                   {{ model.model_id }}
                 </div>
               </div>
-              <div class="running-info-item">
+              <div
+                v-if="![3, 4].includes(model.algorithm)"
+                class="running-info-item"
+              >
                 <div class="running-info-label">
                   Epoch
                 </div>
@@ -69,7 +72,10 @@
                   {{ model.nth_epoch }} / {{ model.total_epoch }}
                 </div>
               </div>
-              <div class="running-info-item">
+              <div
+                v-if="![3, 4].includes(model.algorithm)"
+                class="running-info-item"
+              >
                 <div class="running-info-label">
                   Batch
                 </div>
@@ -85,6 +91,7 @@
                 />
               </div>
               <div
+                v-if="![3, 4].includes(model.algorithm)"
                 class="running-info-item pause-button"
                 @click="stop_model = model"
               >

@@ -193,6 +193,30 @@ def update_model(session, modeldef, valid_predicted, valid_true, e, valid_loss,
     session.commit()
 
 
+def calc_importances(X_valid, y_valid, best_loss, model, modeldef, session):
+    NUM_PERM = 30
+    importances = []
+    for i in range(X_valid.shape[1]):
+        tl = 0
+        for k in range(NUM_PERM):
+            p = np.random.permutation(X_valid.shape[0])
+            X_randomized = np.copy(X_valid.T)
+            X_randomized[i] = X_randomized[i, p]
+            X_randomized = X_randomized.T
+            pred = model(X_randomized.reshape(-1, 1, X_randomized.shape[1], 1))
+            tl += float(rm.mse(pred, y_valid))
+        los = tl / NUM_PERM - best_loss
+        if los < 0:
+            importances.append(float(0))
+        else:
+            importances.append(float(los))
+
+    importances = np.array(importances) / np.sum(np.array(importances))
+    modeldef.importances = pickle.dumps(np.round(importances, 3).tolist())
+    session.add(modeldef)
+    session.commit()
+
+
 def train(taskstate, model_id):
     session = db.session()
     try:
@@ -293,6 +317,7 @@ def _train(session, taskstate, model_id):
         taskstate.total_batch = total_batch
         for j in range(total_batch):
             if taskstate.canceled:
+                calc_importances(X_valid, y_valid, best_loss, model, modeldef, session)
                 return
 
             taskstate.nth_batch = j
@@ -344,6 +369,7 @@ def _train(session, taskstate, model_id):
         valid_true = None
         for j in range(total_batch):
             if taskstate.canceled:
+                calc_importances(X_valid, y_valid, best_loss, model, modeldef, session)
                 return
 
             index = perm[j * modeldef.batch_size:(j + 1) * modeldef.batch_size]
@@ -386,23 +412,8 @@ def _train(session, taskstate, model_id):
                          valid_loss, filename, None)
             best_loss = valid_loss
 
-    # TODO:
     # calc importances
-    # NUM_PERM = 100
-    # importances = []
-    # for i in range(X_valid.shape[1]):
-    #     tl = 0
-    #     for k in range(NUM_PERM):
-    #         p = np.random.permutation(X_valid.shape[0])
-    #         X_randomized = np.copy(X_valid.T)
-    #         X_randomized[i] = X_randomized[i, p]
-    #         X_randomized = X_randomized.T
-    #         pred = model(X_randomized.reshape(-1, 1, X_randomized.shape[1], 1))
-    #         tl += float(rm.mse(pred, y_valid))
-    #     importances.append(tl / NUM_PERM - valid_loss)
-    #
-    # print(importances)
-    # print(np.array(importances) / np.sum(np.array(importances)))
+    calc_importances(X_valid, y_valid, best_loss, model, modeldef, session)
 
     taskstate.state = RunningState.FINISHED
     taskstate.signal()

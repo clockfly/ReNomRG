@@ -25,7 +25,7 @@
 
         <div class="explanatory-feature-list">
           <div class="feature-type">
-            Explanatory Features
+            Explanatory Features (Feature Importance)
           </div>
 
           <div class="feature-list flex">
@@ -35,6 +35,12 @@
               class="feature-item"
             >
               {{ l }}
+              <span
+                v-if="selectedModel && selectedModel.importances"
+                class="feature-importances"
+              >
+                ({{ selectedModel.importances[index] }})
+              </span>
             </div>
           </div>
         </div>
@@ -49,7 +55,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Features',
   computed: {
-    ...mapGetters(['selectedDataset']),
+    ...mapGetters(['selectedDataset', 'selectedModel']),
     target_labels: function () {
       let filtered = []
       if (this.selectedDataset && this.selectedDataset.labels) {
@@ -99,6 +105,10 @@ export default {
         align-items: flex-start;
         .feature-item {
           width: 20%;
+          .feature-importances{
+            font-size: $fs-small;
+            color: $gray;
+          }
         }
       }
     }
