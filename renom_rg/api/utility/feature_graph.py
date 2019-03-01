@@ -11,16 +11,21 @@ def cdist(A, B):
     return distance.cdist(A, B)
 
 
-def get_corr_graph(X, neighbors):
+def get_corr_graph(X, neighbors, explanatory_column_ids=[]):
     """ Get correlation feature graph.
 
     Args:
         neighbors (int): Number of neighbors.
+        explanatory_column_ids(list): List of explanatory_column_ids.
 
     Returns:
         (array): This returns matrix of neighbrs indexes per variables.
     """
-    corr_mat = np.array(normalize(np.abs(np.corrcoef(X.T)), norm='l1', axis=1))
+    if explanatory_column_ids and len(explanatory_column_ids) == 1:
+        corr_mat = np.array([[1]])
+    else:
+        corr_mat = np.array(normalize(np.abs(np.corrcoef(X.T)), norm='l1', axis=1))
+
     feature_graph = np.argsort(corr_mat, 1)[:, -neighbors:]
     return feature_graph
 

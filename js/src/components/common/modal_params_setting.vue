@@ -57,6 +57,11 @@
             </select>
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_one_target }}
+          </div>
+        </div>
 
         <div class="sub-block flex">
           <div class="label">
@@ -125,6 +130,11 @@
             >
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_neighbors }}
+          </div>
+        </div>
       </div>  <!-- setting block -->
 
       <div
@@ -178,7 +188,10 @@
     </div>  <!-- column -->
 
     <div class="button-area">
-      <button @click="runModel">
+      <button
+        :disabled="(vali_neighbors != '' || vali_one_target != '')"
+        @click="runModel"
+      >
         Run
       </button>
       <button
@@ -209,8 +222,17 @@ export default {
         'max_depth': 'None'
       },
       'batch_size': 16,
-      'epoch': 10
+      'epoch': 10,
+      'vali_neighbors': '',
+      'vali_one_target': ''
     }
+  },
+  mounted: function () {
+    this.neighborsSet()
+  },
+  updated: function () {
+    this.neighborsCheck()
+    this.singleTargetCheck()
   },
   methods: {
     params: function () {
@@ -233,20 +255,42 @@ export default {
     changeAlgorithm: function () {
       if (this.algorithm == 4) {
         this.algorithm_params['max_depth'] = 6
-        this.singleTargetCheck()
       } else {
         this.algorithm_params['max_depth'] = 'None'
       }
     },
     changeDataset: function () {
-      if (this.algorithm == 4) {
-        this.singleTargetCheck()
+      this.neighborsSet()
+    },
+    neighborsSet: function () {
+      if(this.$store.state.dataset_list[this.dataset_index]){
+        const explanatory_len = this.$store.state.dataset_list[this.dataset_index].explanatory_column_ids.length
+        if (explanatory_len < this.algorithm_params['num_neighbors']
+            || this.algorithm_params['num_neighbors'] < 5) {
+          if (explanatory_len < 5 || explanatory_len < this.algorithm_params['num_neighbors']) {
+            this.algorithm_params['num_neighbors'] = explanatory_len
+          } else {
+            this.algorithm_params['num_neighbors'] = 5
+          }
+        }
+      }
+    },
+    neighborsCheck: function () {
+      if(this.$store.state.dataset_list[this.dataset_index]){
+        const explanatory_len = this.$store.state.dataset_list[this.dataset_index].explanatory_column_ids.length
+        if (explanatory_len < this.algorithm_params['num_neighbors'] && ![3, 4].includes(this.algorithm)) {
+          this.vali_neighbors = '"Number of neighbors" should be less than the number of explanatory variables in the dataset.'
+        } else {
+          this.vali_neighbors = ''
+        }
       }
     },
     singleTargetCheck: function () {
-      if (this.$store.state.dataset_list[this.dataset_index].target_column_ids.length > 1) {
-        this.algorithm = 0
-        this.$store.state.error_msg = "XGBoost can only use dataset of one target variable"
+      if (this.$store.state.dataset_list[this.dataset_index].target_column_ids.length > 1
+          && this.algorithm == 4) {
+        this.vali_one_target = 'XGBoost can only use dataset of one target variable.'
+      } else {
+        this.vali_one_target = ''
       }
     }
   }
@@ -286,6 +330,10 @@ export default {
     }
     .label, .label-in {
       color: $gray;
+      font-size: $fs-small;
+    }
+    .vali_mes {
+      color: $err_red;
       font-size: $fs-small;
     }
   }
