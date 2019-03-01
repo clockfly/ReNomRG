@@ -7,6 +7,7 @@
       <div class="start-button-area">
         <button
           class="start-button"
+          :disabled="!deployedModel"
           @click="runPrediction"
         >
           > Prediction Start
