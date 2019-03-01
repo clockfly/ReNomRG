@@ -1,6 +1,7 @@
 import pickle
 import os
 import renom as rm
+import numpy as np
 import xgboost as xgb
 from sklearn.ensemble import RandomForestRegressor
 from . import train_task
@@ -34,6 +35,9 @@ def random_forest(session, modeldef, n_estimators, max_depth,
         pickle.dump(model, f)
 
     valid_loss = rm.mse(predicted, y_valid)
+
+    feature_importances = model.feature_importances_.astype(float)
+    modeldef.importances = pickle.dumps(np.round(feature_importances, 3).tolist())
 
     train_task.update_model(session, modeldef, predicted, y_valid, None,
                             valid_loss, None, filename)
