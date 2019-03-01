@@ -172,6 +172,7 @@ def _add_model(algorithm=1, algorithm_params=dict(DEFAULT_ALGORITHM_PARAMS), dat
 def test_confirm(app, data_pickle):
     ds = _add_dataset()
     resp = app.post('/api/renom_rg/datasets/confirm', {
+        'labels': '[]',
         'explanatory_column_ids': '[]',
         'target_column_ids': '[]',
         'train_ratio': 0.8,
