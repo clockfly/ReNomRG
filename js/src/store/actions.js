@@ -124,6 +124,7 @@ export default {
     fd.append('name', payload.name)
     fd.append('description', payload.description)
     fd.append('train_ratio', payload.train_ratio)
+    fd.append('labels', JSON.stringify(payload.labels))
     fd.append('explanatory_column_ids', JSON.stringify(payload.explanatory_column_ids))
     fd.append('target_column_ids', JSON.stringify(payload.target_column_ids))
     fd.append('selected_scaling', payload.selected_scaling)

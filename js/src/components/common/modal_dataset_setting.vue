@@ -328,6 +328,7 @@ export default {
         'name': this.name,
         'description': this.description,
         'train_ratio': this.train_ratio,
+        'labels': this.$store.state.labels,
         'explanatory_column_ids': this.explanatory_column_ids,
         'target_column_ids': this.target_column_ids,
         'selected_scaling': this.selected_scaling
