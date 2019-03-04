@@ -495,22 +495,23 @@ executor = Executor()
 @route("/api/renom_rg/models/<model_id:int>/train", method="GET")
 def train_model(model_id):
     model = db.session().query(db.Model).get(model_id)
-    if not model:
-        return create_response({}, 404, err='model not found')
+    if not model.best_epoch:
+        if not model:
+            return create_response({}, 404, err='model not found')
 
-    taskstate = train_task.TaskState.add_task(model)
-    f = submit_task(executor, train_task.train, taskstate, model.id)
-    try:
-        f.result()
-        return create_response({'result': 'ok'})
+        taskstate = train_task.TaskState.add_task(model)
+        f = submit_task(executor, train_task.train, taskstate, model.id)
+        try:
+            f.result()
+            return create_response({'result': 'ok'})
 
-    except Exception as e:
-        traceback.print_exc()
-        return create_response({}, 500, err=str(e))
+        except Exception as e:
+            traceback.print_exc()
+            return create_response({}, 500, err=str(e))
 
-    finally:
-        if renom.cuda.has_cuda():
-            release_mem_pool()
+        finally:
+            if renom.cuda.has_cuda():
+                release_mem_pool()
 
 
 @route("/api/renom_rg/models/<model_id:int>/stop", method="GET")
