@@ -2,6 +2,7 @@ import os
 import pickle
 import numpy as np
 
+import renom as rm
 from renom_rg.server import DB_DIR_TRAINED_WEIGHT, USER_DEFINED
 from renom_rg.server.custom_util import _load_usermodel
 
@@ -35,4 +36,7 @@ def _prediction(session, model_id, data):
 
     model.set_models(inference=True)
     pred = model(data.reshape(-1, 1, data.shape[1], 1))
+
+    if rm.is_cuda_active():
+        pred = pred.as_ndarray()
     return pred
