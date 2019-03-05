@@ -303,7 +303,7 @@ export default {
       'vali_datasetName': '',
       'vali_description': '',
       'vali_valiables': '',
-      'confirm_disabled': false,
+      'confirm_disabled': true,
       'dn_required': '(※)',
       'tv_required': '(※)',
       'ev_required': ''
