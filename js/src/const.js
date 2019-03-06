@@ -1,3 +1,10 @@
+/*
+Copyright 2019, Grid.
+
+This source code is licensed under the ReNom Subscription Agreement, version 1.0.
+ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.html)
+*/
+
 export const inner_axis_color = '#e0e0e0'
 // export const outer_axis_color = '#d0d0d0'
 export const outer_axis_color = '#cccccc'
