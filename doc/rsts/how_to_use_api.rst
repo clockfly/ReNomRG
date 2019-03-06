@@ -1,4 +1,4 @@
-How to Use ReNomIMG API
+How to Use ReNomRG API
 =======================
 
 Graph Comvolution

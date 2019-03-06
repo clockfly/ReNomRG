@@ -13,7 +13,7 @@
     </div>
     <div class="copyright-bar">
       <div class="copyright">
-        ©︎2018 GRID INC. ALL rights reserved.
+        ©︎2019 GRID INC. ALL rights reserved.
       </div>
     </div>
   </footer>
@@ -22,7 +22,7 @@
 <script>
 export default {
   name: 'AppFooter',
-  data: function () { return { 'version': 'v0.2.0b' } }
+  data: function () { return { 'version': 'v0.3b0' } }
 }
 </script>
 

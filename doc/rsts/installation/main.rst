@@ -6,7 +6,7 @@ Recommended Environment.
 
 - OS: Ubuntu 16.04
 - Browser: Google Chrome(version 63.0.3239.132)
-- Python: >=3.5
+- Python: >=3.6
 
 Requirements Packages.
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -36,11 +36,11 @@ The Wheel package is provided at:
 
     https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-VERSION-py3-none-any.whl
 
-Install 0.2.0b0(beta version) is follow.
+Install 0.3b0(beta version) is follow.
 
   .. code-block:: shell
 
-      pip install https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-0.2.0b0-py3-none-any.whl
+      pip install https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-0.3b0-py3-none-any.whl
 
 
   .. note::

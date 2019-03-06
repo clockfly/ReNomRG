@@ -115,19 +115,29 @@ The model setting hyper parameter appears as shown in the figure below.
 
 
 As you can see in figure above, you can specify the following parameters:
+
 Dataset Name: Dataset for training.
 
-CNN architecture: Regression algorithm.
+Architecture:
+Regression algorithm.
 C-GCNN selects variables for convolution based on correlation coefficient between variables.
 Kernel-GCNN selects variables for convolution based on similarities between variables obtained from Gaussian kernel.
 DBSCAN-GCNN selects variables for convolution based on the Euclidean distance between variables.
+Random Forest is an ensemble learning (machine learning algorithm) using multiple models (decision trees).
+XGBoost is an ensemble learning (machine learning algorithm) that combines Gradient Boosting and Random Forests.
 
-Training loop setting: Number of training and batch size.
-Batch Size
-Total Epoch
+Training loop setting:
+Batch size and number of training.
+Batch Size,
+Total Epoch.
 
-Graph Comvolution Params
-Number of neighbors is parameters of Graph Convolution. The number of neighbors used when data are expanded as if they were images.
+Graph Comvolution Params:
+Number of neighbors is parameters of Graph Convolution.
+The number of neighbors used when data are expanded as if they were images.
+
+Random Forest (XGBoost) Params:
+Number of trees is number of decision trees.
+Maximum Depth is depth of decision tree.
 
 Training Model
 ~~~~~~~~~~~~~~
@@ -140,8 +150,8 @@ When training begins, the model is displayed in the model list and a progress ba
 Uninstall ReNomRG
 -----------------
 
+ReNomRG can be uninstalled with the following pip command.
+
 .. code-block :: shell
 
     pip uninstall renom_rg
-
-ReNomRG can be uninstalled with the following pip command.

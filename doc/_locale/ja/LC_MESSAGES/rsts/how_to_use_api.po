@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2018, Grid
+# Copyright (C) 2019, Grid
 # This file is distributed under the same license as the ReNomRG package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
@@ -18,8 +18,8 @@ msgstr ""
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../rsts/how_to_use_api.rst:2
-msgid "How to Use ReNomIMG API"
-msgstr "ReNomIMG APIの使い方"
+msgid "How to Use ReNomRG API"
+msgstr "ReNomRG APIの使い方"
 
 #: ../../rsts/how_to_use_api.rst:5
 msgid "Graph Comvolution"
