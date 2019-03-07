@@ -23,6 +23,9 @@
                 {{ dataset.name }}
               </option>
             </select>
+            <div class="vali_mes">
+              {{ vali_dataset }}
+            </div>
             <div
               class="to-setting-dataset"
               @click="$emit('todataset')"
@@ -63,17 +66,25 @@
           </div>
         </div>
 
-        <div class="sub-block flex">
+        <div
+          v-if="algorithm == 0xffffffff"
+          class="sub-block flex"
+        >
           <div class="label">
             Script file name
           </div>
           <div class="input-value">
             <input
               v-model="algorithm_params['script_file_name']"
-              :disabled="algorithm !== 0xffffffff"
+              type="text"
             >
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_userDifined }}
+          </div>
+        </div>
       </div>  <!-- setting block -->
 
       <div
@@ -91,10 +102,16 @@
           <div class="input-value">
             <input
               v-model="batch_size"
-              type="text"
+              class="input-in"
+              type="number"
             >
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_batchSize }}
+          </div>
+        </div>
 
         <div class="sub-block flex">
           <div class="label">
@@ -103,10 +120,16 @@
           <div class="input-value">
             <input
               v-model="epoch"
-              type="text"
+              class="input-in"
+              type="number"
             >
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_totalEpoch }}
+          </div>
+        </div>
       </div>  <!-- setting block -->
     </div>  <!-- column -->
 
@@ -126,7 +149,8 @@
           <div class="input-value">
             <input
               v-model="algorithm_params['num_neighbors']"
-              type="text"
+              class="input-in"
+              type="number"
             >
           </div>
         </div>  <!-- sub block -->
@@ -161,10 +185,16 @@
           <div class="input-value">
             <input
               v-model="algorithm_params['n_estimators']"
-              type="text"
+              class="input-in"
+              type="number"
             >
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_numberTrees }}
+          </div>
+        </div>
         <div class="sub-block flex">
           <div class="label">
             <div class="label-in">
@@ -182,6 +212,9 @@
               v-model="algorithm_params['max_depth']"
               type="text"
             >
+            <div class="vali_mes">
+              {{ vali_maximumDepth }}
+            </div>
           </div>
         </div>  <!-- sub block -->
       </div>  <!-- setting block -->
@@ -189,7 +222,7 @@
 
     <div class="button-area">
       <button
-        :disabled="(vali_neighbors != '' || vali_one_target != '')"
+        :disabled="run_disabled"
         @click="runModel"
       >
         Run
@@ -221,18 +254,39 @@ export default {
         'n_estimators': 100,
         'max_depth': 'None'
       },
-      'batch_size': 16,
+      'batch_size': 128,
       'epoch': 10,
       'vali_neighbors': '',
-      'vali_one_target': ''
+      'vali_one_target': '',
+      'vali_dataset': '',
+      'vali_userDifined': '',
+      'vali_batchSize': '',
+      'vali_totalEpoch': '',
+      'vali_maximumDepth': '',
+      'vali_numberTrees': '',
+      'set': false,
+      'run_disabled': false
     }
   },
   mounted: function () {
     this.neighborsSet()
+    this.batchSizeSet()
+    this.datasetCheck()
   },
   updated: function () {
+    if (this.$store.state.train_count !== 0 && !this.set) {
+      this.neighborsSet()
+      this.batchSizeSet()
+      this.set = true
+    }
     this.neighborsCheck()
     this.singleTargetCheck()
+    this.userDifinedCheck()
+    this.batchSizeCheck()
+    this.totalEpochCheck()
+    this.numberTreesCheck()
+    this.maximumDepthCheck()
+    this.runDisabled()
   },
   methods: {
     params: function () {
@@ -263,7 +317,7 @@ export default {
       this.neighborsSet()
     },
     neighborsSet: function () {
-      if(this.$store.state.dataset_list[this.dataset_index]){
+      if (this.$store.state.dataset_list[this.dataset_index]) {
         const explanatory_len = this.$store.state.dataset_list[this.dataset_index].explanatory_column_ids.length
         if (explanatory_len < this.algorithm_params['num_neighbors']
             || this.algorithm_params['num_neighbors'] < 5) {
@@ -275,22 +329,114 @@ export default {
         }
       }
     },
+    batchSizeSet: function () {
+      if (this.$store.state.dataset_list[this.dataset_index]) {
+        let batch_size = 1
+        const v_i = this.$store.state.dataset_list[this.dataset_index].valid_index.length
+        const list = [2, 4, 8, 16, 32, 64, 128]
+        for (let l_n of list) {
+          if (l_n <= v_i) {
+            batch_size = l_n
+          } else {
+            break
+          }
+        }
+        this.batch_size = batch_size
+      }
+    },
+    datasetCheck: function () {
+      if (this.$store.state.train_count === 0 && !this.$store.state.dataset_list[this.dataset_index]) {
+        this.vali_dataset = 'Please set Dataset first.'
+      } else {
+        this.vali_odataset = ''
+      }
+    },
+    singleTargetCheck: function () {
+      if (this.$store.state.dataset_list[this.dataset_index]
+          && this.$store.state.dataset_list[this.dataset_index].target_column_ids.length > 1
+          && this.algorithm == 4) {
+        this.vali_one_target = 'XGBoost can only use dataset of one target variable.'
+      } else {
+        this.vali_one_target = ''
+      }
+    },
+    userDifinedCheck: function () {
+      if (this.algorithm == 0xffffffff && this.algorithm_params['script_file_name'] == '') {
+        this.vali_userDifined = 'Please enter "Script file name".'
+      } else {
+        if (this.algorithm == 0xffffffff && this.algorithm_params['script_file_name'].length > 20) {
+          this.vali_userDifined = '"Script file name" should be 20 characters or less.'
+        } else {
+          if (this.algorithm == 0xffffffff && this.algorithm_params['script_file_name'].match(/[^\x01-\x7E]/)) {
+            this.vali_userDifined = 'Please enter in half-width alphanumeric characters.'
+          } else {
+            this.vali_userDifined = ''
+          }
+        }
+      }
+    },
+    batchSizeCheck: function () {
+      if (this.$store.state.dataset_list[this.dataset_index]) {
+        const v_i = this.$store.state.dataset_list[this.dataset_index].valid_index.length
+        if ((v_i < this.batch_size || this.batch_size < 1) && ![3, 4].includes(this.algorithm)) {
+          this.vali_batchSize = '"Batch Size" should be between 1 and ' + v_i + '.'
+        } else {
+          this.vali_batchSize = ''
+        }
+      }
+    },
+    totalEpochCheck: function () {
+      if ((1000 < this.epoch || this.epoch < 1) && ![3, 4].includes(this.algorithm)) {
+        this.vali_totalEpoch = '"Total Epoch" should be between 1 and 1000.'
+      } else {
+        this.vali_totalEpoch = ''
+      }
+    },
     neighborsCheck: function () {
-      if(this.$store.state.dataset_list[this.dataset_index]){
+      if (this.$store.state.dataset_list[this.dataset_index]) {
         const explanatory_len = this.$store.state.dataset_list[this.dataset_index].explanatory_column_ids.length
-        if (explanatory_len < this.algorithm_params['num_neighbors'] && ![3, 4].includes(this.algorithm)) {
-          this.vali_neighbors = '"Number of neighbors" should be less than the number of explanatory variables in the dataset.'
+        if ((this.algorithm_params['num_neighbors'] < 1 || explanatory_len < this.algorithm_params['num_neighbors'])
+            && ![3, 4].includes(this.algorithm)) {
+          this.vali_neighbors = '"Number of neighbors" should be set between 1 and the number of explanatory variables in the data set.'
         } else {
           this.vali_neighbors = ''
         }
       }
     },
-    singleTargetCheck: function () {
-      if (this.$store.state.dataset_list[this.dataset_index].target_column_ids.length > 1
-          && this.algorithm == 4) {
-        this.vali_one_target = 'XGBoost can only use dataset of one target variable.'
+    numberTreesCheck: function () {
+      if ((1000 < this.algorithm_params['n_estimators'] || this.algorithm_params['n_estimators'] < 1)
+          && [3, 4].includes(this.algorithm)) {
+        this.vali_numberTrees = '"Number of trees" should be between 1 and 1000.'
       } else {
-        this.vali_one_target = ''
+        this.vali_numberTrees = ''
+      }
+    },
+    maximumDepthCheck: function () {
+      if (this.algorithm == 4 || (this.algorithm == 3 && this.algorithm_params['max_depth'] != 'None')) {
+        if (this.algorithm_params['max_depth'] != Number(this.algorithm_params['max_depth'])){
+          if (this.algorithm == 3) {
+            this.vali_maximumDepth = 'Please enter integers or "None".'
+          } else if (this.algorithm == 4) {
+            this.vali_maximumDepth = 'Please enter integers.'
+          }
+        } else {
+          if (30 < this.algorithm_params['max_depth'] || this.algorithm_params['max_depth'] < 1) {
+            this.vali_maximumDepth = '"Maximum Depth" should be between 1 and 30.'
+          } else {
+            this.vali_maximumDepth = ''
+          }
+        }
+      } else {
+        this.vali_maximumDepth = ''
+      }
+    },
+    runDisabled: function () {
+      if (this.vali_neighbors + this.vali_one_target + this.vali_dataset +
+          this.vali_userDifined + this.vali_batchSize + this.vali_maximumDepth +
+          this.vali_numberTrees + this.vali_totalEpoch != '') {
+        this.run_disabled = true
+      } else {
+        this.run_disabled = false
       }
     }
   }
@@ -327,6 +473,11 @@ export default {
       width: 50%;
       height: $text-height-small;
       line-height: $text-height-small;
+      .input-in {
+        width: 100%;
+        color: $gray;
+        font-size: $fs-small;
+      }
     }
     .label, .label-in {
       color: $gray;

@@ -9,6 +9,9 @@
         <div class="sub-block flex">
           <div class="label">
             Dataset Name
+            <span class="vali_mes">
+              {{ dn_required }}
+            </span>
           </div>
           <div class="input-value">
             <input
@@ -18,6 +21,11 @@
             >
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_datasetName }}
+          </div>
+        </div>
 
         <div class="sub-block flex">
           <div class="label">
@@ -32,6 +40,11 @@
             />
           </div>
         </div>  <!-- sub block -->
+        <div class="sub-block">
+          <div class="vali_mes">
+            {{ vali_description }}
+          </div>
+        </div>
 
         <div class="sub-block flex">
           <div class="label">
@@ -80,9 +93,15 @@
           <div class="flex">
             <div class="selected-label">
               [Explanatory]
+              <span class="vali_mes">
+                {{ ev_required }}
+              </span>
             </div>
             <div class="selected-label">
               [Target]
+              <span class="vali_mes">
+                {{ tv_required }}
+              </span>
             </div>
           </div>
           <div class="flex">
@@ -107,21 +126,6 @@
           </div>
         </div>  <!-- sub block -->
       </div>  <!-- setting block -->
-
-      <div class="button-area">
-        <button
-          :disabled="name === '' || target_column_ids.length > 4 || target_column_ids.length === 0 || explanatory_column_ids.length === 0"
-          @click="confirmDataset"
-        >
-          Confirm
-        </button>
-        <button
-          class="button-cancel"
-          @click="$emit('cancel')"
-        >
-          Cancel
-        </button>
-      </div>
     </div>  <!-- column -->
 
     <div
@@ -183,6 +187,26 @@
           <div class="table-item-cb" />
           <div class="table-item-tx" />
         </div>
+      </div>
+      <div class="sub-block">
+        <div class="vali_mes">
+          {{ vali_valiables }}
+        </div>
+      </div>
+
+      <div class="button-area">
+        <button
+          :disabled="confirm_disabled"
+          @click="confirmDataset"
+        >
+          Confirm
+        </button>
+        <button
+          class="button-cancel"
+          @click="$emit('cancel')"
+        >
+          Cancel
+        </button>
       </div>
     </div> <!-- column before confirm -->
 
@@ -275,7 +299,14 @@ export default {
       'explanatory_column_ids': labels_array,
       'isAllSelected': false,
       'target_column_ids': [],
-      'selected_scaling': 1
+      'selected_scaling': 1,
+      'vali_datasetName': '',
+      'vali_description': '',
+      'vali_valiables': '',
+      'confirm_disabled': true,
+      'dn_required': '(※)',
+      'tv_required': '(※)',
+      'ev_required': ''
     }
   },
   computed: {
@@ -291,6 +322,12 @@ export default {
         this.drawHistogram(id, hist.train, hist.valid)
       }
     }
+  },
+  updated: function () {
+    this.datasetNameCheck()
+    this.descriptionCheck()
+    this.confirmDisabled()
+    this.valiablesCheck()
   },
   methods: {
     select_target: function (val) {
@@ -321,6 +358,59 @@ export default {
         this.explanatory_column_ids = labels_array;
         this.target_column_ids = [];
         this.isAllSelected = true;
+      }
+    },
+    datasetNameCheck: function () {
+      if (this.name.length > 20) {
+        this.vali_datasetName = '"Dataset Name" should be 20 characters or less.'
+      } else {
+        if (this.name.match(/[^\x01-\x7E]/)) {
+          this.vali_datasetName = 'Please enter in half-width alphanumeric characters.'
+        } else {
+          this.vali_datasetName = ''
+        }
+      }
+      if (this.name === '') {
+        this.dn_required = '(※)'
+      } else {
+        this.dn_required = ''
+      }
+    },
+    descriptionCheck: function () {
+      if (this.description.length > 200) {
+        this.vali_description = '"Description" should be 200 characters or less.'
+      } else {
+        if (this.description.match(/[^\x01-\x7E]/)) {
+          this.vali_description = 'Please enter in half-width alphanumeric characters.'
+        } else {
+          this.vali_description = ''
+        }
+      }
+    },
+    valiablesCheck: function () {
+      if (this.target_column_ids.length > 4) {
+        this.vali_valiables = 'Set "Target Valiables" to 4 or less.'
+      } else {
+        this.vali_valiables = ''
+      }
+      if (this.target_column_ids.length === 0) {
+        this.tv_required = '(※)'
+      } else {
+        this.tv_required = ''
+      }
+      if (this.explanatory_column_ids.length === 0) {
+        this.ev_required = '(※)'
+      } else {
+        this.ev_required = ''
+      }
+    },
+    confirmDisabled: function () {
+      //name === '' || target_column_ids.length > 4 || target_column_ids.length === 0 || explanatory_column_ids.length === 0
+      if (this.vali_datasetName + this.vali_description + this.vali_valiables +
+          this.dn_required + this.tv_required + this.ev_required != '') {
+        this.confirm_disabled = true
+      } else {
+        this.confirm_disabled = false
       }
     },
     params: function () {
@@ -454,7 +544,7 @@ export default {
     .selected-scroll-area {
       overflow-y: auto;
       width: 50%;
-      height: 140px;
+      height: 115px;
       line-height: $text-height-small;
       font-size: $fs-small;
       color: $gray;
@@ -486,8 +576,10 @@ export default {
           color: $gray;
         }
       }
-
-
+    }
+    .vali_mes {
+      color: $err_red;
+      font-size: $fs-small;
     }
   }
 

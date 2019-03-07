@@ -211,7 +211,15 @@ def calc_importances(X_valid, y_valid, best_loss, model, modeldef, session):
         else:
             importances.append(float(los))
 
-    importances = np.array(importances) / np.sum(np.array(importances))
+    sum = np.sum(np.array(importances))
+    if sum != 0:
+        importances = np.array(importances) / sum
+    else:
+        importances_0 = []
+        ev_len = len(importances)
+        for j in range(ev_len):
+            importances_0.append(float(1 / ev_len))
+        importances = importances_0
     modeldef.importances = pickle.dumps(np.round(importances, 3).tolist())
     session.add(modeldef)
     session.commit()
