@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2018, Grid
+# Copyright (C) 2019, Grid
 # This file is distributed under the same license as the ReNomRG package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
@@ -18,11 +18,11 @@ msgstr ""
 "Generated-By: Babel 2.4.0\n"
 
 #: ../../index.rst:7
-msgid "ReNomRG 0.2.0b"
+msgid "ReNomRG 0.3b0"
 msgstr ""
 
 #~ msgid "Welcome to api's documentation!"
 #~ msgstr ""
 
-#~ msgid "ReNomRG v0.2beta"
+#~ msgid "ReNomRG v0.3.0 beta"
 #~ msgstr ""

@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2018, grid
+# Copyright (C) 2019, grid
 # This file is distributed under the same license as the ReNomRG package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
@@ -17,48 +17,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: ../../rsts/change_log.rst:2
+#: ../../rsts/change_log.rst:1
 msgid "Change Log"
 msgstr "変更履歴"
 
-#: ../../rsts/change_log.rst:5
-msgid "v0.1beta => v0.2.0b"
-msgstr "v0.1beta => 0.2.0b"
+#: ../../rsts/change_log.rst:4
+msgid "v0.2.0 beta => v0.3.0 beta"
+msgstr "v0.2.0 beta => v0.3.0 beta"
 
 #: ../../rsts/change_log.rst:7
-msgid "Explanatory variables and target variables can be selected when creating a dataset."
-msgstr "データセット作成時、説明変数と目的変数が選択可能になりました."
+msgid "After completion of model creation, the importance of each explanatory variable can be checked."
+msgstr "モデル作成完了後、各説明変数の重要度が確認可能になりました。"
 
 #: ../../rsts/change_log.rst:8
-msgid "Feature Scaling can be selected when creating a dataset."
-msgstr "データセット作成時、前処理方法が選択可能になりました."
+msgid "Random Forest and XGBoost were added to the algorithm selection item at model creation."
+msgstr "モデル作成時のアルゴリズム選択項目に、Random ForestとXGBoostを追加しました。"
 
-#: ../../rsts/change_log.rst:9
-msgid "The prediction result can be saved as CSV data."
-msgstr "予測結果をCSVデータ形式で保存することが可能になりました."
-
-#: ../../rsts/change_log.rst:12
-msgid "v0.0beta => v0.1.0b"
-msgstr "v0.0beta => 0.1.0b"
+#: ../../rsts/change_log.rst:11
+msgid "v0.1.0 beta => v0.2.0 beta"
+msgstr "v0.1.0 beta => v0.2.0 beta"
 
 #: ../../rsts/change_log.rst:14
-msgid "GraphCNN is possible with GPU."
-msgstr "GraphCNNをGPUで行うことが可能になりました."
+msgid "Explanatory variables and target variables can be selected when creating a dataset."
+msgstr "データセット作成時、説明変数と目的変数が選択可能になりました。"
 
 #: ../../rsts/change_log.rst:15
-msgid "Enabled install with wheel."
-msgstr "wheelからインストールすることが可能になりました."
+msgid "Feature Scaling can be selected when creating a dataset."
+msgstr "データセット作成時、前処理方法が選択可能になりました。"
 
 #: ../../rsts/change_log.rst:16
+msgid "The prediction result can be saved as CSV data."
+msgstr "予測結果をCSVデータ形式で保存することが可能になりました。"
+
+#: ../../rsts/change_log.rst:19
+msgid "v0.0.0 beta => v0.1.0 beta"
+msgstr "v0.0.0 beta => v0.1.0 beta"
+
+#: ../../rsts/change_log.rst:21
+msgid "GraphCNN is possible with GPU."
+msgstr "GraphCNNをGPUで行うことが可能になりました。"
+
+#: ../../rsts/change_log.rst:22
+msgid "Enabled install with wheel."
+msgstr "wheelからインストールすることが可能になりました。"
+
+#: ../../rsts/change_log.rst:23
 msgid "Enabled starting server from current directory."
-msgstr "カレントディレクトリからサーバを起動することが可能になりました."
+msgstr "カレントディレクトリからサーバを起動することが可能になりました。"
 
-#: ../../rsts/change_log.rst:17
+#: ../../rsts/change_log.rst:24
 msgid "Enabled training user defined model from GUI."
-msgstr "GUIでユーザが定義したモデルを用いて学習を行うことが可能になりました."
+msgstr "GUIでユーザが定義したモデルを用いて学習を行うことが可能になりました。"
 
-#: ../../rsts/change_log.rst:18
+#: ../../rsts/change_log.rst:25
 msgid ""
 "Added regressor module that can pull model to python script from GUI "
 "server."
-msgstr "GUIのサーバからpythonのスクリプトにモデルをpullするモジュールが追加されました."
+msgstr "GUIのサーバからpythonのスクリプトにモデルをpullするモジュールが追加されました。"

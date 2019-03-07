@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2018, grid
+# Copyright (C) 2019, grid
 # This file is distributed under the same license as the ReNomRG package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
 #
@@ -94,8 +94,8 @@ msgid "The Wheel package is provided at:"
 msgstr "Wheelパッケージは以下のようなリンクからインストールすることが可能です。"
 
 #: ../../rsts/installation/main.rst:39
-msgid "Install 0.2.0b0(beta version) is follow."
-msgstr "以下のように、0.2.0b0(ベータバージョン)をインストールすることができます。"
+msgid "Install 0.3b0(beta version) is follow."
+msgstr "以下のように、0.3b0(ベータバージョン)をインストールすることができます。"
 
 #: ../../rsts/installation/main.rst:48
 msgid ""
