@@ -34,7 +34,7 @@ msgid "Browser: Google Chrome(version 63.0.3239.132)"
 msgstr ""
 
 #: ../../rsts/installation/main.rst:9
-msgid "Python: >=3.6"
+msgid "Python: >=3.5"
 msgstr ""
 
 #: ../../rsts/installation/main.rst:12
