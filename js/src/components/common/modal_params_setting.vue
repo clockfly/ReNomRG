@@ -322,6 +322,7 @@ export default {
     },
     changeDataset: function () {
       this.neighborsSet()
+      this.batchSizeSet()
     },
     neighborsSet: function () {
       if (this.$store.state.dataset_list[this.dataset_index]) {
