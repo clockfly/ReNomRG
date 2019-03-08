@@ -51,7 +51,7 @@ def _prediction(session, model_id, data):
         model.load(w_path)
         model.set_models(inference=True)
         pred = model(data.reshape(-1, 1, data.shape[1], 1))
+        if rm.is_cuda_active():
+            pred = pred.as_ndarray()
 
-    if rm.is_cuda_active():
-        pred = pred.as_ndarray()
     return pred
