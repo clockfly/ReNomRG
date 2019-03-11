@@ -115,6 +115,7 @@ def calc_confidence_area(true_data, pred_data):
             else:
                 if l_i == 0:
                     m.append(0)
+                    c = np.array([0, 0, 0, 0, 0]).reshape(1, -1)
                 else:
                     m.append(m[l_i])
                     c = np.array([m[i], m[i], m[i], m[i], m[i]]).reshape(1, -1)
