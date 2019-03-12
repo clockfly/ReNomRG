@@ -38,3 +38,4 @@ pages:
 
   only:
     - /^release\/.*$/
+
