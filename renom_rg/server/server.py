@@ -507,7 +507,10 @@ def train_model(model_id):
             return create_response({}, 404, err='model not found')
 
         taskstate = train_task.TaskState.add_task(model)
-        f = submit_task(executor, train_task.train, taskstate, model.id)
+
+        with Executor() as executor:
+            f = submit_task(executor, train_task.train, taskstate, model.id)
+
         try:
             f.result()
             return create_response({'result': 'ok'})
