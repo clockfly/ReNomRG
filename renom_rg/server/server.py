@@ -508,8 +508,7 @@ def train_model(model_id):
 
         taskstate = train_task.TaskState.add_task(model)
 
-        with Executor() as executor:
-            f = submit_task(executor, train_task.train, taskstate, model.id)
+        f = submit_task(executor, train_task.train, taskstate, model.id)
 
         try:
             f.result()
