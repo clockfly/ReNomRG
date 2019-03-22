@@ -27,7 +27,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
         </div>
 
         <div class="panel-content model-detail-content">
-          <div v-if="deployedModel">
+          <div v-if="deployedModel && deployedDataset">
             <div class="label-value flex">
               <div class="label">
                 Selected Model ID
@@ -246,6 +246,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
           <div
             v-if="deployedDataset"
             class="prediction-table-area flex"
+            @scroll="scrollLoad"
           >
             <table>
               <thead>
@@ -254,21 +255,21 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
                     v-for="(l, i) in deployedDataset.target_column_ids"
                     :key="`y_${i}`"
                     :style="'position: sticky;top: 0px;left: ' + i * sticky_width + 'px;z-index: 4;'"
-                    :class="{ active: l === sort_index }"
+                    :class="{ active: l === sort_index_y }"
                     @click="sortPredY(i)"
                   >
                     {{ deployedDataset.labels[l] | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
-                      :class="{ active: l === sort_index }"
+                      :class="{ active: l === sort_index_y }"
                     >
                       ▼
                     </span>
                     <span
                       v-else
                       class="icon"
-                      :class="{ active: l === sort_index }"
+                      :class="{ active: l === sort_index_y }"
                     >
                       ▲
                     </span>
@@ -277,41 +278,42 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
                   <th
                     v-for="(l, i) in deployedDataset.explanatory_column_ids"
                     :key="`X_${i}`"
-                    :class="{ active: i === sort_index }"
+                    :class="{ active: i === sort_index_x }"
                     @click="sortPredX(i)"
                   >
                     {{ deployedDataset.labels[l] | truncate(truncate_l, '…') }}
                     <span
                       v-if="desc"
                       class="icon"
-                      :class="{ active: i === sort_index }"
+                      :class="{ active: i === sort_index_x }"
                     >
                       ▼
                     </span>
                     <span
                       v-else
                       class="icon"
-                      :class="{ active: i === sort_index }"
+                      :class="{ active: i === sort_index_x }"
                     >
                       ▲
                     </span>
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody v-if="pred_y">
                 <tr
-                  v-for="(data, i) in pred_y"
+                  v-for="i in load_n"
                   :key="i"
+                  @mouseover="mouseoverLoad(i)"
                 >
                   <td
-                    v-for="(d, j) in data"
+                    v-for="(d, j) in pred_y[i - 1]"
                     :key="`y_${j}`"
                     :style="'position: sticky;left: ' + j * sticky_width + 'px;z-index: 3;'"
                   >
                     {{ round(d) }}
                   </td>
                   <td
-                    v-for="(d, j) in pred_x[i]"
+                    v-for="(d, j) in pred_x[i - 1]"
                     :key="`X_${j}`"
                   >
                     {{ round(d) }}
@@ -355,13 +357,16 @@ export default {
       'plot_x_index': 0,
       'plot_y_index': 0,
       'desc': false,
-      'sort_index': -1,
+      'sort_index_y': -1,
+      'sort_index_x': -1,
       'sticky_width': 120,
-      'truncate_l': 8
+      'truncate_l': 8,
+      'load_n': 50,
+      'add_load_n': 150,
     }
   },
   computed: {
-    ...mapState(['algorithms', 'pred_x', 'pred_y', 'pred_csv']),
+    ...mapState(['algorithms', 'pred_x', 'pred_y', 'sampled_pred_x', 'sampled_pred_y', 'pred_csv']),
     ...mapGetters(['deployedModel', 'deployedDataset']),
     target_labels: function () {
       const target_column_ids = this.deployedDataset.target_column_ids
@@ -408,6 +413,17 @@ export default {
     round: function (v) {
       return round(v, 1000)
     },
+    scrollLoad: function (event) {
+      if ((event.target.scrollTop + event.target.offsetHeight) >= event.target.scrollHeight
+          && this.load_n <= this.$store.state.pred_y.length) {
+        this.load_n = this.load_n + this.add_load_n
+      }
+    },
+    mouseoverLoad: function (i) {
+      if (this.load_n < i + this.add_load_n) {
+        this.load_n = i + this.add_load_n
+      }
+    },
     runPrediction: function () {
       let explanatory_column = []
       let target_column = []
@@ -429,16 +445,23 @@ export default {
     exportCSV: function () {
       this.$store.dispatch('exportCSV', {'pred_csv': this.pred_csv})
     },
-    shapeX: function () {
+    shapeY: function () {
       let data = []
-      for (let d of this.pred_x) {
+      for (let d of this.pred_y) {
+        data.push(d[this.plot_y_index])
+      }
+      return data
+    },
+    shapeSampled_X: function () {
+      let data = []
+      for (let d of this.sampled_pred_x) {
         data.push(d[this.plot_x_index])
       }
       return data
     },
-    shapeY: function () {
+    shapeSampled_Y: function () {
       let data = []
-      for (let d of this.pred_y) {
+      for (let d of this.sampled_pred_y) {
         data.push(d[this.plot_y_index])
       }
       return data
@@ -549,11 +572,11 @@ export default {
         .attr('r', 3)
     },
     drawXYPlot: function () {
-      if (!this.pred_y) return
+      if (!this.shapeSampled_Y) return
 
       const id = '#xy-plot'
-      const x = this.shapeX()
-      const y = this.shapeY()
+      const x = this.shapeSampled_X()
+      const y = this.shapeSampled_Y()
 
       this.drawPlot(id, x, y)
     },
@@ -575,21 +598,23 @@ export default {
       return max(hist.map(function (d) { return d.length }))
     },
     sortPredX: function (value) {
-      if (value === this.sort_index) {
+      if (value === this.sort_index_x) {
         this.desc = !this.desc
       } else {
         this.desc = false
       }
-      this.sort_index = value
+      this.sort_index_x = value
+      this.sort_index_y = -1
       this.$store.commit('sortPredX', {'key': value, 'desc': this.desc})
     },
     sortPredY: function (value) {
-      if (this.deployedDataset.target_column_ids[value] === this.sort_index) {
+      if (this.deployedDataset.target_column_ids[value] === this.sort_index_y) {
         this.desc = !this.desc
       } else {
         this.desc = false
       }
-      this.sort_index = this.deployedDataset.target_column_ids[value]
+      this.sort_index_y = this.deployedDataset.target_column_ids[value]
+      this.sort_index_x = -1
       this.$store.commit('sortPredY', {'key': value, 'desc': this.desc})
     }
   }

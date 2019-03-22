@@ -64,5 +64,7 @@ export default {
   */
   pred_x: undefined,
   pred_y: undefined,
+  sampled_pred_x: undefined,
+  sampled_pred_y: undefined,
   pred_csv: undefined
 }

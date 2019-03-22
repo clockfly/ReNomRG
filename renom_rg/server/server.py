@@ -577,9 +577,22 @@ def predict_model(model_id):
         pred_x_y.columns = labels
         pred_x_y.to_csv(filepath, index=False)
 
+        SAMPLING_SIZE = 1000
+        sampled_n_X = []
+        sampled_result = []
+        p = np.random.permutation(n_X.shape[0])
+        n_X = n_X.tolist()
+        result = result.tolist()
+        sampled_p = p[:SAMPLING_SIZE]
+        for sp_n in sampled_p:
+            sampled_n_X.append(n_X[sp_n])
+            sampled_result.append(result[sp_n])
+
         body = {
-            'pred_x': n_X.tolist(),
-            'pred_y': result.tolist(),
+            'pred_x': n_X,
+            'pred_y': result,
+            'sampled_pred_x': sampled_n_X,
+            'sampled_pred_y': sampled_result,
             'pred_csv': filename
         }
 

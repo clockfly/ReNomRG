@@ -130,11 +130,15 @@ export default {
   setPredResult (state, payload) {
     state.pred_x = payload.data.pred_x
     state.pred_y = payload.data.pred_y
+    state.sampled_pred_x = payload.data.sampled_pred_x
+    state.sampled_pred_y = payload.data.sampled_pred_y
     state.pred_csv = payload.data.pred_csv
   },
   resetPred (state, payload) {
     state.pred_x = undefined
     state.pred_y = undefined
+    state.sampled_pred_x = undefined
+    state.sampled_pred_y = undefined
   },
   sortPredX (state, payload) {
     if (!state.pred_x) return
