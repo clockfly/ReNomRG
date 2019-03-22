@@ -405,12 +405,14 @@ def create_model():
 def _taskstate_to_dict(taskstate):
     ret = {
         "model_id": taskstate.model_id,
+        "canceled": taskstate.canceled,
         "algorithm": taskstate.algorithm,
         "nth_epoch": taskstate.nth_epoch,
         "nth_batch": taskstate.nth_batch,
         "train_loss": taskstate.train_loss,
         "total_epoch": taskstate.total_epoch,
-        "total_batch": taskstate.total_batch
+        "total_batch": taskstate.total_batch,
+        "error_msgs": taskstate.error_msgs
     }
     return ret
 
@@ -418,6 +420,11 @@ def _taskstate_to_dict(taskstate):
 @route("/api/renom_rg/models/running", method="GET")
 def get_running_models():
     ret = [_taskstate_to_dict(taskstate) for taskstate in train_task.TaskState.tasks.values()]
+    for ret_model in ret:
+        error_msgs = train_task.TaskState.tasks[ret_model["model_id"]].error_msgs
+        if error_msgs:
+            return create_response({}, 500, err=str(error_msgs))
+
     return create_response({'running_models': ret})
 
 
@@ -491,34 +498,30 @@ def undeploy_model(model_id):
 
 def submit_task(executor, f, *args, **kwargs):
     if gpupool:
-        return executor.submit(gpupool.run, f, *args, **kwargs)
+        f = executor.submit(gpupool.run, f, *args, **kwargs)
+        executor.shutdown(wait=False)
+        return f
     else:
-        return executor.submit(f, *args, **kwargs)
-
-
-executor = Executor()
+        f = executor.submit(f, *args, **kwargs)
+        executor.shutdown(wait=False)
+        return f
 
 
 @route("/api/renom_rg/models/<model_id:int>/train", method="GET")
 def train_model(model_id):
     model = db.session().query(db.Model).get(model_id)
-    if not model.best_epoch:
+    if not model.best_epoch_r2:
         if not model:
             return create_response({}, 404, err='model not found')
 
         taskstate = train_task.TaskState.add_task(model)
-        f = submit_task(executor, train_task.train, taskstate, model.id)
-        try:
-            f.result()
-            return create_response({'result': 'ok'})
+        executor = Executor()
+        submit_task(executor, train_task.train, taskstate, model.id)
 
-        except Exception as e:
-            traceback.print_exc()
-            return create_response({}, 500, err=str(e))
+        if renom.cuda.has_cuda():
+            release_mem_pool()
 
-        finally:
-            if renom.cuda.has_cuda():
-                release_mem_pool()
+        return create_response({'result': 'ok'})
 
 
 @route("/api/renom_rg/models/<model_id:int>/stop", method="GET")
@@ -555,6 +558,7 @@ def predict_model(model_id):
         traceback.print_exc()
         return create_response({}, 404, err=str(e))
 
+    executor = Executor()
     f = submit_task(executor, pred_task.prediction, model.id, n_X_scaling)
     try:
         result = f.result()
