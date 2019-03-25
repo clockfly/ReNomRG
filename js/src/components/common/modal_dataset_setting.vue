@@ -8,131 +8,124 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
 <template>
   <div class="modal-dataset flex">
     <div class="column">
-      <div class="setting-block">
-        <div class="setting-type">
-          Dataset Setting
+      <div class="setting-type">
+        Dataset Setting
+      </div>
+      <div class="sub-block flex">
+        <div class="label">
+          Dataset Name
+          <span class="vali_mes">
+            {{ dn_required }}
+          </span>
         </div>
-
-        <div class="sub-block flex">
-          <div class="label">
-            Dataset Name
+        <div class="input-value">
+          <input
+            v-model="name"
+            type="text"
+            :disabled="is_confirm"
+          >
+        </div>
+      </div>  <!-- sub block -->
+      <div class="sub-block">
+        <div class="vali_mes">
+          {{ vali_datasetName }}
+        </div>
+      </div>
+      <div class="sub-block flex">
+        <div class="label">
+          Description
+        </div>
+        <div class="input-value description">
+          <textarea
+            v-model="description"
+            name="description"
+            rows="3"
+            :disabled="is_confirm"
+          />
+        </div>
+      </div>  <!-- sub block -->
+      <div class="sub-block">
+        <div class="vali_mes">
+          {{ vali_description }}
+        </div>
+      </div>
+      <div class="sub-block flex">
+        <div class="label">
+          Ratio of training data
+        </div>
+        <div class="input-value">
+          <select
+            v-model="train_ratio"
+            :disabled="is_confirm"
+          >
+            <option
+              v-for="ratio in train_ratio_list"
+              :key="ratio"
+              :value="ratio"
+            >
+              {{ ratio }}
+            </option>
+          </select>
+        </div>
+      </div>  <!-- sub block -->
+      <div class="sub-block flex">
+        <div class="label">
+          Feature Scaling
+        </div>
+        <div class="input-value">
+          <select
+            v-model="selected_scaling"
+            :disabled="is_confirm"
+          >
+            <option
+              v-for="(scaling, index) in $store.state.scalings"
+              :key="index"
+              :value="index"
+            >
+              {{ scaling }}
+            </option>
+          </select>
+        </div>
+      </div>  <!-- sub block -->
+      <div class="sub-block">
+        <div class="label">
+          Valiables
+        </div>
+        <div class="flex">
+          <div class="selected-label">
+            [Explanatory]
             <span class="vali_mes">
-              {{ dn_required }}
+              {{ ev_required }}
             </span>
           </div>
-          <div class="input-value">
-            <input
-              v-model="name"
-              type="text"
-              :disabled="is_confirm"
-            >
-          </div>
-        </div>  <!-- sub block -->
-        <div class="sub-block">
-          <div class="vali_mes">
-            {{ vali_datasetName }}
+          <div class="selected-label">
+            [Target]
+            <span class="vali_mes">
+              {{ tv_required }}
+            </span>
           </div>
         </div>
-
-        <div class="sub-block flex">
-          <div class="label">
-            Description
-          </div>
-          <div class="input-value description">
-            <textarea
-              v-model="description"
-              name="description"
-              rows="3"
-              :disabled="is_confirm"
-            />
-          </div>
-        </div>  <!-- sub block -->
-        <div class="sub-block">
-          <div class="vali_mes">
-            {{ vali_description }}
+      </div>  <!-- sub block -->
+      <div class="scroll-area flex">
+        <div class="selected-scroll-area">
+          <div
+            v-for="id in explanatory_column_ids"
+            :key="id"
+            class="target-variable-name"
+          >
+            {{ $store.state.labels[id] }}
           </div>
         </div>
-
-        <div class="sub-block flex">
-          <div class="label">
-            Ratio of training data
+        <div class="selected-scroll-area">
+          <div
+            v-for="id in target_column_ids"
+            :key="id"
+            class="target-variable-name"
+          >
+            {{ $store.state.labels[id] }}
           </div>
-          <div class="input-value">
-            <select
-              v-model="train_ratio"
-              :disabled="is_confirm"
-            >
-              <option
-                v-for="ratio in train_ratio_list"
-                :key="ratio"
-                :value="ratio"
-              >
-                {{ ratio }}
-              </option>
-            </select>
-          </div>
-        </div>  <!-- sub block -->
-
-        <div class="sub-block flex">
-          <div class="label">
-            Feature Scaling
-          </div>
-          <div class="input-value">
-            <select
-              v-model="selected_scaling"
-              :disabled="is_confirm"
-            >
-              <option
-                v-for="(scaling, index) in $store.state.scalings"
-                :key="index"
-                :value="index"
-              >
-                {{ scaling }}
-              </option>
-            </select>
-          </div>
-        </div>  <!-- sub block -->
-
-        <div class="sub-block">
-          <div class="label">
-            Valiables
-          </div>
-          <div class="flex">
-            <div class="selected-label">
-              [Explanatory]
-              <span class="vali_mes">
-                {{ ev_required }}
-              </span>
-            </div>
-            <div class="selected-label">
-              [Target]
-              <span class="vali_mes">
-                {{ tv_required }}
-              </span>
-            </div>
-          </div>
-          <div class="flex">
-            <div class="selected-scroll-area">
-              <div
-                v-for="id in explanatory_column_ids"
-                :key="id"
-                class="target-variable-name"
-              >
-                {{ $store.state.labels[id] }}
-              </div>
-            </div>
-            <div class="selected-scroll-area">
-              <div
-                v-for="id in target_column_ids"
-                :key="id"
-                class="target-variable-name"
-              >
-                {{ $store.state.labels[id] }}
-              </div>
-            </div>
-          </div>
-        </div>  <!-- sub block -->
-      </div>  <!-- setting block -->
+        </div>
+      </div>
     </div>  <!-- column -->
 
     <div
@@ -221,54 +214,50 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
       v-if="is_confirm"
       class="column"
     >
-      <div class="setting-block">
-        <div class="setting-type">
-          Detail
-        </div>
-
-        <div class="sub-block">
-          <div class="flex">
-            <div class="label">
-              Number of data size
-            </div>
-            <div class="values flex">
-              <div class="train-number">
-                Train {{ $store.state.train_index.length }}
-              </div>
-              <div class="valid-number">
-                Validation {{ $store.state.valid_index.length }}
-              </div>
-            </div>
-          </div>
-          <div class="flex">
-            <div class="label">
-              All {{ $store.state.train_index.length+$store.state.valid_index.length }}
-            </div>
-            <div class="values flex">
-              <div class="train-ratio-bar flex">
-                <div
-                  class="bar-item train"
-                  :style="{ 'flex-grow': $store.state.train_index.length }"
-                />
-                <div
-                  class="bar-item validation"
-                  :style="{ 'flex-grow': $store.state.valid_index.length }"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="sub-block flex">
+      <div class="setting-type">
+        Detail
+      </div>
+      <div class="sub-block">
+        <div class="flex">
           <div class="label">
-            Histogram
+            Number of data size
+          </div>
+          <div class="values flex">
+            <div class="train-number">
+              Train {{ $store.state.train_index.length }}
+            </div>
+            <div class="valid-number">
+              Validation {{ $store.state.valid_index.length }}
+            </div>
           </div>
         </div>
-        <div
-          id="train-test-histogram"
-          key="test-histogram"
-        />
-      </div> <!-- setting block -->
+        <div class="flex">
+          <div class="label">
+            All {{ $store.state.train_index.length+$store.state.valid_index.length }}
+          </div>
+          <div class="values flex">
+            <div class="train-ratio-bar flex">
+              <div
+                class="bar-item train"
+                :style="{ 'flex-grow': $store.state.train_index.length }"
+              />
+              <div
+                class="bar-item validation"
+                :style="{ 'flex-grow': $store.state.valid_index.length }"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sub-block flex">
+        <div class="label">
+          Histogram
+        </div>
+      </div>
+      <div
+        id="train-test-histogram"
+        key="test-histogram"
+      />
 
       <div class="button-area">
         <button @click="saveDataset">
@@ -520,7 +509,7 @@ export default {
       margin-top: $margin-middle;
       margin-left: $margin-middle;
 
-      .label, .input-value, .values, .target-variable-name, .train-number, .valid-number, .selected-label {
+      .label, .input-value, .values, .train-number, .valid-number, .selected-label {
         width: 50%;
         height: $text-height-small;
         line-height: $text-height-small;
@@ -548,14 +537,20 @@ export default {
       bottom: 0px;
       right: 0px;
     }
-    .selected-scroll-area {
-      overflow-y: auto;
-      width: 50%;
-      height: 115px;
-      line-height: $text-height-small;
-      font-size: $fs-small;
-      color: $gray;
-      padding-left: $padding-middle;
+    .scroll-area {
+      height: 25%;
+      min-height: 45px;
+      .selected-scroll-area {
+        overflow-y: auto;
+        width: 50%;
+        height: 100%;
+        padding-left: $padding-middle;
+        .target-variable-name {
+          line-height: $text-height-small;
+          font-size: $fs-small;
+          color: $gray;
+        }
+      }
     }
 
     .variable-scroll-area {
