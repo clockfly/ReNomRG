@@ -69,7 +69,7 @@ export default {
     axios.get(url)
       .then(function (response) {
         for (let i in response.data.running_models) {
-          if (context.state.running_models.length === 0 || response.data.running_models[i].nth_epoch > context.state.running_models[i].nth_epoch) {
+          if (context.state.running_models[i] == undefined || response.data.running_models[i].nth_epoch > context.state.running_models[i].nth_epoch) {
             context.dispatch('loadModelList')
           }
         }
