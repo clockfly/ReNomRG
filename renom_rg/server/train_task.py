@@ -202,7 +202,7 @@ def update_model(session, modeldef, valid_predicted, valid_true, e, valid_loss,
 
 
 def calc_importances(X_valid, y_valid, best_loss, model, modeldef, session):
-    NUM_PERM = 30
+    NUM_PERM = 3
     importances = []
     for i in range(X_valid.shape[1]):
         tl = 0
