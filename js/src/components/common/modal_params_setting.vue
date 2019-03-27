@@ -394,8 +394,8 @@ export default {
       }
     },
     totalEpochCheck: function () {
-      if ((1000 < this.epoch || this.epoch < 1) && ![3, 4].includes(this.algorithm)) {
-        this.vali_totalEpoch = '"Total Epoch" should be between 1 and 1000.'
+      if ((10000 < this.epoch || this.epoch < 1) && ![3, 4].includes(this.algorithm)) {
+        this.vali_totalEpoch = '"Total Epoch" should be between 1 and 10000.'
       } else {
         this.vali_totalEpoch = ''
       }
