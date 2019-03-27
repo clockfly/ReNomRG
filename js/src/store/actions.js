@@ -60,6 +60,7 @@ export default {
     if (response.data.err) return
 
     const model_id = response.data.model_id
+    context.commit('setSelectedModelId', { 'model_id': model_id })
     await context.dispatch('runModel', { 'model_id': model_id })
     await context.dispatch('loadModelList')
   },
