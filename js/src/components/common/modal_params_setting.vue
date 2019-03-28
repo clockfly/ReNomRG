@@ -264,7 +264,7 @@ export default {
         'max_depth': 'None'
       },
       'batch_size': 128,
-      'epoch': 10,
+      'epoch': 100,
       'vali_neighbors': '',
       'vali_one_target': '',
       'vali_dataset': '',
