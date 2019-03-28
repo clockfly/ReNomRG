@@ -5,4 +5,4 @@ This source code is licensed under the ReNom Subscription Agreement, version 1.
 ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.html)
 """
 
-__version__ = "0.3b0"
+__version__ = "0.3b1"

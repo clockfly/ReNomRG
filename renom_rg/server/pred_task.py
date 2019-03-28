@@ -50,8 +50,21 @@ def _prediction(session, model_id, data):
         w_path = os.path.join(DB_DIR_TRAINED_WEIGHT, modeldef.weight)
         model.load(w_path)
         model.set_models(inference=True)
-        pred = model(data.reshape(-1, 1, data.shape[1], 1))
-        if rm.is_cuda_active():
-            pred = pred.as_ndarray()
 
-    return pred
+        d_N = data.shape[0]
+        total_batch = d_N // modeldef.batch_size
+        if total_batch != d_N / modeldef.batch_size:
+            total_batch = total_batch + 1
+        pred_list = None
+        for j in range(total_batch):
+            index = range(d_N)[j * modeldef.batch_size:(j + 1) * modeldef.batch_size]
+            pred = model(data[index].reshape(-1, 1, data.shape[1], 1))
+            if rm.is_cuda_active():
+                pred = pred.as_ndarray()
+
+            if pred_list is None:
+                pred_list = pred
+            else:
+                pred_list = np.concatenate([pred_list, pred])
+
+    return pred_list

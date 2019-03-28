@@ -76,7 +76,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
         </div>
       </div>
 
-      <div class="model-list-scrollable-area">
+      <div :class="{ 'model-list-scrollable-area': deployed_flg, 'model-list-scrollable-area-un': !deployed_flg }">
         <div
           v-for="(model,index) in undeployed_models"
           :key="index"
@@ -173,7 +173,8 @@ export default {
   },
   data: function () {
     return {
-      'delete_model': undefined
+      'delete_model': undefined,
+      'deployed_flg': false
     }
   },
   computed: {
@@ -183,6 +184,13 @@ export default {
         return element.deployed === 0
       })
       return filtered
+    }
+  },
+  updated: function () {
+    if (this.deployedModel) {
+      this.deployed_flg = true
+    } else {
+      this.deployed_flg = false
     }
   },
   methods: {
@@ -226,6 +234,12 @@ export default {
       overflow-y: scroll;
       width: 100%;
       height: calc(100% - #{$panel-title-height} - #{$model-list-item-height} - 16px);
+      margin-top: $margin-small;
+    }
+    .model-list-scrollable-area-un {
+      overflow-y: scroll;
+      width: 100%;
+      height: calc(100% - #{$panel-title-height} - 16px);
       margin-top: $margin-small;
     }
   }

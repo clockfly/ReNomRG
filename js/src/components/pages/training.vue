@@ -38,7 +38,6 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
 
     <ModalAdd
       v-if="$store.state.add_model_modal_shown_flag"
-      @run="watchStart"
     />
   </div>
 </template>
@@ -72,6 +71,7 @@ export default {
     this.$store.dispatch('loadLabels')
     this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadModels')
+    this.$store.dispatch('loadRunningModels')
     this.watchStart()
   },
   methods: {

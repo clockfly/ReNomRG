@@ -9,6 +9,7 @@ import requests
 import os
 import pickle
 import numpy as np
+import renom as rm
 from renom_rg.server import (C_GCNN, Kernel_GCNN, DBSCAN_GCNN, USER_DEFINED, RANDOM_FOREST, XGBOOST,
                              DB_DIR_TRAINED_WEIGHT, DB_DIR_ML_MODELS, DATASRC_DIR, SCRIPT_DIR)
 from renom_rg.server.custom_util import _load_usermodel
@@ -127,6 +128,8 @@ class Regressor(object):
                 pred = pred.reshape(-1, 1)
         else:
             pred = self._model.predict(X)
+            if rm.is_cuda_active():
+                pred = pred.as_ndarray()
 
         return pred
 

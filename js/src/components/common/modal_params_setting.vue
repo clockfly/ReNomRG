@@ -111,6 +111,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
               v-model="batch_size"
               class="input-in"
               type="number"
+              @change="changeBatch"
             >
           </div>
         </div>  <!-- sub block -->
@@ -158,6 +159,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
               v-model="algorithm_params['num_neighbors']"
               class="input-in"
               type="number"
+              @change="changeNeighbors"
             >
           </div>
         </div>  <!-- sub block -->
@@ -262,7 +264,7 @@ export default {
         'max_depth': 'None'
       },
       'batch_size': 128,
-      'epoch': 10,
+      'epoch': 100,
       'vali_neighbors': '',
       'vali_one_target': '',
       'vali_dataset': '',
@@ -272,6 +274,9 @@ export default {
       'vali_maximumDepth': '',
       'vali_numberTrees': '',
       'set': false,
+      'dataset_flg': false,
+      'batch_flg': false,
+      'neighbors_flg': false,
       'run_disabled': false
     }
   },
@@ -321,8 +326,19 @@ export default {
       }
     },
     changeDataset: function () {
-      this.neighborsSet()
-      this.batchSizeSet()
+      this.dataset_flg = true
+      if (!this.neighbors_flg) {
+        this.neighborsSet()
+      }
+      if (!this.batch_flg) {
+        this.batchSizeSet()
+      }
+    },
+    changeBatch: function () {
+      this.batch_flg = true
+    },
+    changeNeighbors: function () {
+      this.neighbors_flg = true
     },
     neighborsSet: function () {
       if (this.$store.state.dataset_list[this.dataset_index]) {
@@ -387,15 +403,21 @@ export default {
       if (this.$store.state.dataset_list[this.dataset_index]) {
         const v_i = this.$store.state.dataset_list[this.dataset_index].valid_index.length
         if ((v_i < this.batch_size || this.batch_size < 1) && ![3, 4].includes(this.algorithm)) {
-          this.vali_batchSize = '"Batch Size" should be between 1 and ' + v_i + '.'
+          if (this.batch_flg && this.dataset_flg) {
+            this.batch_flg = false
+            this.batchSizeSet()
+          } else {
+            this.vali_batchSize = '"Batch Size" should be between 1 and ' + v_i + '.'
+          }
         } else {
           this.vali_batchSize = ''
         }
       }
+      this.dataset_flg = false
     },
     totalEpochCheck: function () {
-      if ((1000 < this.epoch || this.epoch < 1) && ![3, 4].includes(this.algorithm)) {
-        this.vali_totalEpoch = '"Total Epoch" should be between 1 and 1000.'
+      if ((10000 < this.epoch || this.epoch < 1) && ![3, 4].includes(this.algorithm)) {
+        this.vali_totalEpoch = '"Total Epoch" should be between 1 and 10000.'
       } else {
         this.vali_totalEpoch = ''
       }
@@ -405,7 +427,12 @@ export default {
         const explanatory_len = this.$store.state.dataset_list[this.dataset_index].explanatory_column_ids.length
         if ((this.algorithm_params['num_neighbors'] < 1 || explanatory_len < this.algorithm_params['num_neighbors'])
             && ![3, 4].includes(this.algorithm)) {
-          this.vali_neighbors = '"Number of neighbors" should be set between 1 and the number of explanatory variables in the data set.'
+          if (this.neighbors_flg && this.dataset_flg) {
+            this.neighbors_flg = false
+            this.neighborsSet()
+          } else {
+            this.vali_neighbors = '"Number of neighbors" should be set between 1 and the number of explanatory variables in the data set.'
+          }
         } else {
           this.vali_neighbors = ''
         }
