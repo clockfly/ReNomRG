@@ -363,7 +363,11 @@ export default {
         if (this.name.match(/[^\x01-\x7E]/)) {
           this.vali_datasetName = 'Please enter in half-width alphanumeric characters.'
         } else {
-          this.vali_datasetName = ''
+          if (this.name.match(/\s|　/)) {
+            this.vali_datasetName = 'Blank character can not be used.'
+          } else {
+            this.vali_datasetName = ''
+          }
         }
       }
       if (this.name === '') {

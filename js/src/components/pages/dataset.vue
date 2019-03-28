@@ -320,17 +320,19 @@ export default {
       margin: 0 auto;
       border-bottom: $border-width-regular solid $light-gray;
       cursor:pointer;
+      padding-top: $padding-micro;
+      padding-bottom: $padding-micro;
     }
     .table-row:hover .table-item {
       color: $light-gray;
     }
     .table-item {
       width: 25%;
-      height: $text-height-regular;
-      line-height: $text-height-regular;
+      line-height: $text-height-micro;
       text-align: center;
       font-size: $fs-small;
       color: $gray;
+      overflow-wrap: break-word;
     }
     .active {
       color: $blue;
