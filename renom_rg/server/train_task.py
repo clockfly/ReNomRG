@@ -14,6 +14,7 @@ from sklearn.metrics import r2_score
 from sklearn import preprocessing
 import pickle
 import threading
+import traceback
 
 import renom as rm
 from renom.optimizer import Adam
@@ -29,6 +30,7 @@ from renom_rg.api.regression.gcnn import GCNet
 from renom_rg.api.utility.feature_graph import get_corr_graph, get_kernel_graph, get_dbscan_graph
 from . import db
 from . import ml_task
+from . import server
 
 class RunningState(enum.Enum):
     TRAINING = 0
@@ -46,8 +48,6 @@ class TaskState:
         return ret
 
     def __init__(self, model_id):
-        self.error_msgs = []
-
         self.model_id = model_id
         self.state = RunningState.TRAINING
         self.canceled = False
@@ -57,6 +57,7 @@ class TaskState:
         self.total_epoch = -1
         self.total_batch = -1
         self.algorithm = -1
+        self.error_msgs = []
 
     _lock = threading.RLock()
     _events = weakref.WeakSet()
@@ -237,6 +238,9 @@ def train(taskstate, model_id):
     try:
         taskstate.signal()
         return _train(session, taskstate, model_id)
+    except Exception as e:
+        traceback.print_exc()
+        taskstate.error_msgs = e
     finally:
         taskstate.signal()
         session.commit()
@@ -428,6 +432,9 @@ def _train(session, taskstate, model_id):
             best_loss = valid_loss
 
     # calc importances
+    taskstate.nth_epoch = taskstate.total_epoch
+    taskstate.nth_batch = taskstate.total_batch
+    taskstate.signal()
     calc_importances(X_valid, y_valid, best_loss, model, modeldef, session)
 
     taskstate.state = RunningState.FINISHED

@@ -71,6 +71,7 @@ export default {
     this.$store.dispatch('loadLabels')
     this.$store.dispatch('loadDatasets')
     this.$store.dispatch('loadModels')
+    this.$store.dispatch('loadRunningModels')
     this.watchStart()
   },
   methods: {

@@ -95,6 +95,12 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
                   v-if="$store.state.algorithms[model.algorithm]"
                   class="running-info-item progress-bar"
                 >
+                  <div
+                    v-if="model.nth_epoch == model.total_epoch || model.canceled"
+                    class="running-info-label"
+                  >
+                    In calculating Feature Importance...
+                  </div>
                   <div class="bar-background" />
                   <div
                     :class="'bar-foreground '+$store.state.algorithms[model.algorithm].toLowerCase()"
@@ -102,7 +108,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
                   />
                 </div>
                 <div
-                  v-if="![3, 4].includes(model.algorithm)"
+                  v-if="![3, 4].includes(model.algorithm) && model.nth_epoch != model.total_epoch && !model.canceled"
                   class="running-info-item pause-button"
                   @click="stop_model = model"
                 >

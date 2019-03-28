@@ -61,16 +61,19 @@ export default {
 
     const model_id = response.data.model_id
     await context.dispatch('runModel', { 'model_id': model_id })
-    await context.dispatch('loadModelList')
   },
 
   loadRunningModels (context, payload) {
     const url = '/api/renom_rg/models/running'
     axios.get(url)
       .then(function (response) {
-        for (let i in response.data.running_models) {
-          if (context.state.running_models[i] == undefined || response.data.running_models[i].nth_epoch > context.state.running_models[i].nth_epoch) {
-            context.dispatch('loadModelList')
+        if (context.state.running_models.length != response.data.running_models.length) {
+          context.dispatch('loadModelList')
+        } else {
+          for (let i in response.data.running_models) {
+            if (context.state.running_models[i] == undefined || response.data.running_models[i].nth_epoch > context.state.running_models[i].nth_epoch) {
+              context.dispatch('loadModelList')
+            }
           }
         }
         context.commit('setRunningModels', { 'running_models': response.data.running_models })
