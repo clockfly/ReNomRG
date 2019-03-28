@@ -22,8 +22,8 @@ msgid "Change Log"
 msgstr "変更履歴"
 
 #: ../../rsts/change_log.rst:4
-msgid "v0.2.0 beta => v0.3.0 beta"
-msgstr "v0.2.0 beta => v0.3.0 beta"
+msgid "0.2.0 beta => 0.3.0 beta"
+msgstr "0.2.0 beta => 0.3.0 beta"
 
 #: ../../rsts/change_log.rst:7
 msgid "After completion of model creation, the importance of each explanatory variable can be checked."
@@ -34,8 +34,8 @@ msgid "Random Forest and XGBoost were added to the algorithm selection item at m
 msgstr "モデル作成時のアルゴリズム選択項目に、Random ForestとXGBoostを追加しました。"
 
 #: ../../rsts/change_log.rst:11
-msgid "v0.1.0 beta => v0.2.0 beta"
-msgstr "v0.1.0 beta => v0.2.0 beta"
+msgid "0.1.0 beta => 0.2.0 beta"
+msgstr "0.1.0 beta => 0.2.0 beta"
 
 #: ../../rsts/change_log.rst:14
 msgid "Explanatory variables and target variables can be selected when creating a dataset."
@@ -50,8 +50,8 @@ msgid "The prediction result can be saved as CSV data."
 msgstr "予測結果をCSVデータ形式で保存することが可能になりました。"
 
 #: ../../rsts/change_log.rst:19
-msgid "v0.0.0 beta => v0.1.0 beta"
-msgstr "v0.0.0 beta => v0.1.0 beta"
+msgid "0.0.0 beta => 0.1.0 beta"
+msgstr "0.0.0 beta => 0.1.0 beta"
 
 #: ../../rsts/change_log.rst:21
 msgid "GraphCNN is possible with GPU."
