@@ -132,6 +132,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
           </div>
 
           <div
+            v-if="model.importances"
             class="delete-button"
             @click="delete_model=model"
           >
