@@ -527,6 +527,7 @@ export default {
   .to-setting-dataset {
     font-size: $fs-small;
     color: $blue;
+    cursor: pointer;
   }
 
   .button-area {
