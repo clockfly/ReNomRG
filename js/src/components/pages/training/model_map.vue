@@ -17,7 +17,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
         class="panel-content"
       >
         <div class="x-axis-name">
-          Root Mean Squared Error
+          RMSE (Root Mean Squared Error)
         </div>
         <div class="y-axis-name">
           Max Absolute Error
@@ -36,9 +36,12 @@ import { max, min, round, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'ModelMap',
-  computed: mapState(['model_list']),
+  computed: mapState(['model_list', 'selected_model_id']),
   watch: {
     model_list: function () {
+      this.drawMap()
+    },
+    selected_model_id: function () {
       this.drawMap()
     }
   },
@@ -92,36 +95,86 @@ export default {
 
       const tooltip = d3.select('#map-tooltip')
       const algorithms = this.$store.state.algorithms
-      svg.append('g')
-        .selectAll('circle')
-        .data(dataset)
-        .enter()
-        .append('circle')
-        .attr('cx', function (d) { return x_scale(d[0]) })
-        .attr('cy', function (d) { return y_scale(d[1]) })
-        .attr('fill', function (d) { return algorithm_colors[algorithms[d[3]]] })
-        .attr('r', 3)
-        .on('mouseover', function (d) {
-          tooltip.html('model_id: ' + d[2] + '<br>algorithm: ' + algorithms[d[3]] + '<br>RMSE: ' + round(d[0], 1000) + '<br>MaxAbsError: ' + round(d[1], 1000))
-            .attr('class', algorithms[d[3]].toLowerCase())
-            .style('left', (parseInt(d3.select(this).attr('cx')) - 100) + 'px')
-            .style('top', (parseInt(d3.select(this).attr('cy')) + 10) + 'px')
-            .style('display', 'inline-block')
-        })
-        .on('mouseout', function (d) {
-          tooltip.style('display', 'none')
-        })
-        .on('click', function (d) {
-          store.commit('setSelectedModelId', {'model_id': d[2]})
-          store.dispatch('selectModel', {'model_id': d[2]})
-        })
+      const selected_mi = this.$store.state.selected_model_id
+
+      for( let m_v in dataset ) {
+        if (dataset[m_v][4]) {
+          svg.append('g')
+            .selectAll('circle')
+            .data(dataset)
+            .enter()
+            .append('circle')
+            .attr('cx', function (d) { return x_scale(d[0]) })
+            .attr('cy', function (d) { return y_scale(d[1]) })
+            .attr('fill', function (d) { return algorithm_colors[algorithms[d[3]]] })
+            .attr('r', function (d) {
+              if (d[2] == selected_mi) {
+                return 5
+              } else {
+                return 3
+              }
+            })
+            .on('mouseover', function (d) {
+              tooltip.html('model_id: ' + d[2] + '<br>algorithm: ' + algorithms[d[3]] + '<br>RMSE: ' + round(d[0], 1000) + '<br>MaxAbsError: ' + round(d[1], 1000))
+                .attr('class', algorithms[d[3]].toLowerCase())
+                .style('left', (parseInt(d3.select(this).attr('cx')) - 100) + 'px')
+                .style('top', (parseInt(d3.select(this).attr('cy')) + 10) + 'px')
+                .style('display', 'inline-block')
+            })
+            .on('mouseout', function (d) {
+              tooltip.style('display', 'none')
+            })
+            .on('click', function (d) {
+              store.commit('setSelectedModelId', {'model_id': d[2]})
+            })
+        } else {
+          let arr = [];
+          for (let i = 0; i < 100; i++) {
+            arr.push(0)
+          }
+          const d_4 = dataset[m_v]
+          arr.forEach(function(nd,ni){
+            svg.append('g')
+            .append('circle')
+            .attr('cx', function (dataset) { return x_scale(d_4[0]) })
+            .attr('cy', function (dataset) { return y_scale(d_4[1]) })
+            .attr('fill', function (dataset) { return algorithm_colors[algorithms[d_4[3]]] })
+            .attr('r', function (d) {
+              if (d_4[2] == selected_mi) {
+                return 5
+              } else {
+                return 3
+              }
+            })
+            .on('mouseover', function (dataset) {
+              tooltip.html('model_id: ' + d_4[2] + '<br>algorithm: ' + algorithms[d_4[3]] + '<br>RMSE: ' + round(d_4[0], 1000) + '<br>MaxAbsError: ' + round(d_4[1], 1000))
+                .attr('class', algorithms[d_4[3]].toLowerCase())
+                .style('left', (parseInt(d3.select(this).attr('cx')) - 100) + 'px')
+                .style('top', (parseInt(d3.select(this).attr('cy')) + 10) + 'px')
+                .style('display', 'inline-block')
+            })
+            .on('mouseout', function (dataset) {
+              tooltip.style('display', 'none')
+            })
+            .on('click', function (dataset) {
+              store.commit('setSelectedModelId', {'model_id': d_4[2]})
+            })
+            .transition().delay(ni * 1500).duration(750)
+            .style('stroke', function (dataset) { return algorithm_colors[algorithms[d_4[3]]] })
+            .style('stroke-width', 5)
+            .transition().duration(750)
+            .style('stroke', '#FFFFFF')
+            .style('stroke-width', 5)
+          })
+        }
+      }
     },
     shapeDataset: function () {
       let rmse_list = []
       let max_abs_error_list = []
       let dataset = []
       for (let m of this.$store.state.model_list) {
-        let d = [m.best_epoch_rmse, m.best_epoch_max_abs_error, m.model_id, m.algorithm]
+        let d = [m.best_epoch_rmse, m.best_epoch_max_abs_error, m.model_id, m.algorithm, m.importances]
         rmse_list.push(m.best_epoch_rmse)
         max_abs_error_list.push(m.best_epoch_max_abs_error)
         dataset.push(d)
@@ -147,8 +200,8 @@ export default {
     }
     .x-axis-name {
       bottom: 24px;
-      left: 50%;
-      @include prefix("transform", "translateX(-50%)");
+      left: 42%;
+      @include prefix("transform", "translateX(-30%)");
     }
     .y-axis-name {
       top: 16px;
