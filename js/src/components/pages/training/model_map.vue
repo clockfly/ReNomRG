@@ -45,6 +45,12 @@ export default {
       this.drawMap()
     }
   },
+  created: function() {
+    window.addEventListener('resize', this.drawMap, false)
+  },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.drawMap, false)
+  },
   methods: {
     drawMap: function () {
       if (!this.$store.state.model_list) return
