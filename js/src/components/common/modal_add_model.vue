@@ -101,12 +101,14 @@ export default {
         text-align: center;
         line-height: $modal-tab-height;
         color: $white;
+        cursor: pointer;
       }
       .tab-active {
         background: $white;
         border: 1px solid $light-gray;
         border-bottom: none;
         color: $black;
+        cursor: auto;
       }
       .tab-rest {
         flex-grow: 1;

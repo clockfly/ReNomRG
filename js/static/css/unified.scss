@@ -236,12 +236,12 @@ $panel-title-height: 32px;
 
   .panel-title-button-area {
     @include prefix("display", "flex");
-    cursor:pointer;
     .panel-title-button {
       margin-left: auto;
       padding: 0 $padding-large;
       background: $blue;
       color: $white;
+      cursor: pointer;
       .icon {
         margin-right: $margin-small;
         color: $white;
