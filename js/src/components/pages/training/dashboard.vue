@@ -96,10 +96,16 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
                   class="running-info-item progress-bar"
                 >
                   <div
-                    v-if="model.nth_epoch == model.total_epoch || model.canceled"
+                    v-if="![3, 4].includes(model.algorithm) && (model.nth_epoch == model.total_epoch || model.canceled)"
                     class="running-info-label"
                   >
                     In calculating Feature Importance...
+                  </div>
+                  <div
+                    v-else-if="[3, 4].includes(model.algorithm) && model.nth_epoch == model.total_epoch"
+                    class="running-info-label"
+                  >
+                    Model_{{ model.model_id }} is learning...
                   </div>
                   <div class="bar-background" />
                   <div

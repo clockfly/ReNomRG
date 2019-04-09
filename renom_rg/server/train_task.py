@@ -293,6 +293,7 @@ def _train(session, taskstate, model_id):
         else:
             max_depth = int(algorithm_params["max_depth"])
         modeldef.algorithm_params = pickle.dumps(algorithm_params)
+        taskstate.signal()
         ml_task.random_forest(session, modeldef, n_estimators, max_depth,
                               X_train, y_train, X_valid, y_valid)
         taskstate.state = RunningState.FINISHED
