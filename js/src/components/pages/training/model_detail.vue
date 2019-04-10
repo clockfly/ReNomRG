@@ -268,9 +268,12 @@ export default {
 
       .label-value {
         .label, .value {
-          height: $text-height-small;
+          overflow-wrap: break-word;
           line-height: $text-height-small;
           font-size: $fs-small;
+        }
+        .value {
+          max-width: 130px;
         }
         .label {
           margin-right: $margin-small;

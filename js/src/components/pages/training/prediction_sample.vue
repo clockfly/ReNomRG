@@ -133,6 +133,11 @@ import { max, min, getScale, removeSvg, styleAxis } from '@/utils'
 
 export default {
   name: 'PreictionResult',
+  data: function () {
+    return {
+      'draw_width': 420
+    }
+  },
   computed: {
     ...mapState(['dataset_list']),
     ...mapGetters(['deployedModel', 'deployedDataset', 'selectedModel', 'selectedDataset'])
@@ -150,16 +155,32 @@ export default {
       })
     }
   },
+  created: function() {
+    this.setInnerWidth()
+    window.addEventListener('resize', this.setInnerWidth, false)
+  },
   mounted: function () {
     this.drawSelected()
     this.drawDeployed()
   },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.setInnerWidth, false)
+  },
   methods: {
+    setInnerWidth: function() {
+      if (window.innerWidth / 3.2 < 420) {
+        this.draw_width = window.innerWidth / 3.2
+      } else {
+        this.draw_width = 420
+      }
+      this.drawDeployed()
+      this.drawSelected()
+    },
     drawTruePredPlot: function (id, train_true, train_pred, valid_true, valid_pred, confidence_data, true_histogram, pred_histogram) {
       if (!train_true || !train_pred || !valid_true || !valid_pred) return
       // define svg element
-      const width = 400
-      const height = 420
+      const width = this.draw_width
+      const height = width
       const bins_end = 10
       const margin = { 'left': 60, 'top': 80, 'right': 80, 'bottom': 60, 'hist_inner': 20, 'hist_outer': 20 }
       const plot_max = max([true_histogram.train.bins[bins_end], true_histogram.valid.bins[bins_end]])
@@ -477,7 +498,7 @@ export default {
     }
     .x-axis-name {
       bottom: 48px;
-      right: 48px;
+      right: calc(100vw / 65);
     }
     .y-axis-name {
       top: 48px;

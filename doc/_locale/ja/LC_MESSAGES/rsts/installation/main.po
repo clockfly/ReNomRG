@@ -94,8 +94,8 @@ msgid "The Wheel package is provided at:"
 msgstr "Wheelパッケージは以下のようなリンクからインストールすることが可能です。"
 
 #: ../../rsts/installation/main.rst:39
-msgid "Install 0.3b1(beta version) is follow."
-msgstr "以下のように、0.3b1(ベータバージョン)をインストールすることができます。"
+msgid "Install 0.3b2(beta version) is follow."
+msgstr "以下のように、0.3b2(ベータバージョン)をインストールすることができます。"
 
 #: ../../rsts/installation/main.rst:48
 msgid ""

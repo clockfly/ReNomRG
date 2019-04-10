@@ -17,5 +17,6 @@ export const algorithm_colors = {
   'Kernel-GCNN': '#423885',
   'DBSCAN-GCNN': '#136eab',
   'Random-Forest': '#1b6e00',
-  'XGBoost': '#99CC66'
+  'XGBoost': '#99CC66',
+  'user-defined': '#a9a9a9'
 }

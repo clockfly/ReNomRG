@@ -649,7 +649,11 @@ export default {
         .label-value {
           margin-bottom: $margin-small;
           .label, .value {
+            overflow-wrap: break-word;
             font-size: $fs-small;
+          }
+          .value {
+            max-width: 120px;
           }
           .label {
             margin-right: $margin-small;

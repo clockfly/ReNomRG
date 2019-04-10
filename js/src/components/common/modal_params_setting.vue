@@ -110,7 +110,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
             <input
               v-model="batch_size"
               class="input-in"
-              type="number"
+              type="text"
               @change="changeBatch"
             >
           </div>
@@ -129,7 +129,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
             <input
               v-model="epoch"
               class="input-in"
-              type="number"
+              type="text"
             >
           </div>
         </div>  <!-- sub block -->
@@ -158,7 +158,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
             <input
               v-model="algorithm_params['num_neighbors']"
               class="input-in"
-              type="number"
+              type="text"
               @change="changeNeighbors"
             >
           </div>
@@ -195,7 +195,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
             <input
               v-model="algorithm_params['n_estimators']"
               class="input-in"
-              type="number"
+              type="text"
             >
           </div>
         </div>  <!-- sub block -->
@@ -257,14 +257,14 @@ export default {
       'algorithm': 0,
       'algorithm_params': {
         'script_file_name': '',
-        'num_neighbors': 5,
+        'num_neighbors': '5',
         'fc_unit': [100, 50],
         'channels': [10, 20, 20],
-        'n_estimators': 100,
+        'n_estimators': '100',
         'max_depth': 'None'
       },
       'batch_size': 128,
-      'epoch': 100,
+      'epoch': '100',
       'vali_neighbors': '',
       'vali_one_target': '',
       'vali_dataset': '',
@@ -320,7 +320,7 @@ export default {
     },
     changeAlgorithm: function () {
       if (this.algorithm == 4) {
-        this.algorithm_params['max_depth'] = 6
+        this.algorithm_params['max_depth'] = '6'
       } else {
         this.algorithm_params['max_depth'] = 'None'
       }
@@ -346,9 +346,9 @@ export default {
         if (explanatory_len < this.algorithm_params['num_neighbors']
             || this.algorithm_params['num_neighbors'] < 5) {
           if (explanatory_len < 5 || explanatory_len < this.algorithm_params['num_neighbors']) {
-            this.algorithm_params['num_neighbors'] = explanatory_len
+            this.algorithm_params['num_neighbors'] = String(explanatory_len)
           } else {
-            this.algorithm_params['num_neighbors'] = 5
+            this.algorithm_params['num_neighbors'] = '5'
           }
         }
       }
@@ -357,7 +357,7 @@ export default {
       if (this.$store.state.dataset_list[this.dataset_index]) {
         let batch_size = 1
         const v_i = this.$store.state.dataset_list[this.dataset_index].valid_index.length
-        const list = [2, 4, 8, 16, 32, 64, 128]
+        const list = ['2', '4', '8', '16', '32', '64', '128']
         for (let l_n of list) {
           if (l_n <= v_i) {
             batch_size = l_n
@@ -385,29 +385,45 @@ export default {
       }
     },
     userDifinedCheck: function () {
-      if (this.algorithm == 0xffffffff && this.algorithm_params['script_file_name'] == '') {
-        this.vali_userDifined = 'Please enter "Script file name".'
-      } else {
-        if (this.algorithm == 0xffffffff && this.algorithm_params['script_file_name'].length > 20) {
-          this.vali_userDifined = '"Script file name" should be 20 characters or less.'
+      if (this.algorithm == 0xffffffff) {
+        if (this.algorithm_params['script_file_name'] == '') {
+          this.vali_userDifined = 'Please enter "Script file name".'
         } else {
-          if (this.algorithm == 0xffffffff && this.algorithm_params['script_file_name'].match(/[^\x01-\x7E]/)) {
-            this.vali_userDifined = 'Please enter in half-width alphanumeric characters.'
+          if (this.algorithm_params['script_file_name'].length > 20) {
+            this.vali_userDifined = '"Script file name" should be 20 characters or less.'
           } else {
-            this.vali_userDifined = ''
+            if (this.algorithm_params['script_file_name'].match(/[^\x01-\x7E]/)) {
+              this.vali_userDifined = 'Please enter in half-width alphanumeric characters.'
+            } else {
+              if (this.algorithm_params['script_file_name'].match(/\s|　/)) {
+                this.vali_userDifined = 'Blank character can not be used.'
+              } else {
+                this.vali_userDifined = ''
+              }
+            }
           }
         }
+      } else {
+        this.vali_userDifined = ''
       }
     },
     batchSizeCheck: function () {
       if (this.$store.state.dataset_list[this.dataset_index]) {
         const v_i = this.$store.state.dataset_list[this.dataset_index].valid_index.length
-        if ((v_i < this.batch_size || this.batch_size < 1) && ![3, 4].includes(this.algorithm)) {
-          if (this.batch_flg && this.dataset_flg) {
-            this.batch_flg = false
-            this.batchSizeSet()
+        if (![3, 4].includes(this.algorithm)) {
+          if ((v_i < this.batch_size || this.batch_size < 1)) {
+            if (this.batch_flg && this.dataset_flg) {
+              this.batch_flg = false
+              this.batchSizeSet()
+            } else {
+              this.vali_batchSize = '"Batch Size" should be between 1 and ' + v_i + '.'
+            }
           } else {
-            this.vali_batchSize = '"Batch Size" should be between 1 and ' + v_i + '.'
+            if (this.batch_size.match(/\D/)) {
+              this.vali_batchSize = 'Please enter integers.'
+            } else {
+              this.vali_batchSize = ''
+            }
           }
         } else {
           this.vali_batchSize = ''
@@ -416,8 +432,16 @@ export default {
       this.dataset_flg = false
     },
     totalEpochCheck: function () {
-      if ((10000 < this.epoch || this.epoch < 1) && ![3, 4].includes(this.algorithm)) {
-        this.vali_totalEpoch = '"Total Epoch" should be between 1 and 10000.'
+      if (![3, 4].includes(this.algorithm)) {
+        if ((10000 < this.epoch || this.epoch < 1)) {
+          this.vali_totalEpoch = '"Total Epoch" should be between 1 and 10000.'
+        } else {
+          if (this.epoch.match(/\D/)) {
+            this.vali_totalEpoch = 'Please enter integers.'
+          } else {
+            this.vali_totalEpoch = ''
+          }
+        }
       } else {
         this.vali_totalEpoch = ''
       }
@@ -425,13 +449,20 @@ export default {
     neighborsCheck: function () {
       if (this.$store.state.dataset_list[this.dataset_index]) {
         const explanatory_len = this.$store.state.dataset_list[this.dataset_index].explanatory_column_ids.length
-        if ((this.algorithm_params['num_neighbors'] < 1 || explanatory_len < this.algorithm_params['num_neighbors'])
-            && ![3, 4].includes(this.algorithm)) {
-          if (this.neighbors_flg && this.dataset_flg) {
-            this.neighbors_flg = false
-            this.neighborsSet()
+        if (![3, 4].includes(this.algorithm)) {
+          if (this.algorithm_params['num_neighbors'] < 1 || explanatory_len < this.algorithm_params['num_neighbors']) {
+            if (this.neighbors_flg && this.dataset_flg) {
+              this.neighbors_flg = false
+              this.neighborsSet()
+            } else {
+              this.vali_neighbors = '"Number of neighbors" should be set between 1 and the number of explanatory variables in the data set.'
+            }
           } else {
-            this.vali_neighbors = '"Number of neighbors" should be set between 1 and the number of explanatory variables in the data set.'
+            if (this.algorithm_params['num_neighbors'].match(/\D/)) {
+              this.vali_neighbors = 'Please enter integers.'
+            } else {
+              this.vali_neighbors = ''
+            }
           }
         } else {
           this.vali_neighbors = ''
@@ -439,16 +470,24 @@ export default {
       }
     },
     numberTreesCheck: function () {
-      if ((1000 < this.algorithm_params['n_estimators'] || this.algorithm_params['n_estimators'] < 1)
-          && [3, 4].includes(this.algorithm)) {
-        this.vali_numberTrees = '"Number of trees" should be between 1 and 1000.'
+      if ([3, 4].includes(this.algorithm)) {
+        if (1000 < this.algorithm_params['n_estimators'] || this.algorithm_params['n_estimators'] < 1) {
+          this.vali_numberTrees = '"Number of trees" should be between 1 and 1000.'
+        } else {
+          if (this.algorithm_params['n_estimators'].match(/\D/)) {
+            this.vali_numberTrees = 'Please enter integers.'
+          } else {
+            this.vali_numberTrees = ''
+          }
+        }
       } else {
         this.vali_numberTrees = ''
       }
     },
     maximumDepthCheck: function () {
       if (this.algorithm == 4 || (this.algorithm == 3 && this.algorithm_params['max_depth'] != 'None')) {
-        if (this.algorithm_params['max_depth'] != Number(this.algorithm_params['max_depth'])){
+        if (this.algorithm_params['max_depth'] != Number(this.algorithm_params['max_depth'])
+            || this.algorithm_params['max_depth'].match(/\./)){
           if (this.algorithm == 3) {
             this.vali_maximumDepth = 'Please enter integers or "None".'
           } else if (this.algorithm == 4) {
@@ -458,7 +497,11 @@ export default {
           if (30 < this.algorithm_params['max_depth'] || this.algorithm_params['max_depth'] < 1) {
             this.vali_maximumDepth = '"Maximum Depth" should be between 1 and 30.'
           } else {
-            this.vali_maximumDepth = ''
+            if (this.algorithm_params['max_depth'].match(/\s|　/)) {
+              this.vali_maximumDepth = 'Blank character can not be used.'
+            } else {
+              this.vali_maximumDepth = ''
+            }
           }
         }
       } else {
@@ -527,6 +570,7 @@ export default {
   .to-setting-dataset {
     font-size: $fs-small;
     color: $blue;
+    cursor: pointer;
   }
 
   .button-area {

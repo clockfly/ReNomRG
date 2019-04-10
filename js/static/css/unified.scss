@@ -58,6 +58,7 @@ $margin-middle: 16px;
 $margin-large: 32px;
 
 // padding
+$padding-micro: 4px;
 $padding-small: 8px;
 $padding-middle: 16px;
 $padding-large: 32px;
@@ -235,12 +236,12 @@ $panel-title-height: 32px;
 
   .panel-title-button-area {
     @include prefix("display", "flex");
-    cursor:pointer;
     .panel-title-button {
       margin-left: auto;
       padding: 0 $padding-large;
       background: $blue;
       color: $white;
+      cursor: pointer;
       .icon {
         margin-right: $margin-small;
         color: $white;
