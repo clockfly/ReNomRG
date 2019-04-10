@@ -42,10 +42,11 @@ def _prediction(session, model_id, data):
                       neighbors=algorithm_params["num_neighbors"],
                       channels=algorithm_params["channels"])
 
+    pred_list = None
     if modeldef.algorithm in [RANDOM_FOREST, XGBOOST]:
-        pred = model.predict(data)
-        if len(pred.shape) == 1:
-            pred = pred.reshape(-1, 1)
+        pred_list = model.predict(data)
+        if len(pred_list.shape) == 1:
+            pred_list = pred_list.reshape(-1, 1)
     else:
         w_path = os.path.join(DB_DIR_TRAINED_WEIGHT, modeldef.weight)
         model.load(w_path)
@@ -55,7 +56,6 @@ def _prediction(session, model_id, data):
         total_batch = d_N // modeldef.batch_size
         if total_batch != d_N / modeldef.batch_size:
             total_batch = total_batch + 1
-        pred_list = None
         for j in range(total_batch):
             index = range(d_N)[j * modeldef.batch_size:(j + 1) * modeldef.batch_size]
             pred = model(data[index].reshape(-1, 1, data.shape[1], 1))
