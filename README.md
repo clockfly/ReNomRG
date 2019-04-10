@@ -1,4 +1,4 @@
-# ReNomRG 0.3.1 beta
+# ReNomRG 0.3.2 beta
 
 ReNom RG is model developing tool for regression using Graph CNN.
 
@@ -33,7 +33,7 @@ The Wheel package is provided at:
 
 You can install the wheel package with pip command::
 
-`pip install https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-0.3b1-py3-none-any.whl`
+`pip install https://grid-devs.gitlab.io/ReNomRG/bin/renom_rg-0.3b2-py3-none-any.whl`
 
 ### Install from source
 For installing ReNomRG, download the repository from following url.

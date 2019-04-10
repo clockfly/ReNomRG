@@ -29,7 +29,7 @@ ReNom Subscription Agreement Ver. 1.0 (https://www.renom.jp/info/license/index.
 <script>
 export default {
   name: 'AppFooter',
-  data: function () { return { 'version': '0.3.1 beta' } }
+  data: function () { return { 'version': '0.3.2 beta' } }
 }
 </script>
 
